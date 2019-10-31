@@ -11,6 +11,9 @@ we can do that on Apache2 more efficiently.
 FLASK DOCUMENTATION IS AT https://flask.palletsprojects.com/en/1.1.x/ YOU'LL WANT IT
 
 Oh and Leo, there's some info on configuring git for vscode in the google doc if you want that.
+actually never mind you should just go to
+https://stackoverflow.com/questions/55671825/how-to-use-%D0%B0-private-repository-with-vscode
+you'll find everything you need there
 
 This file was pushed by Thomas btw
 """
