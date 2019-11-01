@@ -18,12 +18,24 @@ This file was pushed by Thomas btw
 """
 
 
-#import all the flask stuff we'll be needing
+# import all the flask stuff we'll be needing
 from flask import Flask, escape, request, render_template, send_file, send_from_directory # etc...
 
+# import MySQL stuff (requires installation from PIP)
+from flaskext.mysql import MySQL
+mariadb = MySQL()
 
-#initialize flask as "app". this matters not just for literally everything but for the WSGI as well
+
+# initialize flask as "app". this matters not just for literally everything but for the WSGI as well
 app = Flask(__name__)
+
+# configure it to work with the database
+app.config['MYSQL_DATABASE_USER'] = 'FAIRY' # lol cuz it's a science fair get it
+app.config['MYSQL_DATABASE_PASSWORD'] = '123456789' # not really and btw make sure fairy has proper permissions
+app.config['MYSQL_DATABASE_DB'] = 'SCIENCE_FAIR'
+app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
+mariadb.init_app(app)
+
 
 @app.route('/')
 def showHomepage():
