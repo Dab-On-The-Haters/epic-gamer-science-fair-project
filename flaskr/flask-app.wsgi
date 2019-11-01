@@ -2,7 +2,7 @@
 import sys
 import logging
 logging.basicConfig(stream=sys.stderr)
-sys.path.insert(0, '/home/yeem/epic-gamer-science-fair-project/')
+sys.path.insert(0, '/home/yeem/epic-gamer-science-fair-project/flaskr/')
 
-from main-stuff import app as application
+from main_stuff import app as application
 application.secret_key = 'Add your secret key'
