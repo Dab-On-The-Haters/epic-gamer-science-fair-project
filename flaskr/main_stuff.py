@@ -27,4 +27,5 @@ app = Flask(__name__)
 
 @app.route('/')
 def showHomepage():
-    return send_file ()
+    # avoid send_file (use send_from_directory) in most scenarios! Don't do this! Security risks!
+    return send_file('static/homepage.html', mimetype='text/html')
