@@ -12,6 +12,8 @@ make sure to use "-a SCIENCE_FAIR" or "USE SCIENCE_FAIR"
 NOT READY TO EXECUTE
 */
 
+
+-- table of the site's users contains info like email, username, whether they've verified their email, etc..
 CREATE OR REPLACE TABLE users
 (
     ID MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
@@ -24,6 +26,8 @@ CREATE OR REPLACE TABLE users
 )
 ENGINE=INNODB;
 
+
+-- table of datasets that have been uploaded to the site and their info
 CREATE OR REPLACE TABLE datasets
 (
     ID MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
@@ -40,13 +44,19 @@ CREATE OR REPLACE TABLE datasets
 )
 ENGINE=INNODB;
 
+
+-- table of models
 CREATE OR REPLACE TABLE models
 (
     ID MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
     user_description VARCHAR(65535),
+    
+    began_training TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    finished_training TIMESTAMP DEFAULT NULL,
+    finished_naturally BOOLEAN DEFAULT NULL,
+
     rnn_style VARCHAR(5) NOT NULL DEFAULT 'GRU',
     npl_level TINYINT NOT NULL DEFAULT 0,
-    
 
     -- settings below are based off of the options for char-rnn
     -- signage may be incorrect, i guessed everything
@@ -58,11 +68,16 @@ CREATE OR REPLACE TABLE models
     seq_length TINYINT UNSIGNED NOT NULL DEFAULT 50,
     batch_size TINYINT UNSIGNED NOT NULL DEFAULT 50,
     max_epochs TINYINT UNSIGNED NOT NULL DEFAULT 50,
+    -- this isn't calculated until later
+    -- loader.ntrain = iterations_per_epoch
+    iterations_per_epoch = SMALLINT UNSIGNED,
+    -- iterations = loader.ntrain * epochs
+    iterations = MEDIUMINT UNSIGNED,
     grad_clip FLOAT UNSIGNED NOT NULL DEFAULT 5,
     train_frac FLOAT UNSIGNED NOT NULL DEFAULT 0.95,
     val_frac FLOAT UNSIGNED NOT NULL DEFAULT 0.05,
+    -- seed is for generating random numbers
     seed TINYINT NOT NULL DEFAULT 123,
-
 
     datasetID MEDIUMINT UNSIGNED NOT NULL,
     trainerID MEDIUMINT UNSIGNED NOT NULL,
@@ -71,13 +86,22 @@ CREATE OR REPLACE TABLE models
         FOREIGN KEY (datasetID) references datasets (ID)
         ON DELETE CASCADE
         ON UPDATE RESTRICT,
-    CONSTRAINT 'dataset_trainer_fk'
+    CONSTRAINT `dataset_trainer_fk`
+        FOREIGN KEY (trainerID) REFERENCES users (ID)
         ON DELETE RESTRICT
         ON UPDATE CASCADE
+)
+ENGINE=INNODB;
+
+CREATE OR REPLACE TABLE checkpoints
+(
+    ID BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+)
+ENGINE=INNODB;
+
+CREATE OR REPLACE TABLE log
+(
+    ID BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
 
 )
 ENGINE=INNODB;
-/*
-CREATE OR REPLACE TABLE checkpoints
-ENGINE=INNODB;
-*/
