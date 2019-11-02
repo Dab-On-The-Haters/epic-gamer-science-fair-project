@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python3.7
 
 """
 This script is only for the machine that actually runs the server. 

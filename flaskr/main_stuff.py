@@ -1,3 +1,4 @@
+#/usr/bin/python3.7
 """
 Hi fellow epic gamers,
 this will be the main WEB server script. it handles all the requests from the site.
@@ -31,7 +32,7 @@ app = Flask(__name__)
 
 # configure it to work with the database
 app.config['MYSQL_DATABASE_USER'] = 'FAIRY' # lol cuz it's a science fair get it
-app.config['MYSQL_DATABASE_PASSWORD'] = '123456789' # not really and btw make sure fairy has proper permissions
+app.config['MYSQL_DATABASE_PASSWORD'] = '123456789' # todo: make sure fairy has proper permissions
 app.config['MYSQL_DATABASE_DB'] = 'SCIENCE_FAIR'
 app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
 mariadb.init_app(app)
@@ -39,5 +40,5 @@ mariadb.init_app(app)
 
 @app.route('/')
 def showHomepage():
-    # avoid send_file (use send_from_directory) in most scenarios! Don't do this! Security risks!
+    # todo in future (not this line tho): avoid send_file (use send_from_directory) in most scenarios! Don't do this! Security risks!
     return send_file('static/homepage.html', mimetype='text/html')
