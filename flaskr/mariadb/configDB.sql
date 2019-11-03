@@ -10,7 +10,6 @@ However, I'm not sure how well the constraints will hold up to my nonsense
 make sure to use "-a SCIENCE_FAIR" or "USE SCIENCE_FAIR"
 
 NOT READY TO EXECUTE
-todo: find alternative to ON DELETE SET NULL for not null FKs
 */
 
 
@@ -36,11 +35,11 @@ CREATE OR REPLACE TABLE datasets
     user_description VARCHAR(65535),
     url_sources TEXT,
     time_posted TIMESTAMP NOT NULL,
-    posterID MEDIUMINT UNSIGNED NOT NULL,
+    posterID MEDIUMINT UNSIGNED NOT NULL DEFAULT 0,
     CONSTRAINT `datasets_pk` PRIMARY KEY (ID),
     CONSTRAINT `dataset_poster_fk`
         FOREIGN KEY (posterID) REFERENCES users (ID)
-        ON DELETE SET NULL
+        ON DELETE SET DEFAULT
         ON UPDATE CASCADE
 )
 ENGINE=INNODB;
@@ -69,19 +68,24 @@ CREATE OR REPLACE TABLE models
     seq_length TINYINT UNSIGNED NOT NULL DEFAULT 50,
     batch_size TINYINT UNSIGNED NOT NULL DEFAULT 50,
     max_epochs TINYINT UNSIGNED NOT NULL DEFAULT 50,
-    -- this isn't calculated until later
-    -- loader.ntrain = iterations_per_epoch
-    iterations_per_epoch = SMALLINT UNSIGNED,
-    -- iterations = loader.ntrain * epochs
-    iterations = MEDIUMINT UNSIGNED,
     grad_clip FLOAT UNSIGNED NOT NULL DEFAULT 5,
     train_frac FLOAT UNSIGNED NOT NULL DEFAULT 0.95,
     val_frac FLOAT UNSIGNED NOT NULL DEFAULT 0.05,
     -- seed is for generating random numbers
     seed TINYINT NOT NULL DEFAULT 123,
 
+    -- stuff not generated until later begins here (hopefully no nulls tho)
+
+    -- loader.ntrain = iterations_per_epoch
+    iterations_per_epoch SMALLINT UNSIGNED NOT NULL,
+    -- iterations = loader.ntrain * epochs
+    iterations MEDIUMINT UNSIGNED NOT NULL,
+
+    param_amount SMALLINT UNSIGNED NOT NULL,
+    
+
     datasetID MEDIUMINT UNSIGNED NOT NULL,
-    trainerID MEDIUMINT UNSIGNED NOT NULL,
+    trainerID MEDIUMINT UNSIGNED NOT NULL DEFAULT 0,
     CONSTRAINT `models_pk` PRIMARY KEY (ID),
     CONSTRAINT `model_dataset_fk`
         FOREIGN KEY (datasetID) REFERENCES datasets (ID)
@@ -89,7 +93,7 @@ CREATE OR REPLACE TABLE models
         ON UPDATE CASCADE,
     CONSTRAINT `dataset_trainer_fk`
         FOREIGN KEY (trainerID) REFERENCES users (ID)
-        ON DELETE SET NULL,
+        ON DELETE SET DEFAULT
         ON UPDATE CASCADE
 )
 ENGINE=INNODB;
@@ -106,7 +110,7 @@ CREATE OR REPLACE TABLE checkpoints
     modelID MEDIUMINT UNSIGNED NOT NULL,
     CONSTRAINT `checkpoints_pk` PRIMARY KEY (ID),
     CONSTRAINT `model_checkpoint_fk`
-        FOREIGN KEY (modelID) REFERENCES models (ID),
+        FOREIGN KEY (modelID) REFERENCES models (ID)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 )
@@ -118,9 +122,14 @@ CREATE OR REPLACE TABLE log
     ID BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
     time_saved TIMESTAMP NOT NULL,
     -- in milliseconds
-    approximate_time SMALLINT UNSIGNED NOT NULL,
+    approx_time SMALLINT UNSIGNED NOT NULL,
     loss FLOAT UNSIGNED NOT NULL,
     iteration MEDIUMINT UNSIGNED NOT NULL,
-    
+    grad_param_norm FLOAT NOT NULL,
+    modelID MEDIUMINT UNSIGNED NOT NULL,
+    CONSTRAINT `model_checkpoint_fk`
+        FOREIGN KEY (modelID) REFERENCES models (ID)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 )
 ENGINE=INNODB;

@@ -10,12 +10,6 @@ For the long term, please don't use this to host static files
 we can do that on Apache2 more efficiently.
 
 FLASK DOCUMENTATION IS AT https://flask.palletsprojects.com/en/1.1.x/ YOU'LL WANT IT
-
-oh and to set up vscode to work with the github repo you should you use the guide at
-https://stackoverflow.com/questions/55671825/how-to-use-%D0%B0-private-repository-with-vscode
-you'll find everything you need there
-except for the fact that you have to commit, then push manually (or at least I do)
-This file was pushed by Thomas btw
 """
 
 
