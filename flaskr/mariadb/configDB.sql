@@ -10,6 +10,7 @@ However, I'm not sure how well the constraints will hold up to my nonsense
 make sure to use "-a SCIENCE_FAIR" or "USE SCIENCE_FAIR"
 
 NOT READY TO EXECUTE
+todo: find alternative to ON DELETE SET NULL for not null FKs
 */
 
 
@@ -39,7 +40,7 @@ CREATE OR REPLACE TABLE datasets
     CONSTRAINT `datasets_pk` PRIMARY KEY (ID),
     CONSTRAINT `dataset_poster_fk`
         FOREIGN KEY (posterID) REFERENCES users (ID)
-        ON DELETE RESTRICT
+        ON DELETE SET NULL
         ON UPDATE CASCADE
 )
 ENGINE=INNODB;
@@ -83,25 +84,43 @@ CREATE OR REPLACE TABLE models
     trainerID MEDIUMINT UNSIGNED NOT NULL,
     CONSTRAINT `models_pk` PRIMARY KEY (ID),
     CONSTRAINT `model_dataset_fk`
-        FOREIGN KEY (datasetID) references datasets (ID)
+        FOREIGN KEY (datasetID) REFERENCES datasets (ID)
         ON DELETE CASCADE
-        ON UPDATE RESTRICT,
+        ON UPDATE CASCADE,
     CONSTRAINT `dataset_trainer_fk`
         FOREIGN KEY (trainerID) REFERENCES users (ID)
-        ON DELETE RESTRICT
+        ON DELETE SET NULL,
         ON UPDATE CASCADE
 )
 ENGINE=INNODB;
 
+
 CREATE OR REPLACE TABLE checkpoints
 (
     ID BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+    loss FLOAT UNSIGNED NOT NULL,
+    time_saved TIMESTAMP NOT NULL,
+    iteration MEDIUMINT UNSIGNED NOT NULL,
+    epoch FLOAT UNSIGNED NOT NULL,
+    learning_rate FLOAT UNSIGNED NOT NULL,
+    modelID MEDIUMINT UNSIGNED NOT NULL,
+    CONSTRAINT `checkpoints_pk` PRIMARY KEY (ID),
+    CONSTRAINT `model_checkpoint_fk`
+        FOREIGN KEY (modelID) REFERENCES models (ID),
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 )
 ENGINE=INNODB;
+
 
 CREATE OR REPLACE TABLE log
 (
     ID BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
-
+    time_saved TIMESTAMP NOT NULL,
+    -- in milliseconds
+    approximate_time SMALLINT UNSIGNED NOT NULL,
+    loss FLOAT UNSIGNED NOT NULL,
+    iteration MEDIUMINT UNSIGNED NOT NULL,
+    
 )
 ENGINE=INNODB;
