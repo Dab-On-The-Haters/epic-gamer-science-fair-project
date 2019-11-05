@@ -20,3 +20,4 @@ and many other smaller things like flask-mail, flask-login, flask-mysql, LuaSQL,
 It is currently being run on Thomas's laptop, available in development at 99.199.44.233, although no guarantees that it's gonna be online.
 
 Git pulls should be happening every minute
+yes they are!
