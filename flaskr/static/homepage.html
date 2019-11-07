@@ -14,23 +14,24 @@
 
         </style>
         <script>
-        var slideIndex = 0;
-carousel();
+            var slideIndex = 0;
 
-function carousel() {
-  var i;
-  var x = document.getElementsByClassName("mySlides");
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";
-  }
-  slideIndex++;
-  if (slideIndex > x.length) {slideIndex = 1}
-  x[slideIndex-1].style.display = "block";
-  setTimeout(carousel, 2000); // Change image every 2 seconds
-}</script>
+            function carousel()
+            {
+              var i;
+              var x = document.getElementsByClassName("mySlides");
+              for (i = 0; i < x.length; i++) {
+                x[i].style.display = "none";
+              }
+              slideIndex++;
+              if (slideIndex > x.length) {slideIndex = 1}
+              x[slideIndex-1].style.display = "block";
+              setTimeout(carousel, 2000); // Change image every 2 seconds
+            }
+        </script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
-    <body class="w3-text-white">
+    <body class="w3-text-white" onload="carousel()">
             <div class="w3-top">
                     <div class="w3-bar w3-2019-galaxy-blue w3-card">
                       <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
