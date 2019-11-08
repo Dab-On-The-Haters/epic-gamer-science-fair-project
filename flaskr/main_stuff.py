@@ -14,7 +14,7 @@ FLASK DOCUMENTATION IS AT https://flask.palletsprojects.com/en/1.1.x/ YOU'LL WAN
 
 
 # import all the flask stuff we'll be needing
-from flask import Flask, escape, request, render_template, send_file, send_from_directory # etc...
+from flask import Flask, escape, request, redirect, render_template, send_file, send_from_directory # etc...
 
 """
 # import MySQL stuff (requires installation from PIP)
@@ -37,3 +37,9 @@ mariadb.init_app(app)
 def showHomepage():
     # todo in future (not this line tho): avoid send_file (use send_from_directory) in most scenarios! Don't do this! Security risks!
     return send_file('static/homepage.html', mimetype='text/html')
+
+@app.route('/register', methods=['GET', 'POST'])
+def registerUser():
+    if request.method == 'GET':
+        return send_file('/static/register.html', mimetype='text/html')
+    if request.method == 'POST':
