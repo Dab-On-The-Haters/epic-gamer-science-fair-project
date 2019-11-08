@@ -21,10 +21,9 @@ CREATE OR REPLACE TABLE users
     username VARCHAR(100) NOT NULL,
     real_name VARCHAR(255) NOT NULL,
     time_joined TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    verified BOOLEAN NOT NULL DEFAULT 'false',
+    verified BOOLEAN NOT NULL DEFAULT 0,
     CONSTRAINT `users_pk` PRIMARY KEY (ID)
-)
-ENGINE=INNODB;
+) ENGINE=InnoDB;
 
 
 -- table of datasets that have been uploaded to the site and their info
@@ -32,27 +31,26 @@ CREATE OR REPLACE TABLE datasets
 (
     ID MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
     title VARCHAR(255) NOT NULL,
-    user_description VARCHAR(65535),
+    user_description TEXT,
     url_sources TEXT,
     time_posted TIMESTAMP NOT NULL,
-    posterID MEDIUMINT UNSIGNED NOT NULL DEFAULT 0,
+    posterID MEDIUMINT UNSIGNED,
     CONSTRAINT `datasets_pk` PRIMARY KEY (ID),
     CONSTRAINT `dataset_poster_fk`
         FOREIGN KEY (posterID) REFERENCES users (ID)
-        ON DELETE SET DEFAULT
+        ON DELETE SET NULL
         ON UPDATE CASCADE
-)
-ENGINE=INNODB;
+) ENGINE=InnoDB;
 
 
 -- table of models
 CREATE OR REPLACE TABLE models
 (
     ID MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
-    user_description VARCHAR(65535),
+    user_description TEXT,
     
     began_training TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    finished_training TIMESTAMP DEFAULT NULL,
+    finished_training TIMESTAMP,
     finished_naturally BOOLEAN DEFAULT NULL,
 
     rnn_style VARCHAR(5) NOT NULL DEFAULT 'GRU',
@@ -85,7 +83,7 @@ CREATE OR REPLACE TABLE models
     
 
     datasetID MEDIUMINT UNSIGNED NOT NULL,
-    trainerID MEDIUMINT UNSIGNED NOT NULL DEFAULT 0,
+    trainerID MEDIUMINT UNSIGNED,
     CONSTRAINT `models_pk` PRIMARY KEY (ID),
     CONSTRAINT `model_dataset_fk`
         FOREIGN KEY (datasetID) REFERENCES datasets (ID)
@@ -93,7 +91,7 @@ CREATE OR REPLACE TABLE models
         ON UPDATE CASCADE,
     CONSTRAINT `dataset_trainer_fk`
         FOREIGN KEY (trainerID) REFERENCES users (ID)
-        ON DELETE SET DEFAULT
+        ON DELETE SET NULL
         ON UPDATE CASCADE
 )
 ENGINE=INNODB;
@@ -113,11 +111,10 @@ CREATE OR REPLACE TABLE checkpoints
         FOREIGN KEY (modelID) REFERENCES models (ID)
         ON DELETE CASCADE
         ON UPDATE CASCADE
-)
-ENGINE=INNODB;
+) ENGINE=InnoDB;
 
 
-CREATE OR REPLACE TABLE log
+CREATE OR REPLACE TABLE logs
 (
     ID BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
     time_saved TIMESTAMP NOT NULL,
@@ -125,9 +122,8 @@ CREATE OR REPLACE TABLE log
     iteration MEDIUMINT UNSIGNED NOT NULL,
     grad_param_norm FLOAT NOT NULL,
     modelID MEDIUMINT UNSIGNED NOT NULL,
-    CONSTRAINT `model_checkpoint_fk`
+    CONSTRAINT `model_logs_fk`
         FOREIGN KEY (modelID) REFERENCES models (ID)
         ON DELETE CASCADE
         ON UPDATE CASCADE
-)
-ENGINE=INNODB;
+) ENGINE=InnoDB;
