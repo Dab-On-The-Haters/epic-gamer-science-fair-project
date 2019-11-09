@@ -19,15 +19,14 @@ from flask import Flask, escape, request, redirect, render_template, send_file, 
 app = Flask(__name__)
 
 
-#import super secure stuff
+#import super secure stuff (passwords stored in json)
 import json
 with open('/home/yeem/private_stuff.json') as f:
     passwords = json.load(f)
 
 
 #import form stuff
-from flask_wtf import Form
-from wtforms import from wtforms import StringField, PasswordField, validators
+import forms
 
 #import mail stuff (pip3 install flask-mail)
 from flask_mail import Mail, Message
