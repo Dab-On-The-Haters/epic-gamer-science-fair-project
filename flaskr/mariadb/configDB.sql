@@ -20,6 +20,8 @@ CREATE OR REPLACE TABLE users
     email_addr VARCHAR(254) NOT NULL,
     username VARCHAR(100) NOT NULL,
     real_name VARCHAR(255) NOT NULL,
+    self_description TEXT,
+    own_password VARCHAR(100) NOT NULL,
     time_joined TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     verified BOOLEAN NOT NULL DEFAULT 0,
     CONSTRAINT `users_pk` PRIMARY KEY (ID)
