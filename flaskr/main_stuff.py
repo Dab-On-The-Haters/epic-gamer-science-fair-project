@@ -73,9 +73,10 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def registerUser():
-    if request.method == 'GET':
-        return send_file('static/register.html', mimetype='text/html')
-    if request.method == 'POST':
-        curDB.execute('INSERT INTO users (email_addr, own_password, username, name) VALUES %s %s %s %s',
-            (request.form('email'), request.form('pwd'), (request.form('username'), request.form('name')))
+    registerForm = forms.register()
+    if registerForm.validate_on_submit():
+        
+        # curDB.execute('INSERT INTO users (email_addr, own_password, username, name) VALUES %s %s %s %s',
+        #    (request.form('email'), request.form('pwd'), request.form('username'), request.form('name')))
         return 'weelll fricc yoo'
+    return render_template('register.html', form=registerForm)

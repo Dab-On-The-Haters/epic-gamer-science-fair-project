@@ -23,11 +23,16 @@
                     {% if field in [form.csrf_token] %}
                         {{ field }}
                     {% else %}
-                        <div class="w3-margin">
+                        <div class="w3-margin-top">
                             <b>{{ field.label }}</b>
                             {{ field }}
                         </div>
                     {% endif %}
+                    <ul class="w3-ul w3-text-red">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
                 {% endfor %}
                 <br>
                 <button type="submit" class="w3-button w3-blue w3-right w3-margin">Register My Account</button>
