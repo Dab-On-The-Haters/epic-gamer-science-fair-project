@@ -41,7 +41,7 @@ app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 
 # import MySQL (pip3 install flask-mysql)
-from flaskext.mysql import MySQL
+from mysql import MySQL
 mariadb = MySQL()
 # configure it to work with the database
 app.config['MYSQL_DATABASE_USER'] = 'FAIRY' # lol cuz it's a science fair get it
@@ -168,7 +168,6 @@ def login():
         user = User()
 
         user.setValues('username', LF.username.data)
-        user.savetoDB()
         login_user(user, remember=True, force=True)
         
         return redirect(request.args.get('continue', '/'))
