@@ -1,4 +1,4 @@
-#/usr/bin/python3.7
+#!/usr/bin/python3.7
 """
 Hi fellow epic gamers,
 this will be the main WEB server script. it handles all the requests from the site.
