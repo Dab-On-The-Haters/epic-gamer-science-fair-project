@@ -26,3 +26,7 @@ class register(FlaskForm):
     username = f.StringField('Username', [v.InputRequired(message=r('username')), v.Length(min=5, max=250, message='Username must be between 5 and 250 characters long')])
     password = f.PasswordField('Password', [v.InputRequired(message=r('password')), v.Length(min=8, max=250, message='Password must be at least 8 characters long'), PasswordCheck])
     confirm = f.PasswordField('Confirm password', [v.InputRequired(message=r('password confirmation')), v.EqualTo('confirm', message='Confirmation password does not match')])
+
+"""
+class verify_email(FlaskForm):
+    def verification_code_check"""

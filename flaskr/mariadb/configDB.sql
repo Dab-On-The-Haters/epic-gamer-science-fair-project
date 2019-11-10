@@ -14,6 +14,7 @@ NOT READY TO EXECUTE
 
 
 -- table of the site's users contains info like email, username, whether they've verified their email, etc..
+
 CREATE OR REPLACE TABLE users
 (
     ID MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
@@ -27,6 +28,17 @@ CREATE OR REPLACE TABLE users
     CONSTRAINT `users_pk` PRIMARY KEY (ID)
 ) ENGINE=InnoDB;
 
+CREATE OR REPLACE TABLE verification_codes
+(
+    ID MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+    accountID MEDIUMINT UNSIGNED NOT NULL,
+    codeNumber SMALLINT UNSIGNED NOT NULL,
+    time_created TIMESTAMP NOT NULL,
+    CONSTRAINT `account_verifying_fk`
+        FOREIGN KEY (accountID) REFERENCES users (ID)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ENGINE=InnoDB;
 
 -- table of datasets that have been uploaded to the site and their info
 CREATE OR REPLACE TABLE datasets
