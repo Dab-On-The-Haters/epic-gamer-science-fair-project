@@ -53,11 +53,7 @@ mariadb.init_app(app)
 connDB = mariadb.connect()
 curDB = connDB.cursor()
 
-msg = Message('Joe says hi', sender='joethernn@gmail.com', recipients=['einstein.thomas2@gmail.com', 'leoawesome0201@gmail.com'])
-msg.body = 'biggy brain time automated email lol'
-
-with app.app_context():
-    mail.send(msg)
+from random import randint # for generating verification codes
 
 @app.route('/')
 def showHomepage():
@@ -69,13 +65,34 @@ def login():
     return 'boi'
     #form = LoginForm()
 
-
+# message for verifying email
+verifyMsg = Message('Verify your email to talk to Joe!', sender='joethernn@gmail.com')
 
 @app.route('/register', methods=['GET', 'POST'])
 def registerUser():
-    if request.method == 'GET':
-        return send_file('static/register.html', mimetype='text/html')
-    if request.method == 'POST':
-        curDB.execute('INSERT INTO users (email_addr, own_password, username, name) VALUES %s %s %s %s',
-            (request.form('email'), request.form('pwd'), (request.form('username'), request.form('name')))
-        return 'weelll fricc yoo'
+    RF = forms.register()
+    if RF.validate_on_submit():
+        
+        # add the user to DB
+        curDB.execute('INSERT INTO users (email_addr, own_password, username, real_name) VALUES (%s, %s, %s, %s);',
+            (RF.email.data, RF.password.data, RF.username.data, RF.name.data))
+        connDB.commit()
+
+        # get the user's ID
+        curDB.execute('SELECT ID FROM users WHERE email_addr=%s LIMIT 1;', (RF.email.data))
+        accountID = curDB.fetchone().get('ID')
+        
+        #add the verification code to DB
+        verificationCode = randint(1000,9999)
+        curDB.execute('INSERT INTO verification_codes (codeNumber, accountID) VALUES (%i, %i);',
+            (verificationCode, accountID))
+        connDB.commit()
+
+        # send the verification message
+        verifyMsg.recipients = [RF.email.data]
+        verifyMsg.body = 'Hi '+RF.name.data+', use the code '+str(verificationCode)+' to verify your email address and get your account with Joe up and running.\nIf you don\'t know about the amazing Joe project, then just ignore this email. Thanks!'
+        with app.app_context(): verifyMsg.send()
+
+        return render_template('verify-email.html')
+
+    return render_template('register.html', form=RF)
