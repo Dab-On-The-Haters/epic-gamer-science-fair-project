@@ -2,4 +2,5 @@ venv/
 .vscode/
 **__pycache__/
 **.wsgi
+flaskr/__pycache__/
 /flaskr/private-stuff.json

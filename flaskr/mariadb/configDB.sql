@@ -24,7 +24,7 @@ CREATE OR REPLACE TABLE users
     self_description TEXT,
     own_password VARCHAR(255) NOT NULL,
     time_joined TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    verified BOOLEAN NOT NULL DEFAULT 0,
+    verified BOOLEAN NOT NULL DEFAULT 0, -- works for is_authenticated and is_active in flask-login
     CONSTRAINT `users_pk` PRIMARY KEY (ID)
 ) ENGINE=InnoDB;
 

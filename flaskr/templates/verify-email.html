@@ -9,22 +9,24 @@
     </head>
     <body>
         <div class="w3-container w3-card w3-margin">
-                <form method="POST">
-                    {% for field in form %}
-                        {% if field in [form.csrf_token] %}
+            <p class="w3-large">Verify your email.</p>
+            <p class="w3-text-grey">Please check your inbox for an email containing a 4-digit verification code for Joe and enter it below.</p>
+            <form method="POST">
+                {% for field in form %}
+                    {% if field == form.csrf_token %}
+                        {{ field }}
+                    {% else %}
+                        <div class="w3-margin-top">
+                            <b>{{ field.label }}</b>
                             {{ field }}
-                        {% else %}
-                            <div class="w3-margin-top">
-                                <b>{{ field.label }}</b>
-                                {{ field }}
-                            </div>
-                        {% endif %}
-                        <ul class="w3-ul w3-text-red">
-                            {% for error in field.errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endfor %}
+                        </div>
+                    {% endif %}
+                    <ul class="w3-ul w3-text-red">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
                 <br>
                 <button type="submit" class="w3-button w3-blue w3-right w3-margin">Verify</button>
             </form>
