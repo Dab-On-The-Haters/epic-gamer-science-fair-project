@@ -19,7 +19,7 @@ from flask import Flask, escape, request, redirect, render_template, send_file, 
 app = Flask(__name__)
 
 # login tracking stuff, I both hate and love Todd Birchard
-from flask_login import LoginManager login_required, current_user, login_user, logout_user, UserMixin
+from flask_login import LoginManager, login_required, current_user, login_user, logout_user, UserMixin
 login_manager = LoginManager()
 
 #import super secure stuff (passwords stored in json)
@@ -67,7 +67,7 @@ class User():
     is_active = True
 
     def setValues(self, fieldName, fieldRequest):
-        if not curDB.execute('SELECT verified, ID, username, email, name, self_description FROM users WHERE '+fieldName+'=%s LIMIT 1;', fieldRequest)
+        if not curDB.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE '+fieldName+'=%s LIMIT 1;', (fieldRequest)):
             self.ID = 0 # wow i'm such a good person
             self.is_anonymous = True
             self.is_authenticated = False
@@ -83,13 +83,13 @@ class User():
             self.is_authenticated = QA['verified']
             self.ID = QA['ID']
             self.username = QA['username']
-            self.email = QA['email']
-            self.name = QA['name']
+            self.email = QA['email_addr']
+            self.name = QA['real_name']
             self.description = QA['self_description']
 
 
-    def get_id()
-        return unicode(ID)
+    def get_id(self):
+        return str(self.ID).encode('utf-8')
 
 #WTForm stuff
 from flask_wtf import FlaskForm
@@ -145,10 +145,17 @@ class verifyForm(FlaskForm):
     verificationCode = f.IntegerField('Verification code', [v.InputRequired(message=r("4-digit verification code. You should have received it via email. If it's been a while and you still haven't gotten it, please fill out the register form again in case you mistyped it.")), verificationCodeCheck]) 
 
 class loginForm(FlaskForm):
-    def checkLoginValidity()
+    def checkLoginValidity(form, field):
+        curDB.execute('SELECT verified FROM users WHERE username=%s AND own_password=%s LIMIT 1;', (form.username.data, field.data))
+        checkIt = curDB.fetchone()
+        if (not checkIt) or (not checkIt.get('verified', 0)):
+            raise ValidationError('Incorrect username or password.')
+    
+    username = f.StringField('Username', [v.InputRequired(r('username'))])
+    password = f.PasswordField('Password', [v.InputRequired(r('password')), checkLoginValidity])
 
 @login_manager.user_loader
-def load_user(ID)
+def load_user(ID):
     user = User()
     user.setValues('ID', int(ID))
     return user
