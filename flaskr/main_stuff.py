@@ -128,12 +128,12 @@ class registerForm(FlaskForm):
             if char not in urlValidChars:
                 raise ValidationError('Usernames can only contain letters, numbers, and the symbols . _ - +')
 
-
     email = f5.EmailField('Email address', [v.InputRequired(message=r('email address')), v.Email(message='Must be a valid email address'), v.Length(min=5, max=250, message='Must be a complete email address'), emailTakenCheck])
     name = f.StringField('Name', [v.InputRequired(message=r('name')), v.Length(min=2, max=250, message=r('name'))])
     username = f.StringField('Username', [v.InputRequired(message=r('username')), v.Length(min=5, max=250, message='Username must be between 5 and 250 characters long'), usernameTakenCheck, usernameStuffCheck])
     password = f.PasswordField('Password', [v.InputRequired(message=r('password')), v.Length(min=8, max=250, message='Password must be at least 8 characters long'), PasswordCheck])
     confirm = f.PasswordField('Confirm password', [v.InputRequired(message=r('password confirmation')), v.EqualTo('password', message='Confirmation password does not match')])
+
 
 class verifyForm(FlaskForm):
     verifyAccountID = int()
@@ -142,7 +142,9 @@ class verifyForm(FlaskForm):
         codeNumber = curDB.fetchone()
         if codeNumber['codeNumber'] != int(field.data):
             raise ValidationError('Incorrect verification code. Try redoing the register form if you think you might have made a typo over there.')
+    
     verificationCode = f.IntegerField('Verification code', [v.InputRequired(message=r("4-digit verification code. You should have received it via email. If it's been a while and you still haven't gotten it, please fill out the register form again in case you mistyped it.")), verificationCodeCheck]) 
+
 
 class loginForm(FlaskForm):
     def checkLoginValidity(form, field):
@@ -154,6 +156,16 @@ class loginForm(FlaskForm):
     username = f.StringField('Username', [v.InputRequired(r('username'))])
     password = f.PasswordField('Password', [v.InputRequired(r('password')), checkLoginValidity])
 
+
+class modelDataForm(FlaskForm):
+    title = f.StringField('Name of this dataset', [v.InputRequired(r('dataset name')), v.length(min=5, max=250, message='Dataset title must be between 5 and 250 characters long')])
+    description = f.TextAreaField('Dataset description', [v.length(max=65,500, message='Description can not be longer than 65,500 characters.')])
+    files = f.FieldList(f.FileField('Custom dataset file'))
+    urls = f.FieldList(f5.URLField('URL of dataset of file'))
+    
+
+
+
 @login_manager.user_loader
 def load_user(ID):
     user = User()
@@ -161,9 +173,26 @@ def load_user(ID):
     return user
 
 @app.route('/')
-def showHomepage():
-    # todo in future (not this line tho): avoid send_file (use send_from_directory) in most scenarios! Don't do this! Security risks!
-    return send_file('static/homepage.html', mimetype='text/html')
+def welcome():
+    return render_template('homepage.html', user=current_user)
+
+
+@app.route('/teach', methods=['GET', 'POST'])
+@login_required
+def newModel():
+    return render_template('homepage.html')
+
+
+@app.route('/exploremodels', methods=['GET', 'POST'])
+@login_required
+def exploreModels():
+    return render_template('homepage.html')
+
+
+@app.route('/about')
+def aboutPage():
+    return render_template('homepage.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -178,13 +207,17 @@ def login():
         login_user(user, remember=True, force=True)
         
         return redirect(request.args.get('continue', '/'))
+    
     return render_template('login.html', form=LF)
+
 
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(request.args.get('continue', '/'))
+
+
 
 @app.route('/verify/<int:ID>', methods=['GET', 'POST'])
 def verifyUser(ID):
@@ -198,7 +231,9 @@ def verifyUser(ID):
         curDB.execute('DELETE FROM verification_codes WHERE accountID=%s;', (ID))
         connDB.commit()
         return redirect('/')
+    
     return render_template('verify-email.html', form=VF)
+
 
 
 # for generating verification codes

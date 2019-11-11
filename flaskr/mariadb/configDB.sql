@@ -47,6 +47,7 @@ CREATE OR REPLACE TABLE datasets
     title VARCHAR(255) NOT NULL,
     user_description TEXT,
     url_sources TEXT,
+    final_text LONGTEXT,
     time_posted TIMESTAMP NOT NULL,
     posterID MEDIUMINT UNSIGNED,
     CONSTRAINT `datasets_pk` PRIMARY KEY (ID),
