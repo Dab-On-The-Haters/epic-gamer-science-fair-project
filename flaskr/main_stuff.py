@@ -219,6 +219,11 @@ def welcome():
     return render_template('homepage.html', user=current_user)
 
 
+@app.route('/teach')
+def teachTeach():
+    return render_template('teach-teacher.html')
+
+
 @app.route('/upload-dataset', methods=['GET', 'POST'])
 @login_required
 def newDataset():
