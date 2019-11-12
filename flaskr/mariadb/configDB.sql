@@ -14,7 +14,7 @@ NOT READY TO EXECUTE
 
 
 -- table of the site's users contains info like email, username, whether they've verified their email, etc..
-
+/*
 CREATE OR REPLACE TABLE users
 (
     ID MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
@@ -56,7 +56,7 @@ CREATE OR REPLACE TABLE datasets
         ON DELETE SET NULL
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
-
+*/
 
 -- table of models
 CREATE OR REPLACE TABLE models
@@ -76,11 +76,11 @@ CREATE OR REPLACE TABLE models
     num_layers TINYINT UNSIGNED NOT NULL DEFAULT 2,
     learning_rate FLOAT UNSIGNED NOT NULL DEFAULT 0.002,
     learning_rate_decay FLOAT UNSIGNED NOT NULL DEFAULT 0.97,
-    learning_rate_decay_after FLOAT UNSIGNED NOT NULL DEFAULT 10,
+    learning_rate_decay_after SMALLINT UNSIGNED NOT NULL DEFAULT 10,
     dropout FLOAT NOT NULL DEFAULT 0,
-    seq_length TINYINT UNSIGNED NOT NULL DEFAULT 50,
-    batch_size TINYINT UNSIGNED NOT NULL DEFAULT 50,
-    max_epochs TINYINT UNSIGNED NOT NULL DEFAULT 50,
+    seq_length SMALLINT UNSIGNED NOT NULL DEFAULT 50,
+    batch_size SMALLINT UNSIGNED NOT NULL DEFAULT 50,
+    max_epochs SMALLINT UNSIGNED NOT NULL DEFAULT 50,
     grad_clip FLOAT UNSIGNED NOT NULL DEFAULT 5,
     train_frac FLOAT UNSIGNED NOT NULL DEFAULT 0.95,
     val_frac FLOAT UNSIGNED NOT NULL DEFAULT 0.05,
@@ -90,11 +90,11 @@ CREATE OR REPLACE TABLE models
     -- stuff not generated until later begins here (hopefully no nulls tho)
 
     -- loader.ntrain = iterations_per_epoch
-    iterations_per_epoch SMALLINT UNSIGNED NOT NULL,
+    iterations_per_epoch SMALLINT UNSIGNED,
     -- iterations = loader.ntrain * epochs
-    iterations MEDIUMINT UNSIGNED NOT NULL,
+    iterations MEDIUMINT UNSIGNED,
 
-    param_amount SMALLINT UNSIGNED NOT NULL,
+    param_amount SMALLINT UNSIGNED,
     
 
     datasetID MEDIUMINT UNSIGNED NOT NULL,

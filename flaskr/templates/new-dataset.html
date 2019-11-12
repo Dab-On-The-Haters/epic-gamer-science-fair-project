@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Register to meet Joe</title>
+        <link rel="stylesheet" href="/static/w3.css">
+        <link rel="stylesheet" href="/static/w3-colors-2019.css">
+        <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body
+            {
+               background-color:#191970;
+            }
+            .w3-poppins {
+                font-family: 'Poppins', sans-serif;
+
+            }
+            </style>
+    </head>
+    <body>
+        <div class="w3-container w3-poppins">
+            <div class="w3-container w3-jumbo w3-center">
+                <b>Create a new dataset</b>
+            </div>
+            <div class="w3-container w3-xlarge w3-right w3-margin w3-padding-small w3-wide w3-blue w3-text-white">
+                JOE
+            </div>
+        </div>
+
+        <div class="w3-container w3-card w3-margin w3-2019-galaxy-blue">
+            <form method="POST" enctype="multipart/form-data">
+                {{ form.csrf_token }}
+                
+                <div class="w3-margin-top">
+                    <b>{{ form.title.label }}</b>
+                    {{ form.title }}
+                    <ul class="w3-ul w3-text-red">
+                        {% for error in form.title.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="w3-margin-top">
+                    <b>{{ form.description.label }}</b>
+                    {{ form.description }}
+                    <ul class="w3-ul w3-text-red">
+                        {% for error in form.description.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="w3-margin-top">{{ form.files }}</div>
+                <div class="w3-margin-top">{{ form.newFile }} {{ form.removeFile }}</div>
+                <div class="w3-margin-top">{{ form.URLs }}</div>
+                <div class="w3-margin-top">{{ form.newURL }} {{ form.removeURL }}</div>
+                <br>
+                <div class="w3-margin w3-right">{{ form.uploadDataset }}</div>
+            </form>
+        </div>
+    </body>
+</html>
