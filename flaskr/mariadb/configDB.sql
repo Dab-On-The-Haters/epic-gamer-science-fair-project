@@ -14,7 +14,6 @@ NOT READY TO EXECUTE
 
 
 -- table of the site's users contains info like email, username, whether they've verified their email, etc..
-/*
 CREATE OR REPLACE TABLE users
 (
     ID MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
@@ -56,7 +55,7 @@ CREATE OR REPLACE TABLE datasets
         ON DELETE SET NULL
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
-*/
+
 
 -- table of models
 CREATE OR REPLACE TABLE models
