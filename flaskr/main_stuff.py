@@ -251,7 +251,7 @@ def newDataset():
             db.cur.execute('INSERT INTO datasets (title,  user_description, url_sources, final_text, posterID) VALUES (%s, %s, %s, %s, %s);',
             (DF.title.data, DF.description.data, str(DF.URLs.data), '\n\n'.join(textBits), current_user.ID))
             db.conn.commit()
-            return redirect('/edit-dataset')
+            return redirect('/edit-dataset', messages={"id": db.cur.lastrowid})
         try:
             if DF.newURL.data: DF.URLs.append_entry()
             elif DF.newFile.data: DF.files.append_entry()
@@ -265,6 +265,10 @@ def newDataset():
 @app.route('/edit-dataset', methods=['GET', 'POST'])
 @login_required
 def datasetEditor():
+    
+    # check if user has permissions to edit dataset
+    
+
     EF = datasetEditorForm()
     db.cur.execute('SELECT title, final_text, ID FROM datasets WHERE posterID=%s ORDER BY time_posted ASC;', (current_user.ID))
     TS = db.cur.fetchone()
@@ -274,7 +278,7 @@ def datasetEditor():
             db.cur.execute('UPDATE databases SET final_text=%s WHERE ID=%s' (form.finalText.data, TS['ID']))
             db.conn.commit()
         
-        return redirect('/new-model?dataset='+str(TS['ID']))
+        return redirect('/new-model', messages={"dataset": TS['ID']}))
 
     if not EF.finalText.data:
         EF.finalText.data = TS['final_text']
@@ -294,6 +298,7 @@ def modelMaker():
             (MF.datasetID.data, current_user.ID, MF.description.data, MF.seed.data,
             MF.layerAmount.data, MF.learningRate.data, MF.learningRateDecay.data, MF.dropout.data, MF.seqLength.data, MF.batchSize.data, MF.maxEpochs.data, MF.gradClip.data, MF.trainFrac.data, MF.valFrac.data))
         db.conn.commit()
+        subp.Popen(["python3", "train.py", db.cur.lastrowid], cwd="rnn")
         return ('we just friccin died OK')
     if not MF.datasetID.data:
         try: MF.datasetID.data = int(request.args['dataset'])
