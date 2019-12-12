@@ -39,22 +39,6 @@ app.config['MAIL_PASSWORD'] = passwords['JOE_MAIL_PASSWORD']
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
-"""
-the code below is old, using dumb crap based off of pymysql and flask-mysql
-
-# import MySQL (pip3 install flask-mysql)
-from mysql import MySQL
-mariadb = MySQL()
-# configure it to work with the database
-app.config['MYSQL_DATABASE_USER'] = 'FAIRY' # lol cuz it's a science fair get it
-app.config['MYSQL_DATABASE_PASSWORD'] = passwords['FAIRY_PASSWORD'] # todo: make sure fairy has proper permissions
-app.config['MYSQL_DATABASE_DB'] = 'SCIENCE_FAIR'
-app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
-mariadb.init_app(app)
-
-connDB = mariadb.connect()
-curDB = connDB.cursor()
-"""
 
 # code with new db model begins here
 import db
@@ -171,7 +155,7 @@ class loginForm(FlaskForm):
 urlm = 'Please enter a valid URL'
 class datasetForm(FlaskForm):
 
-    
+
     title = f.StringField('Name of this dataset', [v.InputRequired(r('dataset name')), v.length(5, 250, 'Dataset title must be between 5 and 250 characters long')])
     description = f.TextAreaField('Dataset description', [v.length(max=65500, message='Description can not be longer than 65,500 characters.')])
     files = f.FieldList(f.FileField('Custom dataset file'), max_entries=100)
@@ -244,17 +228,27 @@ def newDataset():
     DF = datasetForm()
 
     if DF.is_submitted():
-        if DF.uploadDataset.data and DF.validate():
-            textBits = []
+        if DF.uploadDataset.data:
+            # moved from post-validation
+            files = request.files # web urls get added later
+            finalBits = []
             
             for URL in DF.URLs.data:
                 req = http.request('GET', URL)
                 if req.status == 200:
-                    textBits.append(req.data.decode('utf-8'))
+                    files[URL] = req.data
             
-            for FN in request.files:
+            for FN in files:
+                splitFN = FN.split('.')
+                if len(splitFN) > 1:
+                    columnList = []
+                    if splitFN[-1] == 'csv':
+                        columnList = csv.reader(files[FN]).fieldnames
+                        
+
                 textBits.append(request.files[FN].read().decode('utf-8'))
 
+        if DF.uploadDataset.data and DF.validate():
             db.cur.execute('INSERT INTO datasets (title,  user_description, url_sources, final_text, posterID) VALUES (%s, %s, %s, %s, %s);',
             (DF.title.data, DF.description.data, str(DF.URLs.data), '\n\n'.join(textBits), current_user.ID))
             db.conn.commit()
@@ -296,14 +290,6 @@ def datasetEditor():
     if not EF.finalText.data:
         EF.finalText.data = TS['final_text']
     return render_template('dataset-editor.html', datasetName=TS['title'], form=EF)
-
-@login_required
-@app.route('/column-editor', methods=['GET', 'POST'])
-def editColumns
-    files = []
-    for f in files:
-        fName = f.filename.split('.')
-        if 
 
 
 @app.route('/new-model', methods=['GET', 'POST'])
