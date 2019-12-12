@@ -104,8 +104,13 @@ from wtforms import ValidationError
 import wtforms.fields as f
 import wtforms.fields.html5 as f5
 import wtforms.validators as v
+
 import string
+
 import subprocess as subp
+
+# for reading datasets as they're uploaded
+import csv
 
 urlValidChars = string.ascii_letters + string.digits + '._-+'
 
@@ -165,6 +170,8 @@ class loginForm(FlaskForm):
 
 urlm = 'Please enter a valid URL'
 class datasetForm(FlaskForm):
+
+    
     title = f.StringField('Name of this dataset', [v.InputRequired(r('dataset name')), v.length(5, 250, 'Dataset title must be between 5 and 250 characters long')])
     description = f.TextAreaField('Dataset description', [v.length(max=65500, message='Description can not be longer than 65,500 characters.')])
     files = f.FieldList(f.FileField('Custom dataset file'), max_entries=100)
@@ -251,7 +258,7 @@ def newDataset():
             db.cur.execute('INSERT INTO datasets (title,  user_description, url_sources, final_text, posterID) VALUES (%s, %s, %s, %s, %s);',
             (DF.title.data, DF.description.data, str(DF.URLs.data), '\n\n'.join(textBits), current_user.ID))
             db.conn.commit()
-            return redirect('/edit-dataset', messages={"id": db.cur.lastrowid})
+            return redirect('/edit-dataset', messages={"ID": db.cur.lastrowid})
         try:
             if DF.newURL.data: DF.URLs.append_entry()
             elif DF.newFile.data: DF.files.append_entry()
@@ -267,7 +274,13 @@ def newDataset():
 def datasetEditor():
     
     # check if user has permissions to edit dataset
+    db.cur.execute('SELECT title, posterID from datasets WHERE ID=%s LIMIT 1;' (requests.method.get('ID', 0)))
+    TS = db.cur.fetchone()
+    if not TS.get('title'):
+        return 'lol we can\'t find that dataset'
     
+    if TS['posterID'] != current_user.ID:
+        return 'you don\'t have permission to edit that dataset'
 
     EF = datasetEditorForm()
     db.cur.execute('SELECT title, final_text, ID FROM datasets WHERE posterID=%s ORDER BY time_posted ASC;', (current_user.ID))
@@ -275,7 +288,7 @@ def datasetEditor():
 
     if EF.validate_on_submit():
         if not EF.noChanges.data:
-            db.cur.execute('UPDATE databases SET final_text=%s WHERE ID=%s' (form.finalText.data, TS['ID']))
+            db.cur.execute('UPDATE databases SET final_text=%s WHERE ID=%s;' (form.finalText.data, TS['ID']))
             db.conn.commit()
         
         return redirect('/new-model', messages={"dataset": TS['ID']}))
@@ -283,6 +296,14 @@ def datasetEditor():
     if not EF.finalText.data:
         EF.finalText.data = TS['final_text']
     return render_template('dataset-editor.html', datasetName=TS['title'], form=EF)
+
+@login_required
+@app.route('/column-editor', methods=['GET', 'POST'])
+def editColumns
+    files = []
+    for f in files:
+        fName = f.filename.split('.')
+        if 
 
 
 @app.route('/new-model', methods=['GET', 'POST'])
