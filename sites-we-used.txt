@@ -17,6 +17,7 @@ https://www.tutorialspoint.com/flask/index.htm
 https://urllib3.readthedocs.io/en/latest/
 https://www.twilio.com/blog/2018/03/send-email-programmatically-with-gmail-python-and-flask.html
 https://hackersandslackers.com/authenticating-users-with-flask-login/
+https://certbot.eff.org/
 https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins
 http://www.daniloaz.com/en/how-to-create-a-user-in-mysql-mariadb-and-grant-permissions-on-a-specific-database/
 https://pythonhosted.org/Flask-Mail/
@@ -37,3 +38,4 @@ https://github.com/JaniRefsnes/w3css
 https://github.com/maxcountryman/flask-login
 https://github.com/lepture/flask-wtf
 https://github.com/wtforms/wtforms
+https://github.com/certbot/certbot
