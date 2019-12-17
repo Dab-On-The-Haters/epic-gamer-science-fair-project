@@ -154,14 +154,17 @@ class loginForm(FlaskForm):
 
 urlm = 'Please enter a valid URL'
 class datasetForm(FlaskForm):
-
+    columnInquries = dict()
+    def inquireForColumns(form, field):
+        if field.data in form.columnInquiries:
+            raise ValidationError('Please select one of the following columns to use for the dataset: ' + form.columnInquiries[field.data])
 
     title = f.StringField('Name of this dataset', [v.InputRequired(r('dataset name')), v.length(5, 250, 'Dataset title must be between 5 and 250 characters long')])
     description = f.TextAreaField('Dataset description', [v.length(max=65500, message='Description can not be longer than 65,500 characters.')])
-    files = f.FieldList(f.FileField('Custom dataset file'), max_entries=100)
+    files = f.FieldList(f.FileField('Custom dataset file', [inquireForColumns]), max_entries=100)
     newFile = f.SubmitField('Add a new dataset file')
     removeFile = f.SubmitField('Remove the last dataset file')
-    URLs = f.FieldList(f5.URLField('URL of dataset of file', [v.InputRequired(urlm), v.URL(urlm)]), max_entries=100)
+    URLs = f.FieldList(f5.URLField('URL of dataset of file', [v.InputRequired(urlm), v.URL(urlm), inquireForColumns]), max_entries=100)
     newURL = f.SubmitField('Add a new dataset URL')
     removeURL = f.SubmitField('Remove the last URL')
     uploadDataset = f.SubmitField('Upload the dataset')
@@ -238,12 +241,16 @@ def newDataset():
                 if req.status == 200:
                     files[URL] = req.data
             
+            columnList = []
             for FN in files:
                 splitFN = FN.split('.')
                 if len(splitFN) > 1:
-                    columnList = []
                     if splitFN[-1] == 'csv':
-                        columnList = csv.reader(files[FN]).fieldnames
+                        columnList = csv.DictReader(files[FN]).fieldnames
+                    else: continue
+                else: continue
+                
+                DF.columnInquries[FN] = ', '.join(columnList)
                         
 
                 textBits.append(request.files[FN].read().decode('utf-8'))
