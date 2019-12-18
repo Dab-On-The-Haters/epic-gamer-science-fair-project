@@ -1,4 +1,4 @@
-#!/usr/bin/python3.7
+#!/usr/bin/python3
 """
 Hi fellow epic gamers,
 this will be the main WEB server script. it handles all the requests from the site.
@@ -40,18 +40,8 @@ app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
 
-# import MySQL (pip3 install flask-mysql)
-from mysql import MySQL
-mariadb = MySQL()
-# configure it to work with the database
-app.config['MYSQL_DATABASE_USER'] = 'FAIRY' # lol cuz it's a science fair get it
-app.config['MYSQL_DATABASE_PASSWORD'] = passwords['FAIRY_PASSWORD'] # todo: make sure fairy has proper permissions
-app.config['MYSQL_DATABASE_DB'] = 'SCIENCE_FAIR'
-app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
-mariadb.init_app(app)
-
-connDB = mariadb.connect()
-curDB = connDB.cursor()
+# code with new db model begins here
+import db
 
 # start login manager
 loginManager.init_app(app)
@@ -68,7 +58,7 @@ class User():
     is_active = True
 
     def setValues(self, fieldName, fieldRequest):
-        if not curDB.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE '+fieldName+'=%s LIMIT 1;', (fieldRequest)):
+        if not db.cur.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE '+fieldName+'=%s LIMIT 1;', (fieldRequest)):
             self.ID = 0 # wow i'm such a good person
             self.is_anonymous = True
             self.is_authenticated = False
@@ -79,7 +69,7 @@ class User():
         else:
             self.is_anonymous = False
             
-            QA = curDB.fetchone()
+            QA = db.cur.fetchone()
             self.is_active = QA['verified']
             self.is_authenticated = QA['verified']
             self.ID = QA['ID']
@@ -98,7 +88,13 @@ from wtforms import ValidationError
 import wtforms.fields as f
 import wtforms.fields.html5 as f5
 import wtforms.validators as v
+
 import string
+
+import subprocess as subp
+
+# for reading datasets as they're uploaded
+import csv
 
 urlValidChars = string.ascii_letters + string.digits + '._-+'
 
@@ -113,14 +109,14 @@ class registerForm(FlaskForm):
             raise ValidationError('Password is not varied enough. Try mixing cases and adding numbers.')
     # for checking if email is taken
     def emailTakenCheck(form, field):
-        curDB.execute('SELECT verified FROM users WHERE email_addr=%s;', (field.data))
-        for verification in curDB.fetchall():
+        db.cur.execute('SELECT verified FROM users WHERE email_addr=%s;', (field.data))
+        for verification in db.cur.fetchall():
             if verification['verified']:
                 raise ValidationError('An account with that email address is already verified')
     # for checking if username is wack or taken
     def usernameStuffCheck(form, field):
-        curDB.execute('SELECT verified FROM users WHERE username=%s;', (field.data))
-        for verification in curDB.fetchall():
+        db.cur.execute('SELECT verified FROM users WHERE username=%s;', (field.data))
+        for verification in db.cur.fetchall():
             if verification['verified']:
                 raise ValidationError('The username "'+field.data+'" is taken')
 
@@ -138,8 +134,8 @@ class registerForm(FlaskForm):
 class verifyForm(FlaskForm):
     verifyAccountID = int()
     def verificationCodeCheck(form, field):
-        curDB.execute('SELECT codeNumber FROM verification_codes WHERE accountID=%s LIMIT 1;', (form.verifyAccountID))
-        codeNumber = curDB.fetchone()
+        db.cur.execute('SELECT codeNumber FROM verification_codes WHERE accountID=%s LIMIT 1;', (form.verifyAccountID))
+        codeNumber = db.cur.fetchone()
         if codeNumber['codeNumber'] != int(field.data):
             raise ValidationError('Incorrect verification code. Try redoing the register form if you think you might have made a typo over there.')
     
@@ -148,8 +144,8 @@ class verifyForm(FlaskForm):
 
 class loginForm(FlaskForm):
     def checkLoginValidity(form, field):
-        curDB.execute('SELECT verified FROM users WHERE username=%s AND own_password=%s LIMIT 1;', (form.username.data, field.data))
-        checkIt = curDB.fetchone()
+        db.cur.execute('SELECT verified FROM users WHERE username=%s AND own_password=%s LIMIT 1;', (form.username.data, field.data))
+        checkIt = db.cur.fetchone()
         if (not checkIt) or (not checkIt.get('verified', 0)):
             raise ValidationError('Incorrect username or password.')
     
@@ -158,12 +154,17 @@ class loginForm(FlaskForm):
 
 urlm = 'Please enter a valid URL'
 class datasetForm(FlaskForm):
+    columnInquries = dict()
+    def inquireForColumns(form, field):
+        if field.data in form.columnInquiries:
+            raise ValidationError('Please select one of the following columns to use for the dataset: ' + form.columnInquiries[field.data])
+
     title = f.StringField('Name of this dataset', [v.InputRequired(r('dataset name')), v.length(5, 250, 'Dataset title must be between 5 and 250 characters long')])
     description = f.TextAreaField('Dataset description', [v.length(max=65500, message='Description can not be longer than 65,500 characters.')])
-    files = f.FieldList(f.FileField('Custom dataset file'), max_entries=100)
+    files = f.FieldList(f.FileField('Custom dataset file', [inquireForColumns]), max_entries=100)
     newFile = f.SubmitField('Add a new dataset file')
     removeFile = f.SubmitField('Remove the last dataset file')
-    URLs = f.FieldList(f5.URLField('URL of dataset of file', [v.InputRequired(urlm), v.URL(urlm)]), max_entries=100)
+    URLs = f.FieldList(f5.URLField('URL of dataset of file', [v.InputRequired(urlm), v.URL(urlm), inquireForColumns]), max_entries=100)
     newURL = f.SubmitField('Add a new dataset URL')
     removeURL = f.SubmitField('Remove the last URL')
     uploadDataset = f.SubmitField('Upload the dataset')
@@ -174,8 +175,8 @@ class datasetEditorForm(FlaskForm):
 
 class modelMakerForm(FlaskForm):
     def datasetCheck(form, field):
-        curDB.execute('SELECT title FROM datasets WHERE ID=%s LIMIT 1;', (field.data))
-        if not curDB.fetchall():
+        db.cur.execute('SELECT title FROM datasets WHERE ID=%s LIMIT 1;', (field.data))
+        if not db.cur.fetchall():
             raise ValidationError("We couldn't find any models with that ID")
 
 
@@ -230,21 +231,35 @@ def newDataset():
     DF = datasetForm()
 
     if DF.is_submitted():
-        if DF.uploadDataset.data and DF.validate():
-            textBits = []
+        if DF.uploadDataset.data:
+            # moved from post-validation
+            files = request.files # web urls get added later
+            finalBits = []
             
             for URL in DF.URLs.data:
                 req = http.request('GET', URL)
                 if req.status == 200:
-                    textBits.append(req.data.decode('utf-8'))
+                    files[URL] = req.data
             
-            for FN in request.files:
+            columnList = []
+            for FN in files:
+                splitFN = FN.split('.')
+                if len(splitFN) > 1:
+                    if splitFN[-1] == 'csv':
+                        columnList = csv.DictReader(files[FN]).fieldnames
+                    else: continue
+                else: continue
+                
+                DF.columnInquries[FN] = ', '.join(columnList)
+                        
+
                 textBits.append(request.files[FN].read().decode('utf-8'))
 
-            curDB.execute('INSERT INTO datasets (title,  user_description, url_sources, final_text, posterID) VALUES (%s, %s, %s, %s, %s);',
+        if DF.uploadDataset.data and DF.validate():
+            db.cur.execute('INSERT INTO datasets (title,  user_description, url_sources, final_text, posterID) VALUES (%s, %s, %s, %s, %s);',
             (DF.title.data, DF.description.data, str(DF.URLs.data), '\n\n'.join(textBits), current_user.ID))
-            connDB.commit()
-            return redirect('/edit-dataset')
+            db.conn.commit()
+            return redirect('/edit-dataset', messages={"ID": db.cur.lastrowid})
         try:
             if DF.newURL.data: DF.URLs.append_entry()
             elif DF.newFile.data: DF.files.append_entry()
@@ -258,16 +273,26 @@ def newDataset():
 @app.route('/edit-dataset', methods=['GET', 'POST'])
 @login_required
 def datasetEditor():
+    
+    # check if user has permissions to edit dataset
+    db.cur.execute('SELECT title, posterID from datasets WHERE ID=%s LIMIT 1;' (requests.method.get('ID', 0)))
+    TS = db.cur.fetchone()
+    if not TS.get('title'):
+        return 'lol we can\'t find that dataset'
+    
+    if TS['posterID'] != current_user.ID:
+        return 'you don\'t have permission to edit that dataset'
+
     EF = datasetEditorForm()
-    curDB.execute('SELECT title, final_text, ID FROM datasets WHERE posterID=%s ORDER BY time_posted ASC;', (current_user.ID))
-    TS = curDB.fetchone()
+    db.cur.execute('SELECT title, final_text, ID FROM datasets WHERE posterID=%s ORDER BY time_posted ASC;', (current_user.ID))
+    TS = db.cur.fetchone()
 
     if EF.validate_on_submit():
         if not EF.noChanges.data:
-            curDB.execute('UPDATE databases SET final_text=%s WHERE ID=%s' (form.finalText.data, TS['ID']))
-            connDB.commit()
+            db.cur.execute('UPDATE databases SET final_text=%s WHERE ID=%s;' (form.finalText.data, TS['ID']))
+            db.conn.commit()
         
-        return redirect('/new-model?dataset='+str(TS['ID']))
+        return redirect('/new-model', messages={"dataset": TS['ID']}))
 
     if not EF.finalText.data:
         EF.finalText.data = TS['final_text']
@@ -280,13 +305,14 @@ def modelMaker():
     MF = modelMakerForm()
 
     if MF.validate_on_submit():
-        curDB.execute('''INSERT INTO models
+        db.cur.execute('''INSERT INTO models
             (datasetID, trainerID, user_description, seed,
             num_layers, learning_rate, learning_rate_decay, dropout, seq_length, batch_size, max_epochs, grad_clip, train_frac, val_frac
             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);''',
             (MF.datasetID.data, current_user.ID, MF.description.data, MF.seed.data,
             MF.layerAmount.data, MF.learningRate.data, MF.learningRateDecay.data, MF.dropout.data, MF.seqLength.data, MF.batchSize.data, MF.maxEpochs.data, MF.gradClip.data, MF.trainFrac.data, MF.valFrac.data))
-        connDB.commit()
+        db.conn.commit()
+        subp.Popen(["python3", "train.py", db.cur.lastrowid], cwd="rnn")
         return ('we just friccin died OK')
     if not MF.datasetID.data:
         try: MF.datasetID.data = int(request.args['dataset'])
@@ -323,6 +349,7 @@ def login():
 
 @app.route('/logout')
 @login_required
+
 def logout():
     logout_user()
     return redirect(request.args.get('next', '/'))
@@ -336,10 +363,10 @@ def verifyUser(ID):
 
     if VF.validate_on_submit():
         # verify the user in the DB
-        curDB.execute('UPDATE users SET verified=1 WHERE ID=%s;', (ID))
+        db.cur.execute('UPDATE users SET verified=1 WHERE ID=%s;', (ID))
         # delete the verification code, we don't need it anymore
-        curDB.execute('DELETE FROM verification_codes WHERE accountID=%s;', (ID))
-        connDB.commit()
+        db.cur.execute('DELETE FROM verification_codes WHERE accountID=%s;', (ID))
+        db.conn.commit()
 
         user = User()
         user.setValues('ID', ID)
@@ -363,20 +390,20 @@ def registerUser():
     if RF.validate_on_submit():
         
         # add the user to DB
-        curDB.execute('INSERT INTO users (email_addr, own_password, username, real_name) VALUES (%s, %s, %s, %s);',
+        db.cur.execute('INSERT INTO users (email_addr, own_password, username, real_name) VALUES (%s, %s, %s, %s);',
             (RF.email.data, RF.password.data, RF.username.data, RF.name.data))
-        connDB.commit()
+        db.conn.commit()
 
         # get the user's ID
-        curDB.execute('SELECT ID FROM users WHERE email_addr=%s LIMIT 1;', (RF.email.data))
-        accountID = curDB.fetchone()
+        db.cur.execute('SELECT ID FROM users WHERE email_addr=%s LIMIT 1;', (RF.email.data))
+        accountID = db.cur.fetchone()
         accountID = accountID['ID']
 
         #add the verification code to DB
         verificationCode = randint(1000,9999)
-        curDB.execute('INSERT INTO verification_codes (codeNumber, accountID) VALUES (%s, %s);',
+        db.cur.execute('INSERT INTO verification_codes (codeNumber, accountID) VALUES (%s, %s);',
             (verificationCode, accountID))
-        connDB.commit()
+        db.conn.commit()
 
         # send the verification message
         verifyMsg.recipients = [RF.email.data]

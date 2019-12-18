@@ -45,7 +45,6 @@ CREATE OR REPLACE TABLE datasets
     ID MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
     title VARCHAR(255) NOT NULL,
     user_description TEXT,
-    url_sources TEXT,
     final_text LONGTEXT,
     time_posted TIMESTAMP NOT NULL,
     posterID MEDIUMINT UNSIGNED,
@@ -56,6 +55,19 @@ CREATE OR REPLACE TABLE datasets
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
+
+--for files in the datasets
+CREATE OR REPLACE TABLE datafiles
+(
+    ID MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+    file_name VARCHAR(255) NOT NULL,
+    file_data LONGBLOB NOT NULL,
+    datasetID MEDIUMINT UNSIGNED NOT NULL,
+    CONSTRAINT `dataset_file_fk`
+        FOREIGN KEY (datasetID) REFERENCES datasets (ID)
+        ON DELETE SET CASCADE
+        ON UPDATE CASCADE
+) ENGINE=InnoDB;
 
 -- table of models
 CREATE OR REPLACE TABLE models
@@ -107,8 +119,7 @@ CREATE OR REPLACE TABLE models
         FOREIGN KEY (trainerID) REFERENCES users (ID)
         ON DELETE SET NULL
         ON UPDATE CASCADE
-)
-ENGINE=INNODB;
+) ENGINE=INNODB;
 
 
 CREATE OR REPLACE TABLE checkpoints
