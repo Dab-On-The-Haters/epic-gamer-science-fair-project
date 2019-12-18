@@ -292,7 +292,7 @@ def datasetEditor():
             db.cur.execute('UPDATE databases SET final_text=%s WHERE ID=%s;' (form.finalText.data, TS['ID']))
             db.conn.commit()
         
-        return redirect('/new-model', messages={"dataset": TS['ID']}))
+        return redirect('/new-model', messages={"dataset": TS['ID']})
 
     if not EF.finalText.data:
         EF.finalText.data = TS['final_text']
