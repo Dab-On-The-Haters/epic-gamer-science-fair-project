@@ -24,7 +24,7 @@ loginManager = LoginManager()
 
 #import super secure stuff (passwords stored in json)
 import json
-with open('/home/yeem/private_stuff.json') as f:
+with open('/home/thomas/.private-stuff.json') as f:
     passwords = json.load(f)
 
 
