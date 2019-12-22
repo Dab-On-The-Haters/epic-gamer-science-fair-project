@@ -26,6 +26,8 @@ CREATE OR REPLACE TABLE users
     verified BOOLEAN NOT NULL DEFAULT 0, -- works for is_authenticated and is_active in flask-login
     CONSTRAINT `users_pk` PRIMARY KEY (ID)
 ) ENGINE=InnoDB;
+SHOW WARNINGS;
+
 
 CREATE OR REPLACE TABLE verification_codes
 (
@@ -38,6 +40,8 @@ CREATE OR REPLACE TABLE verification_codes
         ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+SHOW WARNINGS;
+
 
 -- table of datasets that have been uploaded to the site and their info
 CREATE OR REPLACE TABLE datasets
@@ -54,6 +58,7 @@ CREATE OR REPLACE TABLE datasets
         ON DELETE SET NULL
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+SHOW WARNINGS;
 
 
 --for files in the datasets
@@ -65,9 +70,11 @@ CREATE OR REPLACE TABLE datafiles
     datasetID MEDIUMINT UNSIGNED NOT NULL,
     CONSTRAINT `dataset_file_fk`
         FOREIGN KEY (datasetID) REFERENCES datasets (ID)
-        ON DELETE SET CASCADE
+        ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+SHOW WARNINGS;
+
 
 -- table of models
 CREATE OR REPLACE TABLE models
@@ -120,6 +127,8 @@ CREATE OR REPLACE TABLE models
         ON DELETE SET NULL
         ON UPDATE CASCADE
 ) ENGINE=INNODB;
+SHOW WARNINGS;
+
 
 
 CREATE OR REPLACE TABLE checkpoints
@@ -137,6 +146,7 @@ CREATE OR REPLACE TABLE checkpoints
         ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+SHOW WARNINGS;
 
 
 CREATE OR REPLACE TABLE logs
@@ -152,3 +162,5 @@ CREATE OR REPLACE TABLE logs
         ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+SHOW WARNINGS;
+
