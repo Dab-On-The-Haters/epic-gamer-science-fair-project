@@ -222,7 +222,7 @@ def welcome():
 
 @app.route('/teach')
 def teachTeach():
-    return render_template('teach-teacher.html')
+    return render_template('teach.html')
 
 
 @app.route('/upload-dataset', methods=['GET', 'POST'])
@@ -327,7 +327,7 @@ def exploreModels():
 
 @app.route('/about')
 def aboutPage():
-    return render_template('about.html')
+    return render_template('about-index.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
