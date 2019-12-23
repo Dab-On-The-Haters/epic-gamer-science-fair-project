@@ -110,7 +110,8 @@ class registerForm(FlaskForm):
     # for checking if email is taken
     def emailTakenCheck(form, field):
         emailFindSQL = 'SELECT verified FROM users WHERE email_addr = %s;'
-        db.cur.execute(emailFindSQL, (field.data))
+        emailAddr = (field.data, )
+        db.cur.execute(emailFindSQL, emailAddr)
         for verification in db.cur.fetchall():
             if verification['verified']:
                 raise ValidationError('An account with that email address is already verified')
