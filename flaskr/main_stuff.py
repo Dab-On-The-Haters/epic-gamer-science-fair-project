@@ -109,7 +109,7 @@ class registerForm(FlaskForm):
             raise ValidationError('Password is not varied enough. Try mixing cases and adding numbers.')
     # for checking if email is taken
     def emailTakenCheck(form, field):
-        emailFindSQL = 'SELECT verified FROM users WHERE email_addr=%s;'
+        emailFindSQL = 'SELECT verified FROM users WHERE email_addr = %s;'
         db.cur.execute(emailFindSQL, (field.data))
         for verification in db.cur.fetchall():
             if verification['verified']:
