@@ -58,7 +58,7 @@ class User():
     is_active = True
 
     def setValues(self, fieldName, fieldRequest):
-        if not db.cur.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE '+fieldName+'=%s LIMIT 1;', (fieldRequest)):
+        if not db.cur.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE '+fieldName+'=%s LIMIT 1;', (fieldRequest,)):
             self.ID = 0 # wow i'm such a good person
             self.is_anonymous = True
             self.is_authenticated = False
@@ -109,13 +109,13 @@ class registerForm(FlaskForm):
             raise ValidationError('Password is not varied enough. Try mixing cases and adding numbers.')
     # for checking if email is taken
     def emailTakenCheck(form, field):
-        db.cur.execute('SELECT verified FROM users WHERE email_addr = %s;', (field.data, ))
+        db.cur.execute('SELECT verified FROM users WHERE email_addr=%s;', (field.data,))
         for verification in db.cur.fetchall():
             if verification['verified']:
                 raise ValidationError('An account with that email address is already verified')
     # for checking if username is wack or taken
     def usernameStuffCheck(form, field):
-        db.cur.execute('SELECT verified FROM users WHERE username=%s;', (field.data))
+        db.cur.execute('SELECT verified FROM users WHERE username=%s;', (field.data,))
         for verification in db.cur.fetchall():
             if verification['verified']:
                 raise ValidationError('The username "'+field.data+'" is taken')
@@ -134,7 +134,7 @@ class registerForm(FlaskForm):
 class verifyForm(FlaskForm):
     verifyAccountID = int()
     def verificationCodeCheck(form, field):
-        db.cur.execute('SELECT codeNumber FROM verification_codes WHERE accountID=%s LIMIT 1;', (form.verifyAccountID))
+        db.cur.execute('SELECT codeNumber FROM verification_codes WHERE accountID=%s LIMIT 1;', (form.verifyAccountID,))
         codeNumber = db.cur.fetchone()
         if codeNumber['codeNumber'] != int(field.data):
             raise ValidationError('Incorrect verification code. Try redoing the register form if you think you might have made a typo over there.')
@@ -175,7 +175,7 @@ class datasetEditorForm(FlaskForm):
 
 class modelMakerForm(FlaskForm):
     def datasetCheck(form, field):
-        db.cur.execute('SELECT title FROM datasets WHERE ID=%s LIMIT 1;', (field.data))
+        db.cur.execute('SELECT title FROM datasets WHERE ID=%s LIMIT 1;', (field.data,))
         if not db.cur.fetchall():
             raise ValidationError("We couldn't find any models with that ID")
 
@@ -275,7 +275,7 @@ def newDataset():
 def datasetEditor():
     
     # check if user has permissions to edit dataset
-    db.cur.execute('SELECT title, posterID from datasets WHERE ID=%s LIMIT 1;' (requests.method.get('ID', 0)))
+    db.cur.execute('SELECT title, posterID from datasets WHERE ID=%s LIMIT 1;' (requests.method.get('ID', 0),))
     TS = db.cur.fetchone()
     if not TS.get('title'):
         return 'lol we can\'t find that dataset'
@@ -284,7 +284,7 @@ def datasetEditor():
         return 'you don\'t have permission to edit that dataset'
 
     EF = datasetEditorForm()
-    db.cur.execute('SELECT title, final_text, ID FROM datasets WHERE posterID=%s ORDER BY time_posted ASC;', (current_user.ID))
+    db.cur.execute('SELECT title, final_text, ID FROM datasets WHERE posterID=%s ORDER BY time_posted ASC;', (current_user.ID,))
     TS = db.cur.fetchone()
 
     if EF.validate_on_submit():
@@ -363,9 +363,9 @@ def verifyUser(ID):
 
     if VF.validate_on_submit():
         # verify the user in the DB
-        db.cur.execute('UPDATE users SET verified=1 WHERE ID=%s;', (ID))
+        db.cur.execute('UPDATE users SET verified=1 WHERE ID=%s;', (ID,))
         # delete the verification code, we don't need it anymore
-        db.cur.execute('DELETE FROM verification_codes WHERE accountID=%s;', (ID))
+        db.cur.execute('DELETE FROM verification_codes WHERE accountID=%s;', (ID,))
         db.conn.commit()
 
         user = User()
@@ -395,7 +395,7 @@ def registerUser():
         db.conn.commit()
 
         # get the user's ID
-        db.cur.execute('SELECT ID FROM users WHERE email_addr=%s LIMIT 1;', (RF.email.data))
+        db.cur.execute('SELECT ID FROM users WHERE email_addr=%s LIMIT 1;', (RF.email.data,))
         accountID = db.cur.fetchone()
         accountID = accountID['ID']
 
