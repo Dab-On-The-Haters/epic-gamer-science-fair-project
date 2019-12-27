@@ -24,7 +24,7 @@ loginManager = LoginManager()
 
 #import super secure stuff (passwords stored in json)
 import json
-with open('/home/yeem/private_stuff.json') as f:
+with open('/home/thomas/.private-stuff.json') as f:
     passwords = json.load(f)
 
 
@@ -58,7 +58,7 @@ class User():
     is_active = True
 
     def setValues(self, fieldName, fieldRequest):
-        if not db.cur.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE '+fieldName+'=%s LIMIT 1;', (fieldRequest)):
+        if not db.cur.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE '+fieldName+'=%s LIMIT 1;', (fieldRequest,)):
             self.ID = 0 # wow i'm such a good person
             self.is_anonymous = True
             self.is_authenticated = False
@@ -109,13 +109,13 @@ class registerForm(FlaskForm):
             raise ValidationError('Password is not varied enough. Try mixing cases and adding numbers.')
     # for checking if email is taken
     def emailTakenCheck(form, field):
-        db.cur.execute('SELECT verified FROM users WHERE email_addr=%s;', (field.data))
+        db.cur.execute('SELECT verified FROM users WHERE email_addr=%s;', (field.data,))
         for verification in db.cur.fetchall():
             if verification['verified']:
                 raise ValidationError('An account with that email address is already verified')
     # for checking if username is wack or taken
     def usernameStuffCheck(form, field):
-        db.cur.execute('SELECT verified FROM users WHERE username=%s;', (field.data))
+        db.cur.execute('SELECT verified FROM users WHERE username=%s;', (field.data,))
         for verification in db.cur.fetchall():
             if verification['verified']:
                 raise ValidationError('The username "'+field.data+'" is taken')
@@ -134,7 +134,7 @@ class registerForm(FlaskForm):
 class verifyForm(FlaskForm):
     verifyAccountID = int()
     def verificationCodeCheck(form, field):
-        db.cur.execute('SELECT codeNumber FROM verification_codes WHERE accountID=%s LIMIT 1;', (form.verifyAccountID))
+        db.cur.execute('SELECT codeNumber FROM verification_codes WHERE accountID=%s LIMIT 1;', (form.verifyAccountID,))
         codeNumber = db.cur.fetchone()
         if codeNumber['codeNumber'] != int(field.data):
             raise ValidationError('Incorrect verification code. Try redoing the register form if you think you might have made a typo over there.')
@@ -154,14 +154,17 @@ class loginForm(FlaskForm):
 
 urlm = 'Please enter a valid URL'
 class datasetForm(FlaskForm):
-
+    columnInquries = dict()
+    def inquireForColumns(form, field):
+        if field.data in form.columnInquiries:
+            raise ValidationError('Please select one of the following columns to use for the dataset: ' + form.columnInquiries[field.data])
 
     title = f.StringField('Name of this dataset', [v.InputRequired(r('dataset name')), v.length(5, 250, 'Dataset title must be between 5 and 250 characters long')])
     description = f.TextAreaField('Dataset description', [v.length(max=65500, message='Description can not be longer than 65,500 characters.')])
-    files = f.FieldList(f.FileField('Custom dataset file'), max_entries=100)
+    files = f.FieldList(f.FileField('Custom dataset file', [inquireForColumns]), max_entries=100)
     newFile = f.SubmitField('Add a new dataset file')
     removeFile = f.SubmitField('Remove the last dataset file')
-    URLs = f.FieldList(f5.URLField('URL of dataset of file', [v.InputRequired(urlm), v.URL(urlm)]), max_entries=100)
+    URLs = f.FieldList(f5.URLField('URL of dataset of file', [v.InputRequired(urlm), v.URL(urlm), inquireForColumns]), max_entries=100)
     newURL = f.SubmitField('Add a new dataset URL')
     removeURL = f.SubmitField('Remove the last URL')
     uploadDataset = f.SubmitField('Upload the dataset')
@@ -172,7 +175,7 @@ class datasetEditorForm(FlaskForm):
 
 class modelMakerForm(FlaskForm):
     def datasetCheck(form, field):
-        db.cur.execute('SELECT title FROM datasets WHERE ID=%s LIMIT 1;', (field.data))
+        db.cur.execute('SELECT title FROM datasets WHERE ID=%s LIMIT 1;', (field.data,))
         if not db.cur.fetchall():
             raise ValidationError("We couldn't find any models with that ID")
 
@@ -219,7 +222,7 @@ def welcome():
 
 @app.route('/teach')
 def teachTeach():
-    return render_template('teach-teacher.html')
+    return render_template('teach.html')
 
 
 @app.route('/upload-dataset', methods=['GET', 'POST'])
@@ -238,12 +241,16 @@ def newDataset():
                 if req.status == 200:
                     files[URL] = req.data
             
+            columnList = []
             for FN in files:
                 splitFN = FN.split('.')
                 if len(splitFN) > 1:
-                    columnList = []
                     if splitFN[-1] == 'csv':
-                        columnList = csv.reader(files[FN]).fieldnames
+                        columnList = csv.DictReader(files[FN]).fieldnames
+                    else: continue
+                else: continue
+                
+                DF.columnInquries[FN] = ', '.join(columnList)
                         
 
                 textBits.append(request.files[FN].read().decode('utf-8'))
@@ -268,7 +275,7 @@ def newDataset():
 def datasetEditor():
     
     # check if user has permissions to edit dataset
-    db.cur.execute('SELECT title, posterID from datasets WHERE ID=%s LIMIT 1;' (requests.method.get('ID', 0)))
+    db.cur.execute('SELECT title, posterID from datasets WHERE ID=%s LIMIT 1;' (requests.method.get('ID', 0),))
     TS = db.cur.fetchone()
     if not TS.get('title'):
         return 'lol we can\'t find that dataset'
@@ -277,7 +284,7 @@ def datasetEditor():
         return 'you don\'t have permission to edit that dataset'
 
     EF = datasetEditorForm()
-    db.cur.execute('SELECT title, final_text, ID FROM datasets WHERE posterID=%s ORDER BY time_posted ASC;', (current_user.ID))
+    db.cur.execute('SELECT title, final_text, ID FROM datasets WHERE posterID=%s ORDER BY time_posted ASC;', (current_user.ID,))
     TS = db.cur.fetchone()
 
     if EF.validate_on_submit():
@@ -285,7 +292,7 @@ def datasetEditor():
             db.cur.execute('UPDATE databases SET final_text=%s WHERE ID=%s;' (form.finalText.data, TS['ID']))
             db.conn.commit()
         
-        return redirect('/new-model', messages={"dataset": TS['ID']}))
+        return redirect('/new-model', messages={"dataset": TS['ID']})
 
     if not EF.finalText.data:
         EF.finalText.data = TS['final_text']
@@ -320,7 +327,7 @@ def exploreModels():
 
 @app.route('/about')
 def aboutPage():
-    return render_template('about.html')
+    return render_template('about-index.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -356,9 +363,9 @@ def verifyUser(ID):
 
     if VF.validate_on_submit():
         # verify the user in the DB
-        db.cur.execute('UPDATE users SET verified=1 WHERE ID=%s;', (ID))
+        db.cur.execute('UPDATE users SET verified=1 WHERE ID=%s;', (ID,))
         # delete the verification code, we don't need it anymore
-        db.cur.execute('DELETE FROM verification_codes WHERE accountID=%s;', (ID))
+        db.cur.execute('DELETE FROM verification_codes WHERE accountID=%s;', (ID,))
         db.conn.commit()
 
         user = User()
@@ -388,7 +395,7 @@ def registerUser():
         db.conn.commit()
 
         # get the user's ID
-        db.cur.execute('SELECT ID FROM users WHERE email_addr=%s LIMIT 1;', (RF.email.data))
+        db.cur.execute('SELECT ID FROM users WHERE email_addr=%s LIMIT 1;', (RF.email.data,))
         accountID = db.cur.fetchone()
         accountID = accountID['ID']
 
