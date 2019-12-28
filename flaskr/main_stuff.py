@@ -305,7 +305,7 @@ def datasetEditor():
         
         return redirect(url_for('.modelMaker', dataset=TS['ID']))
     
-    columnInquiries = json.loads(request.args.get('columnLists', dict()))
+    columnInquiries = json.loads(request.args.get('columnLists', '{}'))
 
 
     if len(EF.finalText.data) < 1000:
