@@ -249,7 +249,7 @@ def newDataset():
             db.conn.commit()
             datasetID = db.cur.lastrowid
             # moved from post-validation to pre and back to post again lol
-            files = request.files # web urls get added later
+            files = request.files.to_dict() # web urls get added later
             for URL in DF.URLs.data:
                 req = http.request('GET', URL)
                 if req.status == 200:
