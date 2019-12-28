@@ -253,7 +253,7 @@ def newDataset():
             
             for FN, data in request.files.items():
                 filedata[data.filename] = data.read()
-                files[data.filename] = data
+                files[data.filename] = data.stream
             
             for URL in DF.URLs.data:
                 req = http.request('GET', URL)
