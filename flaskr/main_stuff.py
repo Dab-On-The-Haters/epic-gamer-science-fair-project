@@ -324,7 +324,7 @@ def datasetEditor():
             db.cur.execute('SELECT file_name, file_data FROM datafiles WHERE datasetID = %s AND file_name LIKE "%.csv";', datasetIDF)
             for result in db.cur.fetchall():
                 CSVreader = csv.DictReader(io.StringIO(result['file_data'].decode('utf-8')))
-                for entry in EF.columnSelections.entries:
+                for entry in EF.columnSelections:
                     if entry.label == result['file_name']:
                         correctColumn = entry.data
                         CSVtexts = []
