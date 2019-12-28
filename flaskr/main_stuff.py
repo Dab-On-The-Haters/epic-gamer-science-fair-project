@@ -301,10 +301,7 @@ def datasetEditor():
     TS = db.cur.fetchone()
 
     if EF.is_submitted():
-        if EF.validate():
-        if not EF.noChanges.data:
-            db.cur.execute('UPDATE databases SET final_text=%s WHERE ID=%s;' (form.finalText.data, TS['ID']))
-            db.conn.commit()
+        if EF.validate(): pass # put stuff here later
         
         return redirect(url_for('.modelMaker', dataset=TS['ID']))
     
