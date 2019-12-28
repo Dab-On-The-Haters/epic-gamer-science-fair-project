@@ -302,7 +302,7 @@ def datasetEditor():
     #db.cur.execute('SELECT title, final_text FROM datasets WHERE ID=%s;', datasetIDF)
     #TS = db.cur.fetchone()
 
-    if validate_on_submit():
+    if EF.validate_on_submit():
         # set dataset final text
         db.cur.execute('UPDATE datasets SET final_text = %s WHERE ID = %s;', (EF.finalText.data, request.args['ID']))
         db.conn.commit()
