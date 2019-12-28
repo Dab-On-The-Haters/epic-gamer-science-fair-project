@@ -154,22 +154,30 @@ class loginForm(FlaskForm):
 
 urlm = 'Please enter a valid URL'
 class datasetForm(FlaskForm):
-    columnInquries = dict()
-    def inquireForColumns(form, field):
-        if field.data in form.columnInquiries:
-            raise ValidationError('Please select one of the following columns to use for the dataset: ' + form.columnInquiries[field.data])
-
     title = f.StringField('Name of this dataset', [v.InputRequired(r('dataset name')), v.length(5, 250, 'Dataset title must be between 5 and 250 characters long')])
     description = f.TextAreaField('Dataset description', [v.length(max=65500, message='Description can not be longer than 65,500 characters.')])
-    files = f.FieldList(f.FileField('Custom dataset file', [inquireForColumns]), max_entries=100)
+    files = f.FieldList(f.FileField('Custom dataset file'), max_entries=100)
     newFile = f.SubmitField('Add a new dataset file')
     removeFile = f.SubmitField('Remove the last dataset file')
-    URLs = f.FieldList(f5.URLField('URL of dataset of file', [v.InputRequired(urlm), v.URL(urlm), inquireForColumns]), max_entries=100)
+    URLs = f.FieldList(f5.URLField('URL of dataset of file', [v.InputRequired(urlm), v.URL(urlm)]), max_entries=100)
     newURL = f.SubmitField('Add a new dataset URL')
     removeURL = f.SubmitField('Remove the last URL')
     uploadDataset = f.SubmitField('Upload the dataset')
 
+#this form is from a stackoverflow answer (https://stackoverflow.com/questions/24296834/wtform-fieldlist-with-selectfield-how-do-i-render/57548509#57548509)
+class SelectForm(FlaskForm):
+    select = SelectField("Placeholder", choices=[])
+
+
 class datasetEditorForm(FlaskForm):
+    columnInquiries = dict()
+    """
+    def inquireForColumns(form, field):
+        if field.data in form.columnInquiries:
+            raise ValidationError('Please select one of the following columns to use for the dataset: ' + form.columnInquiries[field.data])
+    """
+
+    columnSelections = FieldList(FormField(SelectForm))
     finalText = f.TextAreaField('Edit your dataset to remove unwanted data')
     noChanges = f.SubmitField('Continue without manual cleaning')
 
@@ -231,35 +239,30 @@ def newDataset():
     DF = datasetForm()
 
     if DF.is_submitted():
-        if DF.uploadDataset.data:
-            # moved from post-validation
+        if DF.uploadDataset.data and DF.validate():
+            db.cur.execute('INSERT INTO datasets (title,  user_description, url_sources, final_text, posterID) VALUES (%s, %s, %s, %s, %s);',
+            (DF.title.data, DF.description.data, str(DF.URLs.data), '\n\n'.join(textBits), current_user.ID))
+            db.conn.commit()
+            datasetID = db.cur.lastrowid
+            # moved from post-validation to pre and back to post again lol
             files = request.files # web urls get added later
-            finalBits = []
-            
             for URL in DF.URLs.data:
                 req = http.request('GET', URL)
                 if req.status == 200:
                     files[URL] = req.data
             
-            columnList = []
+            columnLists = dict()
             for FN in files:
                 splitFN = FN.split('.')
+                db.cur.execute('INSERT INTO datafiles (file_name, file_data, datasetID)'(FN, files[FN].read().decode('utf-8'), datasetID))
                 if len(splitFN) > 1:
                     if splitFN[-1] == 'csv':
-                        columnList = csv.DictReader(files[FN]).fieldnames
+                        columnLists[splitFN[0]] = csv.DictReader(files[FN]).fieldnames
                     else: continue
                 else: continue
                 
-                DF.columnInquries[FN] = ', '.join(columnList)
-                        
-
-                textBits.append(request.files[FN].read().decode('utf-8'))
-
-        if DF.uploadDataset.data and DF.validate():
-            db.cur.execute('INSERT INTO datasets (title,  user_description, url_sources, final_text, posterID) VALUES (%s, %s, %s, %s, %s);',
-            (DF.title.data, DF.description.data, str(DF.URLs.data), '\n\n'.join(textBits), current_user.ID))
             db.conn.commit()
-            return redirect('/edit-dataset', messages={"ID": db.cur.lastrowid})
+            return redirect('/edit-dataset', messages={"ID": datasetID, "columnLists": json.dumps(columnLists)})
         try:
             if DF.newURL.data: DF.URLs.append_entry()
             elif DF.newFile.data: DF.files.append_entry()
@@ -269,7 +272,7 @@ def newDataset():
 
     return render_template('new-dataset.html', form=DF)
 
-
+ 
 @app.route('/edit-dataset', methods=['GET', 'POST'])
 @login_required
 def datasetEditor():
@@ -284,6 +287,19 @@ def datasetEditor():
         return 'you don\'t have permission to edit that dataset'
 
     EF = datasetEditorForm()
+    columnInquiries = json.loads(request.method.get('columnLists', dict()))
+
+    selectEntries = []
+    for FN in columnInquiries:
+        newEntry = SelectForm()
+        newEntry.select.label = FN
+        newEntry.id = FN
+        newEntry.select.choices = columnInquiries[FN]
+        selectEntries.append(newEntry)
+    
+    EF.columnSelections = selectEntries
+
+
     db.cur.execute('SELECT title, final_text, ID FROM datasets WHERE posterID=%s ORDER BY time_posted ASC;', (current_user.ID,))
     TS = db.cur.fetchone()
 
