@@ -286,7 +286,7 @@ def newDataset():
 def datasetEditor():
     
     # check if user has permissions to edit dataset
-    db.cur.execute('SELECT title, posterID from datasets WHERE ID=%s LIMIT 1;' (request.method.get('ID', 0),))
+    db.cur.execute('SELECT title, posterID from datasets WHERE ID=%s LIMIT 1;' (request.args.get('ID', 0),))
     TS = db.cur.fetchone()
     if not TS.get('title'):
         return 'lol we can\'t find that dataset'
@@ -295,7 +295,7 @@ def datasetEditor():
         return 'you don\'t have permission to edit that dataset'
 
     EF = datasetEditorForm()
-    columnInquiries = json.loads(request.method.get('columnLists', dict()))
+    columnInquiries = json.loads(request.args.get('columnLists', dict()))
 
     selectEntries = []
     for FN in columnInquiries:
