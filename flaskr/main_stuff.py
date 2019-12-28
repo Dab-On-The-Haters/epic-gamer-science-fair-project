@@ -270,7 +270,7 @@ def newDataset():
                 else: continue
                 
             db.conn.commit()
-            return redirect(url_for('/edit-dataset', ID=datasetID, columnLists=json.dumps(columnLists)))
+            return redirect(url_for('.datasetEditor', ID=datasetID, columnLists=json.dumps(columnLists)))
         try:
             if DF.newURL.data: DF.URLs.append_entry()
             elif DF.newFile.data: DF.files.append_entry()
