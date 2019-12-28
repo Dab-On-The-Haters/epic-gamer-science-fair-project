@@ -286,7 +286,7 @@ def newDataset():
 def datasetEditor():
     
     # check if user has permissions to edit dataset
-    db.cur.execute('SELECT title, posterID from datasets WHERE ID=%s LIMIT 1;' (request.args.get('ID', 0),))
+    db.cur.execute('SELECT title, posterID from datasets WHERE ID=%s LIMIT 1;', (int(request.args.get('ID', 0)),))
     TS = db.cur.fetchone()
     if not TS.get('title'):
         return 'lol we can\'t find that dataset'
