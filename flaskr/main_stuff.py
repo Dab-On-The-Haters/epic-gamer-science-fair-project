@@ -244,8 +244,8 @@ def newDataset():
 
     if DF.is_submitted():
         if DF.uploadDataset.data and DF.validate():
-            db.cur.execute('INSERT INTO datasets (title,  user_description, url_sources, final_text, posterID) VALUES (%s, %s, %s, %s, %s);',
-            (DF.title.data, DF.description.data, str(DF.URLs.data), '\n\n'.join(textBits), current_user.ID))
+            db.cur.execute('INSERT INTO datasets (title,  user_description, posterID) VALUES (%s, %s, %s);',
+            (DF.title.data, DF.description.data, current_user.ID))
             db.conn.commit()
             datasetID = db.cur.lastrowid
             # moved from post-validation to pre and back to post again lol
