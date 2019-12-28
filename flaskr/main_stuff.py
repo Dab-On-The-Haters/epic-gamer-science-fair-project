@@ -345,10 +345,11 @@ def datasetEditor():
                 defaultTexts.append('result')
                 CSVreader = csv.DictReader(io.StringIO(result['file_data'].decode('utf-8'), newline=''))
                 for entry in EF.columnSelections:
-                    defaultTexts.append('entry')
+                    defaultTexts.append(result['file_name'])
                     if entry.id == result['file_name']:
                         correctColumn = entry.select.data
                         CSVtexts = []
+                        defaultTexts.append(correctColumn)
                         for row in CSVreader:
                             CSVtexts.append(row[correctColumn])
                         defaultTexts.append('\n\n'.join(CSVtexts))
