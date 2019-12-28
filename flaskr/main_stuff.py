@@ -351,7 +351,7 @@ def datasetEditor():
                         defaultTexts.append('\n\n'.join(CSVtexts))
            
         EF.finalText.data = '\n\n\n\n'.join(defaultTexts)
-    EF.finalText.data = 'pee pee poo poo'
+    #EF.finalText.data = 'pee pee poo poo'
     return render_template('dataset-editor.html', datasetName=TS['title'], form=EF, user=current_user)
 
 
