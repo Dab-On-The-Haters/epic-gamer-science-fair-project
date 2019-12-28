@@ -251,7 +251,7 @@ def newDataset():
             files = dict()
             
             for FN, data in request.files.items():
-                files[FN] = data.read()
+                files[data.filename] = data.read()
             
             for URL in DF.URLs.data:
                 req = http.request('GET', URL)
