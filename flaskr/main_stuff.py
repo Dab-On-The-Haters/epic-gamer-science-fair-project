@@ -39,7 +39,6 @@ app.config['MAIL_PASSWORD'] = passwords['JOE_MAIL_PASSWORD']
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)
-from os import getcwd
 
 # OH MY GOSH YES
 import io
@@ -377,7 +376,7 @@ def modelMaker():
             (MF.datasetID.data, current_user.ID, MF.description.data, MF.seed.data,
             MF.layerAmount.data, MF.learningRate.data, MF.learningRateDecay.data, MF.dropout.data, MF.seqLength.data, MF.batchSize.data, MF.maxEpochs.data, MF.gradClip.data, MF.trainFrac.data, MF.valFrac.data))
         db.conn.commit()
-        subp.Popen(['python3', 'train.py', str(db.cur.lastrowid)], cwd=getcwd()+'rnn')
+        subp.Popen(['python3', 'train.py', str(db.cur.lastrowid)], cwd='rnn/')
         return ('we just friccin died OK')
     if not MF.datasetID.data:
         try: MF.datasetID.data = int(request.args['dataset'])
