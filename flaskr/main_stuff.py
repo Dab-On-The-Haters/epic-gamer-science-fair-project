@@ -58,8 +58,8 @@ class User():
     is_active = True
 
     def setValues(self, fieldName, fieldRequest):
-        db.cur.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE '+fieldName+'=%s LIMIT 1;', (fieldRequest,)):
-        if db.cur.rowcount
+        db.cur.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE '+fieldName+'=%s LIMIT 1;', (fieldRequest,))
+        if db.cur.rowcount:
             self.is_anonymous = False
             
             QA = db.cur.fetchone()
