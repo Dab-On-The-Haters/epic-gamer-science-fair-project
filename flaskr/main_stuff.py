@@ -224,6 +224,7 @@ http = urllib3.PoolManager()
 
 
 @app.route('/')
+@login_required
 def welcome():
     return render_template('homepage.html', user=current_user)
 
