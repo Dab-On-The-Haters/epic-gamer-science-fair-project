@@ -262,7 +262,7 @@ def newDataset():
             columnLists = dict()
             for FN in files:
                 splitFN = FN.split('.')
-                db.cur.execute('INSERT INTO datafiles (file_name, file_data, datasetID)'(FN, files[FN].decode('utf-8'), datasetID))
+                db.cur.execute('INSERT INTO datafiles (file_name, file_data, datasetID) VALUES (%s, %s, %s);', (FN, files[FN].decode('utf-8'), datasetID))
                 if len(splitFN) > 1:
                     if splitFN[-1] == 'csv':
                         columnLists[splitFN[0]] = csv.DictReader(files[FN]).fieldnames
