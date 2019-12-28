@@ -318,22 +318,21 @@ def datasetEditor():
         for result in db.cur.fetchall():
             defaultTexts.append(result['file_data'].decode('utf-8'))
 
-        EF.finalText.data = '\n\n\n\n'.join(defaultTexts)
-
         # if column selections are entered / submitted...
         if EF.is_submitted and EF.columnSelections.entries:
             # get dataset's CSVs and check them against column selections, select and add in column data
             db.cur.execute('SELECT file_name, file_data FROM datafiles WHERE datasetID = %s AND file_name LIKE "%.csv";', datasetIDF)
-            CSVtexts = []
-            for i, result in enumerate(db.cur.fetchall()):
+            for result in db.cur.fetchall():
                 CSVreader = csv.DictReader(io.StringIO(result['file_data'].decode('utf-8')))
                 for entry in EF.columnSelections.entries:
                     if entry.label == result['file_name']:
                         correctColumn = entry.data
+                        CSVtexts = []
                         for row in CSVReader:
-                            CSVtexts[i] += row[EF.columnSelections]
-                    
-            EF.finalText.data += '\n\n\n\n'.join(CSVtexts)
+                            CSVtexts.append(row[EF.columnSelections])
+                        defaultTexts.append('\n\n'.join(CSVtexts))
+           
+        EEF.finalText.data = '\n\n\n\n'.join(defaultTexts)
 
     selectEntries = []
     for FN in columnInquiries:
