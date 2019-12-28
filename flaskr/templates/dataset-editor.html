@@ -57,7 +57,7 @@
                     {{ form.finalText }}
                 </div>
                 <ul class="w3-ul w3-text-red">
-                    {% for error in form.errors %}
+                    {% for error in form.finalText.errors %}
                         <li>{{ error }}</li>
                     {% endfor %}
                 </ul>
