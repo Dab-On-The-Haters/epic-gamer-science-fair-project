@@ -336,7 +336,7 @@ def datasetEditor():
             defaultTexts.append(result['file_data'].decode('utf-8'))
 
         # if column selections are entered / submitted...
-        if EF.columnSelections.entries:
+        if not EF.columnSelections[-1].errors:
             # get dataset's CSVs and check them against column selections, select and add in column data
             db.cur.execute('SELECT file_name, file_data FROM datafiles WHERE datasetID = %s AND file_name LIKE "%.csv";', datasetIDF)
             results = db.cur.fetchall()
