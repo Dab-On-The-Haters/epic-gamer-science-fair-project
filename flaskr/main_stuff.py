@@ -297,8 +297,8 @@ def datasetEditor():
 
     EF = datasetEditorForm()
 
-    db.cur.execute('SELECT title, final_text FROM datasets WHERE ID=%s;', datasetIDF)
-    TS = db.cur.fetchone()
+    #db.cur.execute('SELECT title, final_text FROM datasets WHERE ID=%s;', datasetIDF)
+    #TS = db.cur.fetchone()
 
     if EF.is_submitted():
         if EF.validate(): pass # put stuff here later
