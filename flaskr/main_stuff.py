@@ -362,7 +362,7 @@ def login():
         user.setValues('username', LF.username.data)
         login_user(user, remember=True)
         
-        return str(current_user)#return redirect(request.args.get('next', '/'))
+        return redirect(request.args.get('next', '/'))
     
     return render_template('login.html', form=LF)
 
