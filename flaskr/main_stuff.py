@@ -328,24 +328,24 @@ def datasetEditor():
                     if entry.label == result['file_name']:
                         correctColumn = entry.data
                         CSVtexts = []
-                        for row in CSVReader:
-                            CSVtexts.append(row[EF.columnSelections])
+                        for row in CSVreader:
+                            CSVtexts.append(row[correctColumn])
                         defaultTexts.append('\n\n'.join(CSVtexts))
            
         EF.finalText.data = '\n\n\n\n'.join(defaultTexts)
-
+    
+    # add in selections to the form
     selectEntries = []
     for FN in columnInquiries:
         newEntry = SelectForm()
         newEntry.select.label = FN
         newEntry.id = FN
+        newEntry.select.validators = [v.DataRequired]
 
         choices = []
         for choice in columnInquiries[FN]:
             choices.append((choice, choice))
-
         newEntry.select.choices = choices
-        newEntry.select.validators = [v.DataRequired]
 
         selectEntries.append(newEntry)
     EF.columnSelections = selectEntries
