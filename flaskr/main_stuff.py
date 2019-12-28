@@ -302,12 +302,12 @@ def datasetEditor():
     #db.cur.execute('SELECT title, final_text FROM datasets WHERE ID=%s;', datasetIDF)
     #TS = db.cur.fetchone()
 
-
+"""
     if EF.validate_on_submit():
         # set dataset final text
         db.cur.execute('UPDATE datasets SET final_text = %s WHERE ID = %s;', (EF.finalText.data, request.args['ID']))
         db.conn.commit()
-        return redirect(url_for('.modelMaker', dataset=request.args['ID']))
+        return redirect(url_for('.modelMaker', dataset=request.args['ID']))"""
     
     columnInquiries = json.loads(request.args.get('columnLists', '{}'))
     
