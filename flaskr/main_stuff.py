@@ -185,13 +185,6 @@ class SelectForm(FlaskForm):
 
 
 class datasetEditorForm(FlaskForm):
-    columnInquiries = dict()
-    """
-    def inquireForColumns(form, field):
-        if field.data in form.columnInquiries:
-            raise ValidationError('Please select one of the following columns to use for the dataset: ' + form.columnInquiries[field.data])
-    """
-
     columnSelections = f.FieldList(f.FormField(SelectForm))
     finalText = f.TextAreaField('Edit your dataset to remove unwanted data', [v.length(min=1000)])
 
@@ -253,9 +246,11 @@ def newDataset():
             # moved from post-validation to pre and back to post again lol
             files = dict()
             
+            # get local uploaded files
             for FN, data in request.files.items():
                 files[data.filename] = data.read()
             
+            # get file links from urllib3
             for URL in DF.URLs.data:
                 req = http.request('GET', URL)
                 if req.status == 200:
@@ -263,9 +258,12 @@ def newDataset():
             
             columnLists = dict()
             for FN in files:
+                # tidy up file and put it into db
                 files[FN] = files[FN].decode('utf-8')
-                splitFN = FN.split('.')
                 db.cur.execute('INSERT INTO datafiles (file_name, file_data, datasetID) VALUES (%s, %s, %s);', (FN, files[FN], datasetID))
+                
+                # if it's a csv add it to column selections
+                splitFN = FN.split('.')
                 if len(splitFN) > 1:
                     if splitFN[-1] == 'csv':
                         columnLists[splitFN[0]] = csv.DictReader(io.StringIO(files[FN], newline='')).fieldnames
@@ -274,7 +272,7 @@ def newDataset():
                 
             db.conn.commit()
             return redirect(url_for('.datasetEditor', ID=datasetID, columnLists=json.dumps(columnLists).replace(' ', '')))
-        try:
+        try: # do other submitted operations
             if DF.newURL.data: DF.URLs.append_entry()
             elif DF.newFile.data: DF.files.append_entry()
             elif DF.removeURL.data: DF.URLs.pop_entry()
@@ -304,19 +302,38 @@ def datasetEditor():
     #db.cur.execute('SELECT title, final_text FROM datasets WHERE ID=%s;', datasetIDF)
     #TS = db.cur.fetchone()
 
-    if EF.validate_on_submit():
+    if validate_on_submit():
+        # set dataset final text
+        db.cur.execute('UPDATE datasets SET final_text = %s WHERE ID = %s;', (EF.finalText.data, request.args['ID']))
+        db.conn.commit()
         return redirect(url_for('.modelMaker', dataset=request.args['ID']))
     
     columnInquiries = json.loads(request.args.get('columnLists', '{}'))
 
-
+    # if finaltext isn't filled out
     if (not EF.finalText.data) or len(EF.finalText.data) < 1000:
+        # deal with adding in text files
         db.cur.execute('SELECT file_data FROM datafiles WHERE datasetID = %s AND file_name NOT LIKE "%.csv";', datasetIDF)
         defaultTexts = []
         for result in db.cur.fetchall():
             defaultTexts.append(result['file_data'].decode('utf-8'))
 
         EF.finalText.data = '\n\n\n\n'.join(defaultTexts)
+
+        # if column selections are entered / submitted...
+        if EF.is_submitted and EF.columnSelections.entries:
+            # get dataset's CSVs and check them against column selections, select and add in column data
+            db.cur.execute('SELECT file_name, file_data FROM datafiles WHERE datasetID = %s AND file_name LIKE "%.csv";', datasetIDF)
+            CSVtexts = []
+            for i, result in enumerate(db.cur.fetchall()):
+                CSVreader = csv.DictReader(io.StringIO(result['file_data'].decode('utf-8')))
+                for entry in EF.columnSelections.entries:
+                    if entry.label == result['file_name']:
+                        correctColumn = entry.data
+                        for row in CSVReader:
+                            CSVtexts[i] += row[EF.columnSelections]
+                    
+            EF.finalText.data += '\n\n\n\n'.join(CSVtexts)
 
     selectEntries = []
     for FN in columnInquiries:
