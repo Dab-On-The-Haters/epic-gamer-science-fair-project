@@ -346,6 +346,7 @@ def datasetEditor():
                 CSVreader = csv.DictReader(io.StringIO(result['file_data'].decode('utf-8'), newline=''))
                 for entry in EF.columnSelections:
                     defaultTexts.append(result['file_name'])
+                    defaultTexts.append(entry.id)
                     if entry.id == result['file_name']:
                         correctColumn = entry.select.data
                         CSVtexts = []
