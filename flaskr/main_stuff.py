@@ -58,15 +58,8 @@ class User():
     is_active = True
 
     def setValues(self, fieldName, fieldRequest):
-        if not db.cur.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE '+fieldName+'=%s LIMIT 1;', (fieldRequest,)):
-            self.ID = 0 # wow i'm such a good person
-            self.is_anonymous = True
-            self.is_authenticated = False
-            self.is_active = False
-            self.username = ''
-            self.name = 'Anonymous User'
-        
-        else:
+        db.cur.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE '+fieldName+'=%s LIMIT 1;', (fieldRequest,)):
+        if db.cur.rowcount
             self.is_anonymous = False
             
             QA = db.cur.fetchone()
@@ -77,7 +70,13 @@ class User():
             self.email = QA['email_addr']
             self.name = QA['real_name']
             self.description = QA['self_description']
-
+        else:
+            self.ID = 0 # wow i'm such a good person
+            self.is_anonymous = True
+            self.is_authenticated = False
+            self.is_active = False
+            self.username = ''
+            self.name = 'Anonymous User'
 
     def get_id(self):
         return str(self.ID).encode('utf-8')
