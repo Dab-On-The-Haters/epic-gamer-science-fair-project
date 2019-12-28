@@ -341,7 +341,7 @@ def datasetEditor():
             db.cur.execute('SELECT file_name, file_data FROM datafiles WHERE datasetID = %s AND file_name LIKE "%.csv";', datasetIDF)
             results = db.cur.fetchall()
             for result in results:
-                CSVreader = csv.DictReader(io.StringIO(result['file_data'].decode('utf-8')))
+                CSVreader = csv.DictReader(io.StringIO(result['file_data'].decode('utf-8'), newline=''))
                 for entry in EF.columnSelections:
                     if entry.id == result['file_name']:
                         correctColumn = entry.select.data
@@ -351,7 +351,7 @@ def datasetEditor():
                         defaultTexts.append('\n\n'.join(CSVtexts))
            
         EF.finalText.data = '\n\n\n\n'.join(defaultTexts)
-
+    EF.finalText.data = 'pee pee poo poo'
     return render_template('dataset-editor.html', datasetName=TS['title'], form=EF, user=current_user)
 
 
