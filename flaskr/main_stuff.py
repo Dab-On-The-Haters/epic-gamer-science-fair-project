@@ -166,7 +166,7 @@ class datasetForm(FlaskForm):
 
 #this form is from a stackoverflow answer (https://stackoverflow.com/questions/24296834/wtform-fieldlist-with-selectfield-how-do-i-render/57548509#57548509)
 class SelectForm(FlaskForm):
-    select = SelectField("Placeholder", choices=[])
+    select = f.SelectField("Placeholder", choices=[])
 
 
 class datasetEditorForm(FlaskForm):
@@ -177,7 +177,7 @@ class datasetEditorForm(FlaskForm):
             raise ValidationError('Please select one of the following columns to use for the dataset: ' + form.columnInquiries[field.data])
     """
 
-    columnSelections = FieldList(FormField(SelectForm))
+    columnSelections = f.FieldList(f.FormField(SelectForm))
     finalText = f.TextAreaField('Edit your dataset to remove unwanted data')
     noChanges = f.SubmitField('Continue without manual cleaning')
 
