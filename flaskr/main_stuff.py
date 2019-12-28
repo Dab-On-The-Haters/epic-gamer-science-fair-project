@@ -268,7 +268,7 @@ def newDataset():
                 db.cur.execute('INSERT INTO datafiles (file_name, file_data, datasetID) VALUES (%s, %s, %s);', (FN, files[FN], datasetID))
                 if len(splitFN) > 1:
                     if splitFN[-1] == 'csv':
-                        columnLists[splitFN[0]] = csv.DictReader(io.StringIO(files[FN])).fieldnames
+                        columnLists[splitFN[0]] = csv.DictReader(io.StringIO(files[FN], newline='')).fieldnames
                     else: continue
                 else: continue
                 
