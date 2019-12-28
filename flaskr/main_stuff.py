@@ -273,7 +273,7 @@ def newDataset():
                 else: continue
                 
             db.conn.commit()
-            return redirect(url_for('.datasetEditor', ID=datasetID, columnLists=json.dumps(columnLists)))
+            return redirect(url_for('.datasetEditor', ID=datasetID, columnLists=json.dumps(columnLists).replace(' ', '')))
         try:
             if DF.newURL.data: DF.URLs.append_entry()
             elif DF.newFile.data: DF.files.append_entry()
@@ -323,7 +323,12 @@ def datasetEditor():
         newEntry = SelectForm()
         newEntry.select.label = FN
         newEntry.id = FN
-        newEntry.select.choices = columnInquiries[FN]
+
+        choices = []
+        for choice in columnInquiries[FN]:
+            choices.append((choice, choice))
+
+        newEntry.select.choices = choices
         newEntry.select.validators = [v.DataRequired]
 
         selectEntries.append(newEntry)
