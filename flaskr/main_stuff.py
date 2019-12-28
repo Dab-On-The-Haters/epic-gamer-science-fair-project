@@ -82,6 +82,19 @@ class User():
     def get_id(self):
         return str(self.ID).encode('utf-8')
 
+
+    def get_id(self):
+        return str(self.ID).encode('utf-8')
+
+@loginManager.user_loader
+def load_user(ID):
+    user = User()
+    if type(ID)==str and ID.startswith('b'):
+        ID = ID.split("'")[1]
+    user.setValues('ID', int(ID))
+    return user
+
+
 #WTForm stuff
 from flask_wtf import FlaskForm
 from wtforms import ValidationError
@@ -209,15 +222,6 @@ class modelMakerForm(FlaskForm):
     trainFrac = f5.DecimalField('Amount data going into the training set', [v.NumberRange(0, 1, 'BETWEEN 0 AND 1 FIGURE IT OUT')], default=0.95)
     seed = f5.IntegerField('Seed for making random numbers', [v.NumberRange(1, 250, "Set your seed between 1 and 250, it really doesn't matter")], default=123)
 
-
-
-@loginManager.user_loader
-def load_user(ID):
-    user = User()
-    if type(ID)==str and ID.startswith('b'):
-        ID = ID.split("'")[1]
-    user.setValues('ID', int(ID))
-    return user
 
 import urllib3
 http = urllib3.PoolManager()
@@ -359,14 +363,13 @@ def login():
         user.setValues('username', LF.username.data)
         login_user(user, remember=True)
         
-        return redirect(request.args.get('next', '/'))
+        return str(current_user)#return redirect(request.args.get('next', '/'))
     
     return render_template('login.html', form=LF)
 
 
 @app.route('/logout')
 @login_required
-
 def logout():
     logout_user()
     return redirect(request.args.get('next', '/'))
