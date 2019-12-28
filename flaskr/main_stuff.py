@@ -249,7 +249,11 @@ def newDataset():
             db.conn.commit()
             datasetID = db.cur.lastrowid
             # moved from post-validation to pre and back to post again lol
-            files = request.files.to_dict() # web urls get added later
+            files = dict()
+            
+            for FN, data in request.files.items():
+                files[FN] = data.read()
+            
             for URL in DF.URLs.data:
                 req = http.request('GET', URL)
                 if req.status == 200:
@@ -258,7 +262,7 @@ def newDataset():
             columnLists = dict()
             for FN in files:
                 splitFN = FN.split('.')
-                db.cur.execute('INSERT INTO datafiles (file_name, file_data, datasetID)'(FN, files[FN].read().decode('utf-8'), datasetID))
+                db.cur.execute('INSERT INTO datafiles (file_name, file_data, datasetID)'(FN, files[FN].decode('utf-8'), datasetID))
                 if len(splitFN) > 1:
                     if splitFN[-1] == 'csv':
                         columnLists[splitFN[0]] = csv.DictReader(files[FN]).fieldnames
