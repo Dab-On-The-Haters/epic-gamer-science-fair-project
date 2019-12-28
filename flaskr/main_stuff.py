@@ -302,13 +302,6 @@ def datasetEditor():
     #db.cur.execute('SELECT title, final_text FROM datasets WHERE ID=%s;', datasetIDF)
     #TS = db.cur.fetchone()
 
-    if EF.validate_on_submit():
-        # set dataset final text
-        db.cur.execute('UPDATE datasets SET final_text = %s WHERE ID = %s;', (EF.finalText.data, request.args['ID']))
-        db.conn.commit()
-        return redirect(url_for('.modelMaker', dataset=request.args['ID']))
-    
-    columnInquiries = json.loads(request.args.get('columnLists', '{}'))
 
     # if finaltext isn't filled out
     if (not EF.finalText.data) or len(EF.finalText.data) < 1000:
@@ -333,6 +326,15 @@ def datasetEditor():
                         defaultTexts.append('\n\n'.join(CSVtexts))
            
         EF.finalText.data = '\n\n\n\n'.join(defaultTexts)
+
+
+    if EF.validate_on_submit():
+        # set dataset final text
+        db.cur.execute('UPDATE datasets SET final_text = %s WHERE ID = %s;', (EF.finalText.data, request.args['ID']))
+        db.conn.commit()
+        return redirect(url_for('.modelMaker', dataset=request.args['ID']))
+    
+    columnInquiries = json.loads(request.args.get('columnLists', '{}'))
     
     # add in selections to the form
     selectEntries = []
