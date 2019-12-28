@@ -303,31 +303,6 @@ def datasetEditor():
     #TS = db.cur.fetchone()
 
 
-    # if finaltext isn't filled out
-    if (not EF.finalText.data) or len(EF.finalText.data) < 1000:
-        # deal with adding in text files
-        db.cur.execute('SELECT file_data FROM datafiles WHERE datasetID = %s AND file_name NOT LIKE "%.csv";', datasetIDF)
-        defaultTexts = []
-        for result in db.cur.fetchall():
-            defaultTexts.append(result['file_data'].decode('utf-8'))
-
-        # if column selections are entered / submitted...
-        if EF.is_submitted():
-            # get dataset's CSVs and check them against column selections, select and add in column data
-            db.cur.execute('SELECT file_name, file_data FROM datafiles WHERE datasetID = %s AND file_name LIKE "%.csv";', datasetIDF)
-            for result in db.cur.fetchall():
-                CSVreader = csv.DictReader(io.StringIO(result['file_data'].decode('utf-8')))
-                for entry in EF.columnSelections:
-                    if entry.label == result['file_name']:
-                        correctColumn = entry.data
-                        CSVtexts = []
-                        for row in CSVreader:
-                            CSVtexts.append(row[correctColumn])
-                        defaultTexts.append('\n\n'.join(CSVtexts))
-           
-        EF.finalText.data = '\n\n\n\n'.join(defaultTexts)
-
-
     if EF.validate_on_submit():
         # set dataset final text
         db.cur.execute('UPDATE datasets SET final_text = %s WHERE ID = %s;', (EF.finalText.data, request.args['ID']))
@@ -343,7 +318,7 @@ def datasetEditor():
         newEntry.select.label = FN
         newEntry.select.id = FN
         newEntry.id = FN
-        newEntry.select.validators = [v.DataRequired]
+        newEntry.select.validators = [v.DataRequired(message='Please select a column to go into the dataset.')]
 
         choices = []
         for choice in columnInquiries[FN]:
@@ -352,6 +327,30 @@ def datasetEditor():
 
         selectEntries.append(newEntry)
     EF.columnSelections = selectEntries
+
+    # if finaltext isn't filled out
+    if (not EF.finalText.data) or len(EF.finalText.data) < 1000:
+        # deal with adding in text files
+        db.cur.execute('SELECT file_data FROM datafiles WHERE datasetID = %s AND file_name NOT LIKE "%.csv";', datasetIDF)
+        defaultTexts = []
+        for result in db.cur.fetchall():
+            defaultTexts.append(result['file_data'].decode('utf-8'))
+
+        # if column selections are entered / submitted...
+        if EF.is_submitted():
+            # get dataset's CSVs and check them against column selections, select and add in column data
+            db.cur.execute('SELECT file_name, file_data FROM datafiles WHERE datasetID = %s AND file_name LIKE "%.csv";', datasetIDF)
+            for result in db.cur.fetchall():
+                CSVreader = csv.DictReader(io.StringIO(result['file_data'].decode('utf-8')))
+                for entry in EF.columnSelections:
+                    if entry.id == result['file_name']:
+                        correctColumn = entry.data
+                        CSVtexts = []
+                        for row in CSVreader:
+                            CSVtexts.append(row[correctColumn])
+                        defaultTexts.append('\n\n'.join(CSVtexts))
+           
+        EF.finalText.data = '\n\n\n\n'.join(defaultTexts)
 
     return render_template('dataset-editor.html', datasetName=TS['title'], form=EF, user=current_user)
 
