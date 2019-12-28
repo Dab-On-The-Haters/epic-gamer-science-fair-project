@@ -234,7 +234,7 @@ def welcome():
 @app.route('/teach')
 @login_required
 def teachTeach():
-    return render_template('teach.html')
+    return render_template('teach.html', user=current_user)
 
 
 @app.route('/upload-dataset', methods=['GET', 'POST'])
