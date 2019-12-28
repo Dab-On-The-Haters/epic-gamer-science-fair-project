@@ -308,7 +308,7 @@ def datasetEditor():
     columnInquiries = json.loads(request.args.get('columnLists', '{}'))
 
 
-    if not EF.finalText.data or len(EF.finalText.data) < 1000:
+    if (not EF.finalText.data) or len(EF.finalText.data) < 1000:
         db.cur.execute('SELECT file_data FROM datafiles WHERE datasetID = %s AND file_name NOT LIKE "%.csv";', datasetIDF)
         defaultTexts = []
         for result in db.cur.fetchall():
