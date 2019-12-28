@@ -300,10 +300,8 @@ def datasetEditor():
     #db.cur.execute('SELECT title, final_text FROM datasets WHERE ID=%s;', datasetIDF)
     #TS = db.cur.fetchone()
 
-    if EF.is_submitted():
-        if EF.validate(): pass # put stuff here later
-        
-        return redirect(url_for('.modelMaker', dataset=TS['ID']))
+    if EF.validate_on_submit():
+        return redirect(url_for('.modelMaker', dataset=request.args['ID']))
     
     columnInquiries = json.loads(request.args.get('columnLists', '{}'))
 
