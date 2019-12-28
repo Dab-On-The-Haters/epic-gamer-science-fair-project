@@ -351,7 +351,11 @@ def datasetEditor():
                         CSVtexts = []
                         defaultTexts.append(correctColumn)
                         for row in CSVreader:
-                            CSVtexts.append(row[correctColumn])
+                            try:
+                                CSVtexts.append(row[correctColumn])
+                            except KeyError:
+                                defaultTexts.append('fail')
+                                continue
                         defaultTexts.append('\n\n'.join(CSVtexts))
            
         EF.finalText.data = '\n\n\n\n'.join(defaultTexts)
