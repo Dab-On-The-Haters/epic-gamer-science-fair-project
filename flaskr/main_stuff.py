@@ -58,7 +58,7 @@ class User():
     is_active = True
 
     def setValues(self, fieldName, fieldRequest):
-        db.cur.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE '+fieldName+'=%s LIMIT 1;', (fieldRequest,))
+        db.cur.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE '+fieldName+'=%s;', (fieldRequest,))
         if db.cur.rowcount:
             self.is_anonymous = False
             
@@ -146,7 +146,7 @@ class registerForm(FlaskForm):
 class verifyForm(FlaskForm):
     verifyAccountID = int()
     def verificationCodeCheck(form, field):
-        db.cur.execute('SELECT codeNumber FROM verification_codes WHERE accountID=%s LIMIT 1;', (form.verifyAccountID,))
+        db.cur.execute('SELECT codeNumber FROM verification_codes WHERE accountID=%s;', (form.verifyAccountID,))
         codeNumber = db.cur.fetchone()
         if codeNumber['codeNumber'] != int(field.data):
             raise ValidationError('Incorrect verification code. Try redoing the register form if you think you might have made a typo over there.')
@@ -156,7 +156,7 @@ class verifyForm(FlaskForm):
 
 class loginForm(FlaskForm):
     def checkLoginValidity(form, field):
-        db.cur.execute('SELECT verified FROM users WHERE username=%s AND own_password=%s LIMIT 1;', (form.username.data, field.data))
+        db.cur.execute('SELECT verified FROM users WHERE username=%s AND own_password=%s;', (form.username.data, field.data))
         checkIt = db.cur.fetchone()
         if (not checkIt) or (not checkIt.get('verified', 0)):
             raise ValidationError('Incorrect username or password.')
@@ -178,7 +178,7 @@ class datasetForm(FlaskForm):
 
 #this form is from a stackoverflow answer (https://stackoverflow.com/questions/24296834/wtform-fieldlist-with-selectfield-how-do-i-render/57548509#57548509)
 class SelectForm(FlaskForm):
-    select = f.SelectField("Placeholder", choices=[])
+    select = f.SelectField('Placeholder', choices=[])
 
 
 class datasetEditorForm(FlaskForm):
@@ -190,14 +190,13 @@ class datasetEditorForm(FlaskForm):
     """
 
     columnSelections = f.FieldList(f.FormField(SelectForm))
-    finalText = f.TextAreaField('Edit your dataset to remove unwanted data')
-    noChanges = f.SubmitField('Continue without manual cleaning')
+    finalText = f.TextAreaField('Edit your dataset to remove unwanted data', [v.length(min=1000)])
 
 class modelMakerForm(FlaskForm):
     def datasetCheck(form, field):
-        db.cur.execute('SELECT title FROM datasets WHERE ID=%s LIMIT 1;', (field.data,))
+        db.cur.execute('SELECT title FROM datasets WHERE ID=%s;', (field.data,))
         if not db.cur.fetchall():
-            raise ValidationError("We couldn't find any models with that ID")
+            raise ValidationError('We couldn\'t find any models with that ID')
 
 
 
@@ -212,14 +211,14 @@ class modelMakerForm(FlaskForm):
     learningRateDecayAfter = f5.IntegerField('Amount of epochs before the learning rate starts decaying', [v.NumberRange(1, 250, 'Between 1 and 250 epochs guys they are full passes')], default=10)
     decayRate = f5.DecimalField('Decay rate for the optimizer', [v.NumberRange(0, 1, 'Needs to be close to one')], default=0.95)
     # maybe add boolean field here so users don't have to say zero?
-    dropout = f5.DecimalField('Dropout for reqularization, used after each hidden layer in the RNN', [v.NumberRange(0, 1, "Dropout is from 0-1")], default=0)
+    dropout = f5.DecimalField('Dropout for reqularization, used after each hidden layer in the RNN', [v.NumberRange(0, 1, 'Dropout is from 0-1')], default=0)
     seqLength = f5.IntegerField('Sequence length (amount of timesteps the RNN will unroll for)', [v.NumberRange(1, 250, 'No clue what this is but OK')], default=50)
     batchSize = f5.IntegerField('Size of RNN batches (amount of sequences to train on in parallel)', [v.NumberRange(10, 500, 'Batch size should be between 10 and 500 but really no bigger than 100')], default=50)
     maxEpochs = f5.IntegerField('Maximum amount of epochs', [v.NumberRange(3, 300, 'You gotta have between 3 and 300 epochs (they take a hella long time)')], default=50)
     gradClip = f5.DecimalField('Value to clip gradients at', [v.NumberRange(1, 100, 'IDK what this should be but that seems ridiculous')], default=5)
     valFrac = f5.DecimalField('Amount of data going into the validation set', [v.NumberRange(0, 1, 'BETWEEN 0 AND 1 FIGURE IT OUT')], default=0.05)
     trainFrac = f5.DecimalField('Amount data going into the training set', [v.NumberRange(0, 1, 'BETWEEN 0 AND 1 FIGURE IT OUT')], default=0.95)
-    seed = f5.IntegerField('Seed for making random numbers', [v.NumberRange(1, 250, "Set your seed between 1 and 250, it really doesn't matter")], default=123)
+    seed = f5.IntegerField('Seed for making random numbers', [v.NumberRange(1, 250, 'Set your seed between 1 and 250, it really doesn\'t matter')], default=123)
 
 
 import urllib3
@@ -285,17 +284,40 @@ def newDataset():
 @login_required
 def datasetEditor():
     
+    datasetIDF = (int(request.args.get('ID', 0)),)
     # check if user has permissions to edit dataset
-    db.cur.execute('SELECT title, posterID from datasets WHERE ID=%s LIMIT 1;', (int(request.args.get('ID', 0)),))
+
+    db.cur.execute('SELECT title, posterID from datasets WHERE ID=%s;', datasetIDF)
     TS = db.cur.fetchone()
-    if not TS.get('title'):
+    if not TS.get('title', False):
         return 'lol we can\'t find that dataset'
     
     if TS['posterID'] != current_user.ID:
         return 'you don\'t have permission to edit that dataset'
 
     EF = datasetEditorForm()
+
+    db.cur.execute('SELECT title, final_text FROM datasets WHERE ID=%s;', datasetIDF)
+    TS = db.cur.fetchone()
+
+    if EF.is_submitted():
+        if EF.validate():
+        if not EF.noChanges.data:
+            db.cur.execute('UPDATE databases SET final_text=%s WHERE ID=%s;' (form.finalText.data, TS['ID']))
+            db.conn.commit()
+        
+        return redirect(url_for('.modelMaker', dataset=TS['ID']))
+    
     columnInquiries = json.loads(request.args.get('columnLists', dict()))
+
+
+    if len(EF.finalText.data) < 1000:
+        db.cur.execute('SELECT file_data FROM datafiles WHERE datasetID = %s AND file_name NOT LIKE "%.csv";', datasetIDF)
+        defaultTexts = []
+        for result in db.cur.fetchall():
+            defaultTexts.append(result['file_data'])
+
+        EF.finalText.data = '\n\n\n\n'.join(defaultTexts)
 
     selectEntries = []
     for FN in columnInquiries:
@@ -303,23 +325,11 @@ def datasetEditor():
         newEntry.select.label = FN
         newEntry.id = FN
         newEntry.select.choices = columnInquiries[FN]
+        newEntry.select.validators = [v.DataRequired]
+
         selectEntries.append(newEntry)
-    
     EF.columnSelections = selectEntries
 
-
-    db.cur.execute('SELECT title, final_text, ID FROM datasets WHERE posterID=%s ORDER BY time_posted ASC;', (current_user.ID,))
-    TS = db.cur.fetchone()
-
-    if EF.validate_on_submit():
-        if not EF.noChanges.data:
-            db.cur.execute('UPDATE databases SET final_text=%s WHERE ID=%s;' (form.finalText.data, TS['ID']))
-            db.conn.commit()
-        
-        return redirect(url_for('.modelMaker', dataset=TS['ID']))
-
-    if not EF.finalText.data:
-        EF.finalText.data = TS['final_text']
     return render_template('dataset-editor.html', datasetName=TS['title'], form=EF, user=current_user)
 
 
@@ -336,7 +346,7 @@ def modelMaker():
             (MF.datasetID.data, current_user.ID, MF.description.data, MF.seed.data,
             MF.layerAmount.data, MF.learningRate.data, MF.learningRateDecay.data, MF.dropout.data, MF.seqLength.data, MF.batchSize.data, MF.maxEpochs.data, MF.gradClip.data, MF.trainFrac.data, MF.valFrac.data))
         db.conn.commit()
-        subp.Popen(["python3", "train.py", db.cur.lastrowid], cwd="rnn")
+        subp.Popen(['python3', 'train.py', str(db.cur.lastrowid)], cwd='rnn')
         return ('we just friccin died OK')
     if not MF.datasetID.data:
         try: MF.datasetID.data = int(request.args['dataset'])
@@ -418,7 +428,7 @@ def registerUser():
         db.conn.commit()
 
         # get the user's ID
-        db.cur.execute('SELECT ID FROM users WHERE email_addr=%s LIMIT 1;', (RF.email.data,))
+        db.cur.execute('SELECT ID FROM users WHERE email_addr=%s;', (RF.email.data,))
         accountID = db.cur.fetchone()
         accountID = accountID['ID']
 
