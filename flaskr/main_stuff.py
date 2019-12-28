@@ -14,7 +14,7 @@ FLASK DOCUMENTATION IS AT https://flask.palletsprojects.com/en/1.1.x/ YOU'LL WAN
 
 
 # import all the flask stuff we'll be needing
-from flask import Flask, escape, request, redirect, render_template, send_file, send_from_directory, flash # etc...
+from flask import Flask, escape, request, redirect, render_template, send_file, send_from_directory, url_for # etc...
 # initialize flask as "app". this matters not just for literally everything but for the WSGI as well
 app = Flask(__name__)
 
@@ -270,7 +270,7 @@ def newDataset():
                 else: continue
                 
             db.conn.commit()
-            return redirect('/edit-dataset', messages={"ID": datasetID, "columnLists": json.dumps(columnLists)})
+            return redirect(url_for('/edit-dataset', ID=datasetID, columnLists=json.dumps(columnLists)))
         try:
             if DF.newURL.data: DF.URLs.append_entry()
             elif DF.newFile.data: DF.files.append_entry()
@@ -316,7 +316,7 @@ def datasetEditor():
             db.cur.execute('UPDATE databases SET final_text=%s WHERE ID=%s;' (form.finalText.data, TS['ID']))
             db.conn.commit()
         
-        return redirect('/new-model', messages={"dataset": TS['ID']})
+        return redirect(url_for('.modelMaker', dataset=TS['ID']))
 
     if not EF.finalText.data:
         EF.finalText.data = TS['final_text']
