@@ -320,7 +320,7 @@ def datasetEditor():
 
     if not EF.finalText.data:
         EF.finalText.data = TS['final_text']
-    return render_template('dataset-editor.html', datasetName=TS['title'], form=EF)
+    return render_template('dataset-editor.html', datasetName=TS['title'], form=EF, user=current_user)
 
 
 @app.route('/new-model', methods=['GET', 'POST'])
