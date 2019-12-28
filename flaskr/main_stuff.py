@@ -266,7 +266,7 @@ def newDataset():
                 splitFN = FN.split('.')
                 if len(splitFN) > 1:
                     if splitFN[-1] == 'csv':
-                        columnLists[splitFN[0]] = csv.DictReader(io.StringIO(files[FN], newline='')).fieldnames
+                        columnLists[FN] = csv.DictReader(io.StringIO(files[FN], newline='')).fieldnames
                     else: continue
                 else: continue
                 
@@ -301,12 +301,12 @@ def datasetEditor():
 
     #db.cur.execute('SELECT title, final_text FROM datasets WHERE ID=%s;', datasetIDF)
     #TS = db.cur.fetchone()
-    """
+    
     if EF.validate_on_submit():
         # set dataset final text
         db.cur.execute('UPDATE datasets SET final_text = %s WHERE ID = %s;', (EF.finalText.data, request.args['ID']))
         db.conn.commit()
-        return redirect(url_for('.modelMaker', dataset=request.args['ID']))"""
+        return redirect(url_for('.modelMaker', dataset=request.args['ID']))
     
     columnInquiries = json.loads(request.args.get('columnLists', '{}'))
     
@@ -339,9 +339,8 @@ def datasetEditor():
         if not EF.columnSelections[-1].errors:
             # get dataset's CSVs and check them against column selections, select and add in column data
             db.cur.execute('SELECT file_name, file_data FROM datafiles WHERE datasetID = %s AND file_name LIKE "%.csv";', datasetIDF)
-            results = db.cur.fetchall()
             defaultTexts.append('yeet')
-            for result in results:
+            for result in db.cur.fetchall():
                 defaultTexts.append('result')
                 CSVreader = csv.DictReader(io.StringIO(result['file_data'].decode('utf-8'), newline=''))
                 for entry in EF.columnSelections:
