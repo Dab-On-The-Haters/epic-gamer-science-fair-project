@@ -339,6 +339,7 @@ def datasetEditor():
     for FN in columnInquiries:
         newEntry = SelectForm()
         newEntry.select.label = FN
+        newEntry.select.id = FN
         newEntry.id = FN
         newEntry.select.validators = [v.DataRequired]
 
