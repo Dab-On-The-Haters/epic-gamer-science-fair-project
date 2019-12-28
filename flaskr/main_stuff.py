@@ -312,7 +312,7 @@ def datasetEditor():
         db.cur.execute('SELECT file_data FROM datafiles WHERE datasetID = %s AND file_name NOT LIKE "%.csv";', datasetIDF)
         defaultTexts = []
         for result in db.cur.fetchall():
-            defaultTexts.append(result['file_data'])
+            defaultTexts.append(result['file_data'].decode('utf-8'))
 
         EF.finalText.data = '\n\n\n\n'.join(defaultTexts)
 
