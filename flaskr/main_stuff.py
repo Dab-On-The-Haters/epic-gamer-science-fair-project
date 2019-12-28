@@ -332,7 +332,7 @@ def datasetEditor():
                             CSVtexts.append(row[EF.columnSelections])
                         defaultTexts.append('\n\n'.join(CSVtexts))
            
-        EEF.finalText.data = '\n\n\n\n'.join(defaultTexts)
+        EF.finalText.data = '\n\n\n\n'.join(defaultTexts)
 
     selectEntries = []
     for FN in columnInquiries:
