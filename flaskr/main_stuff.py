@@ -324,7 +324,7 @@ def datasetEditor():
     if request.method == 'POST':
         if EF.validate():
             # set dataset final text
-            db.cur.execute('UPDATE datasets SET final_text = %s WHERE ID = %s;', (EF.finalText.data, request.args['ID']))
+            db.cur.execute('UPDATE datasets SET final_text = %s WHERE ID = %s;', (EF.finalText.data.decode('utf-8'), request.args['ID']))
             db.conn.commit()
             return redirect(url_for('.modelMaker', dataset=request.args['ID']))
         
