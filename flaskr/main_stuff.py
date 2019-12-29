@@ -302,11 +302,46 @@ def datasetEditor():
     #db.cur.execute('SELECT title, final_text FROM datasets WHERE ID=%s;', datasetIDF)
     #TS = db.cur.fetchone()
     
-    if EF.validate_on_submit():
-        # set dataset final text
-        db.cur.execute('UPDATE datasets SET final_text = %s WHERE ID = %s;', (EF.finalText.data, request.args['ID']))
-        db.conn.commit()
-        return redirect(url_for('.modelMaker', dataset=request.args['ID']))
+    if request.method == 'POST':
+        if EF.validate():
+            # set dataset final text
+            db.cur.execute('UPDATE datasets SET final_text = %s WHERE ID = %s;', (EF.finalText.data, request.args['ID']))
+            db.conn.commit()
+            return redirect(url_for('.modelMaker', dataset=request.args['ID']))
+        
+        # if finaltext isn't filled out
+        elif (not EF.finalText.data) or len(EF.finalText.data) < 1000:
+        # deal with adding in text files
+            db.cur.execute('SELECT file_data FROM datafiles WHERE datasetID = %s AND file_name NOT LIKE "%.csv";', datasetIDF)
+            defaultTexts = []
+            for result in db.cur.fetchall():
+                defaultTexts.append(result['file_data'].decode('utf-8'))
+
+            # if column selections are entered / submitted...
+            if not EF.columnSelections[-1].errors:
+                # get dataset's CSVs and check them against column selections, select and add in column data
+                db.cur.execute('SELECT file_name, file_data FROM datafiles WHERE datasetID = %s AND file_name LIKE "%.csv";', datasetIDF)
+                defaultTexts.append('yeet')
+                for result in db.cur.fetchall():
+                    defaultTexts.append('result')
+                    CSVreader = csv.DictReader(io.StringIO(result['file_data'].decode('utf-8'), newline=''))
+                    for entry in EF.columnSelections:
+                        defaultTexts.append(result['file_name'])
+                        defaultTexts.append(entry.id)
+                        if entry.id == result['file_name']:
+                            correctColumn = entry.select.choice.data
+                            CSVtexts = []
+                            defaultTexts.append(correctColumn)
+                            for row in CSVreader:
+                                try:
+                                    CSVtexts.append(row[correctColumn])
+                                except KeyError:
+                                    defaultTexts.append('fail')
+                                    continue
+                            defaultTexts.append('\n\n'.join(CSVtexts))
+            
+            EF.finalText.data = '\n\n\n\n'.join(defaultTexts)
+
     
     columnInquiries = json.loads(request.args.get('columnLists', '{}'))
     
@@ -327,38 +362,6 @@ def datasetEditor():
         selectEntries.append(newEntry)
     EF.columnSelections = selectEntries
 
-    # if finaltext isn't filled out
-    if (not EF.finalText.data) or len(EF.finalText.data) < 1000:
-        # deal with adding in text files
-        db.cur.execute('SELECT file_data FROM datafiles WHERE datasetID = %s AND file_name NOT LIKE "%.csv";', datasetIDF)
-        defaultTexts = []
-        for result in db.cur.fetchall():
-            defaultTexts.append(result['file_data'].decode('utf-8'))
-
-        # if column selections are entered / submitted...
-        if not EF.columnSelections[-1].errors:
-            # get dataset's CSVs and check them against column selections, select and add in column data
-            db.cur.execute('SELECT file_name, file_data FROM datafiles WHERE datasetID = %s AND file_name LIKE "%.csv";', datasetIDF)
-            defaultTexts.append('yeet')
-            for result in db.cur.fetchall():
-                defaultTexts.append('result')
-                CSVreader = csv.DictReader(io.StringIO(result['file_data'].decode('utf-8'), newline=''))
-                for entry in EF.columnSelections:
-                    defaultTexts.append(result['file_name'])
-                    defaultTexts.append(entry.id)
-                    if entry.id == result['file_name']:
-                        correctColumn = entry.select.choice.data
-                        CSVtexts = []
-                        defaultTexts.append(correctColumn)
-                        for row in CSVreader:
-                            try:
-                                CSVtexts.append(row[correctColumn])
-                            except KeyError:
-                                defaultTexts.append('fail')
-                                continue
-                        defaultTexts.append('\n\n'.join(CSVtexts))
-           
-        EF.finalText.data = '\n\n\n\n'.join(defaultTexts)
     #EF.finalText.data = 'pee pee poo poo'
     return render_template('dataset-editor.html', datasetName=TS['title'], form=EF, user=current_user)
 
