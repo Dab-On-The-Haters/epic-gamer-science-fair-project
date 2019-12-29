@@ -1,4 +1,4 @@
-pee pee poo poo this isn't our code
+pee pee poo poo this isn't our code, it
 
 # Char RNN
 

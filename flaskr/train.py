@@ -3,7 +3,7 @@
 # Thanks to Laurent Dinh for examples of parameter saving/loading in PyTorch
 # Thanks to Sean Robertson for https://github.com/spro/practical-pytorch
 
-from tqdm import tqdm
+#from tqdm import tqdm
 from torch.autograd import Variable
 import torch.nn as nn
 import torch
