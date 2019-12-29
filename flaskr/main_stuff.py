@@ -336,6 +336,8 @@ verifyMsg = Message('Verify your email to talk to Joe!', sender='joethernn@gmail
 @app.route('/register', methods=['GET', 'POST'])
 def registerUser():
     RF = f.registerForm()
+    RF.verifyAccountID = current_user.ID
+
     if RF.validate_on_submit():
         
         # add the user to DB
