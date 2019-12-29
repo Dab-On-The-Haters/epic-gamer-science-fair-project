@@ -14,7 +14,7 @@ FLASK DOCUMENTATION IS AT https://flask.palletsprojects.com/en/1.1.x/ YOU'LL WAN
 
 
 # import all the flask stuff we'll be needing
-from flask import Flask, escape, request, redirect, render_template, send_file, send_from_directory, url_for # etc...
+from flask import Flask, request, redirect, render_template, session # etc...
 # initialize flask as "app". this matters not just for literally everything but for the WSGI as well
 app = Flask(__name__)
 
@@ -130,6 +130,7 @@ def newDataset():
             (DF.title.data, DF.description.data, current_user.ID))
             db.conn.commit()
             datasetID = db.cur.lastrowid
+            session['datasetID'] = datasetID
             # moved from post-validation to pre and back to post again lol
             files = dict()
             
@@ -158,7 +159,9 @@ def newDataset():
                 else: continue
                 
             db.conn.commit()
-            return redirect(url_for('.datasetEditor', ID=datasetID, columnLists=json.dumps(columnLists).replace(' ', '')))
+
+            session['columnLists'] = json.dumps(columnLists)
+            return redirect('/edit-dataset')
         try: # do other submitted operations
             if DF.newURL.data: DF.URLs.append_entry()
             elif DF.newFile.data: DF.files.append_entry()
@@ -173,7 +176,7 @@ def newDataset():
 @login_required
 def datasetEditor():
     
-    datasetIDF = (int(request.args.get('ID', 0)),)
+    datasetIDF = (int(session.get('datasetID', 0)),)
     # check if user has permissions to edit dataset
 
     db.cur.execute('SELECT title, posterID from datasets WHERE ID=%s;', datasetIDF)
@@ -186,7 +189,7 @@ def datasetEditor():
 
     EF = f.datasetEditorForm()
 
-    columnInquiries = json.loads(request.args.get('columnLists', '{}'))
+    columnInquiries = json.loads(session.get('columnLists', '{}'))
     
     # add in selections to the form
     selectEntries = []
@@ -210,9 +213,9 @@ def datasetEditor():
     if request.method == 'POST':
         if EF.validate():
             # set dataset final text
-            db.cur.execute('UPDATE datasets SET final_text = %s WHERE ID = %s;', (EF.finalText.data, request.args['ID']))
+            db.cur.execute('UPDATE datasets SET final_text = %s WHERE ID = %s;', (EF.finalText.data, session['datasetID']))
             db.conn.commit()
-            return redirect(url_for('.modelMaker', dataset=request.args['ID']))
+            return redirect('/new-model')
         
         # if finaltext isn't filled out
         elif (not EF.finalText.data) or len(EF.finalText.data) < 1000:
@@ -260,7 +263,7 @@ def modelMaker():
         subp.Popen(['python3', 'train.py', str(db.cur.lastrowid)], cwd='rnn/')
         return ('we just friccin died OK')
     if not MF.datasetID.data:
-        try: MF.datasetID.data = int(request.args['dataset'])
+        try: MF.datasetID.data = int(session['dataset'])
         except: pass
     return render_template('model-maker.html', form=MF)
 
@@ -300,8 +303,10 @@ def logout():
 
 
 
-@app.route('/verify/<int:ID>', methods=['GET', 'POST'])
-def verifyUser(ID):
+@app.route('/verify', methods=['GET', 'POST'])
+def verifyUser():
+    ID = current_user.ID
+    
     VF = f.verifyForm()
     VF.verifyAccountID = ID
 
@@ -349,11 +354,16 @@ def registerUser():
             (verificationCode, accountID))
         db.conn.commit()
 
+        # log in unverified user
+        newUser = user()
+        newUser.setValues('ID', accountID)
+        login_user(newUser, remember=True)
+
         # send the verification message
         verifyMsg.recipients = [RF.email.data]
         verifyMsg.body = 'Hi '+RF.name.data+', use the code '+str(verificationCode)+' to verify your email address and get your account with Joe up and running.\nIf you don\'t know about the amazing Joe project, then just ignore this email. Thanks!'
         with app.app_context(): mail.send(verifyMsg)
 
-        return redirect('/verify/'+str(accountID))
+        return redirect('/verify')
 
     return render_template('register.html', form=RF)
