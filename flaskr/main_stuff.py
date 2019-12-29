@@ -211,7 +211,7 @@ def datasetEditor():
     if request.method == 'POST':
         if EF.validate():
             # set dataset final text
-            db.cur.execute('UPDATE datasets SET final_text = %s WHERE ID = %s;', (EF.finalText.data.encode('utf-8'), request.args['ID']))
+            db.cur.execute('UPDATE datasets SET final_text = %s WHERE ID = %s;', (EF.finalText.data, request.args['ID']))
             db.conn.commit()
             return redirect(url_for('.modelMaker', dataset=request.args['ID']))
         
@@ -221,14 +221,14 @@ def datasetEditor():
             db.cur.execute('SELECT file_data FROM datafiles WHERE datasetID = %s AND file_name NOT LIKE "%.csv";', datasetIDF)
             defaultTexts = []
             for result in db.cur.fetchall():
-                defaultTexts.append(result['file_data'].decode('utf-8'))
+                defaultTexts.append(result['file_data'])
 
             # if column selections are entered / submitted...
             if not EF.columnSelections[-1].errors:
                 # get dataset's CSVs and check them against column selections, select and add in column data
                 db.cur.execute('SELECT file_name, file_data FROM datafiles WHERE datasetID = %s AND file_name LIKE "%.csv";', datasetIDF)
                 for result in db.cur.fetchall():
-                    CSVreader = csv.DictReader(io.StringIO(result['file_data'].decode('utf-8'), newline=''))
+                    CSVreader = csv.DictReader(io.StringIO(result['file_data'], newline=''))
                     for entry in EF.columnSelections:
                         if entry.id == result['file_name']:
                             correctColumn = entry.select.data
