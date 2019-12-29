@@ -301,6 +301,8 @@ def logout():
 def verifyUser(ID):
     #ID = current_user.ID
     
+    
+
     VF = f.verifyForm()
     VF.verifyAccountID = ID
 
@@ -356,6 +358,6 @@ def registerUser():
         verifyMsg.body = 'Hi '+RF.name.data+', use the code '+str(verificationCode)+' to verify your email address and get your account with Joe up and running.\nIf you don\'t know about the amazing Joe project, then just ignore this email. Thanks!'
         with app.app_context(): mail.send(verifyMsg)
 
-        return redirect('/verify')
+        return redirect('/verify/' + str(accountID))
 
     return render_template('register.html', form=RF)
