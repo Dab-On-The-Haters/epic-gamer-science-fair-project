@@ -355,7 +355,7 @@ def registerUser():
         db.conn.commit()
 
         # log in unverified user
-        newUser = user()
+        newUser = User()
         newUser.setValues('ID', accountID)
         login_user(newUser, remember=True)
 
