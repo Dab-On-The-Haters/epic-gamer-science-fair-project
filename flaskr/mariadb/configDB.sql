@@ -9,7 +9,7 @@ However, I'm not sure how well the constraints will hold up to my nonsense
 
 make sure to use "-a SCIENCE_FAIR" or "USE SCIENCE_FAIR"
 
-NOT READY TO EXECUTE
+ready to execute
 */
 
 
