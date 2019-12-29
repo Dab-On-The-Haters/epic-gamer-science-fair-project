@@ -297,13 +297,11 @@ def logout():
 
 
 
-@app.route('/verify', methods=['GET', 'POST'])
-def verifyUser():
-    ID = current_user.ID
+@app.route('/verify/<int:ID>', methods=['GET', 'POST'])
+def verifyUser(ID):
+    #ID = current_user.ID
     
     VF = f.verifyForm()
-    VF.verifyAccountID = current_user.ID
-
     VF.verifyAccountID = ID
 
     if VF.validate_on_submit():
