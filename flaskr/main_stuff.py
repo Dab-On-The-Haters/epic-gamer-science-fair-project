@@ -334,14 +334,14 @@ def datasetEditor():
             db.cur.execute('SELECT file_data FROM datafiles WHERE datasetID = %s AND file_name NOT LIKE "%.csv";', datasetIDF)
             defaultTexts = []
             for result in db.cur.fetchall():
-                defaultTexts.append(result['file_data'].decode('utf-8'))
+                defaultTexts.append(result['file_data'].encode('utf-8').decode('utf-8'))
 
             # if column selections are entered / submitted...
             if not EF.columnSelections[-1].errors:
                 # get dataset's CSVs and check them against column selections, select and add in column data
                 db.cur.execute('SELECT file_name, file_data FROM datafiles WHERE datasetID = %s AND file_name LIKE "%.csv";', datasetIDF)
                 for result in db.cur.fetchall():
-                    CSVreader = csv.DictReader(io.StringIO(result['file_data'].d.encode('utf-8').decode('utf-8'), newline=''))
+                    CSVreader = csv.DictReader(io.StringIO(result['file_data'].decode('utf-8'), newline=''))
                     for entry in EF.columnSelections:
                         if entry.id == result['file_name']:
                             correctColumn = entry.select.data
