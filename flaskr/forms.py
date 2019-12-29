@@ -46,8 +46,7 @@ class verifyForm(FlaskForm):
     verifyAccountID = int()
     def verificationCodeCheck(form, field):
         db.cur.execute('SELECT codeNumber FROM verification_codes WHERE accountID=%s;', (form.verifyAccountID,))
-        codeNumber = db.cur.fetchone()
-        if codeNumber['codeNumber'] != int(field.data):
+        if db.cur.fetchone()['codeNumber'] != int(field.data):
             raise ValidationError('Incorrect verification code. Try redoing the register form if you think you might have made a typo over there.')
     
     verificationCode = f.IntegerField('Verification code', [v.InputRequired(message=r("4-digit verification code. You should have received it via email. If it's been a while and you still haven't gotten it, please fill out the register form again in case you mistyped it.")), verificationCodeCheck]) 
