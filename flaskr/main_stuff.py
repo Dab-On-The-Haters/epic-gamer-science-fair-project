@@ -299,6 +299,26 @@ def datasetEditor():
 
     EF = datasetEditorForm()
 
+
+    columnInquiries = json.loads(request.args.get('columnLists', '{}'))
+    
+    # add in selections to the form
+    selectEntries = []
+    for FN in columnInquiries:
+        newEntry = SelectForm()
+        newEntry.select.label = FN
+        newEntry.select.id = FN
+        newEntry.id = FN
+        newEntry.select.validators = [v.DataRequired(message='Please select a column to go into the dataset.')]
+
+        choices = []
+        for choice in columnInquiries[FN]:
+            choices.append((choice, choice))
+        newEntry.select.choices = choices
+
+        selectEntries.append(newEntry)
+    EF.columnSelections = selectEntries
+
     #db.cur.execute('SELECT title, final_text FROM datasets WHERE ID=%s;', datasetIDF)
     #TS = db.cur.fetchone()
     
@@ -341,26 +361,6 @@ def datasetEditor():
                             defaultTexts.append('\n\n'.join(CSVtexts))
             
             EF.finalText.data = '\n\n\n\n'.join(defaultTexts)
-
-    
-    columnInquiries = json.loads(request.args.get('columnLists', '{}'))
-    
-    # add in selections to the form
-    selectEntries = []
-    for FN in columnInquiries:
-        newEntry = SelectForm()
-        newEntry.select.label = FN
-        newEntry.select.id = FN
-        newEntry.id = FN
-        newEntry.select.validators = [v.DataRequired(message='Please select a column to go into the dataset.')]
-
-        choices = []
-        for choice in columnInquiries[FN]:
-            choices.append((choice, choice))
-        newEntry.select.choices = choices
-
-        selectEntries.append(newEntry)
-    EF.columnSelections = selectEntries
 
     #EF.finalText.data = 'pee pee poo poo'
     return render_template('dataset-editor.html', datasetName=TS['title'], form=EF, user=current_user)
