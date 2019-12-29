@@ -1,78 +1,101 @@
-###############################################################################
-# Language Modeling on Wikitext-2
-#
-# This file generates new sentences sampled from the language model
-#
-###############################################################################
-
-import argparse
-
+from torch.autograd import Variable
+import torch.nn as nn
 import torch
 
-import data
+import numpy as np
+import os
+import re
+import pickle
+import argparse
 
-parser = argparse.ArgumentParser(description='PyTorch Wikitext-2 Language Model')
+from rnn import *
 
-# Model parameters.
-parser.add_argument('--data', type=str, default='./data/wikitext-2',
-                    help='location of the data corpus')
-parser.add_argument('--checkpoint', type=str, default='./model.pt',
-                    help='model checkpoint to use')
-parser.add_argument('--outf', type=str, default='generated.txt',
-                    help='output file for generated text')
-parser.add_argument('--words', type=int, default='1000',
-                    help='number of words to generate')
-parser.add_argument('--seed', type=int, default=1111,
-                    help='random seed')
-parser.add_argument('--cuda', action='store_true',
-                    help='use CUDA')
-parser.add_argument('--temperature', type=float, default=1.0,
-                    help='temperature - higher will increase diversity')
-parser.add_argument('--log-interval', type=int, default=100,
-                    help='reporting interval')
+parser = argparse.ArgumentParser(description='PyTorch char-rnn')
+parser.add_argument('--temperature', type=float, default=0.8)
+parser.add_argument('--sample_len', type=int, default=500)
+parser.add_argument('--checkpoint', '-c', type=str)
+parser.add_argument('--seed', type=str, default='a')
+parser.add_argument('--charfile', '-f', type=str)
+parser.add_argument('--concatenate', type=int, default=0)
 args = parser.parse_args()
 
-# Set the random seed manually for reproducibility.
-torch.manual_seed(args.seed)
-if torch.cuda.is_available():
-    if not args.cuda:
-        print("WARNING: You have a CUDA device, so you should probably run with --cuda")
+with open(args.charfile, 'rb') as f:
+    chars = pickle.load(f)
 
-device = torch.device("cuda" if args.cuda else "cpu")
+chars = sorted(list(set(chars)))
+chars_len = len(chars)
+char_to_index = {}
+index_to_char = {}
+for i, c in enumerate(chars):
+    char_to_index[c] = i
+    index_to_char[i] = c
 
-if args.temperature < 1e-3:
-    parser.error("--temperature has to be greater or equal 1e-3")
+random_state = np.random.RandomState(np.random.randint(1,9999))
 
-with open(args.checkpoint, 'rb') as f:
-    model = torch.load(f).to(device)
-model.eval()
+def uppercase_sentences(match):
+    return match.group(1) + ' ' + match.group(2).upper()
 
-corpus = data.Corpus(args.data)
-ntokens = len(corpus.dictionary)
+def index_to_tensor(index):
+    tensor = torch.zeros(1, 1).long()
+    tensor[0,0] = index
+    return Variable(tensor)
 
-is_transformer_model = hasattr(model, 'model_type') and model.model_type == 'Transformer'
-if not is_transformer_model:
-    hidden = model.init_hidden(1)
-input = torch.randint(ntokens, (1, 1), dtype=torch.long).to(device)
+def manual_sample(x, temperature):
+    x = x.reshape(-1).astype(np.float)
+    x /= temperature
+    x = np.exp(x)
+    x /= np.sum(x)
+    x = random_state.multinomial(1, x)
+    x = np.argmax(x)
+    return x.astype(np.int64)
 
-with open(args.outf, 'w') as outf:
-    with torch.no_grad():  # no tracking history
-        for i in range(args.words):
-            if is_transformer_model:
-                output = model(input, False)
-                word_weights = output[-1].squeeze().div(args.temperature).exp().cpu()
-                word_idx = torch.multinomial(word_weights, 1)[0]
-                word_tensor = torch.Tensor([[word_idx]]).long().to(device)
-                input = torch.cat([input, word_tensor], 0)
-            else:
-                output, hidden = model(input, hidden)
-                word_weights = output.squeeze().div(args.temperature).exp().cpu()
-                word_idx = torch.multinomial(word_weights, 1)[0]
-                input.fill_(word_idx)
+def sample(model, prime_str, predict_len, temperature, concatenate):
+    with torch.no_grad():
+        hidden = model.create_hidden(1)
+    prime_tensors = [index_to_tensor(char_to_index[char]) for char in prime_str]
 
-            word = corpus.dictionary.idx2word[word_idx]
+    for prime_tensor in prime_tensors[-2:]:
+        _, hidden = model(prime_tensor, hidden)
 
-            outf.write(word + ('\n' if i % 20 == 19 else ' '))
+    inp = prime_tensors[-1]
+    predicted = prime_str
+    for p in range(predict_len):
+        output, hidden = model(inp, hidden)
 
-            if i % args.log_interval == 0:
-                print('| Generated {}/{} words'.format(i, args.words))
+        # Sample from the network as a multinomial distribution
+        # output_dist = output.data.view(-1).div(temperature).exp()
+        # top_i = torch.multinomial(output_dist, 1)[0]
+
+        # Alternative: use numpy
+        top_i = manual_sample(output.data.numpy(), temperature)
+
+        # Add predicted character to string and use as next input
+        predicted_char = index_to_char[top_i]
+        predicted += predicted_char
+        inp = index_to_tensor(char_to_index[predicted_char])
+
+    predicted = predicted.split(' ', 1)[1].capitalize()
+    predicted = re.sub(r'([.?!]) ([a-z])', uppercase_sentences, predicted)
+    predicted = re.sub(r'([.?!]\n)([a-z])', uppercase_sentences, predicted)
+    predicted = re.sub(r'([.?!]\n *\n)([a-z])', uppercase_sentences, predicted)
+    if predicted.find('.'):
+        predicted = predicted[:predicted.rfind('.')+1]
+    if concatenate == -1:
+        predicted = re.sub(r'\n', ' ', predicted)
+    return predicted
+
+if os.path.exists(args.checkpoint):
+    print('Parameters found at {}... loading'.format(args.checkpoint))
+    checkpoint = torch.load(args.checkpoint, map_location=lambda storage, loc: storage)
+else:
+    raise ValueError('File not found: {}'.format(args.checkpoint))
+
+hidden_size = checkpoint['model']['encoder.weight'].size()[1]
+n_layers = 0
+for key in checkpoint['model'].keys():
+    if 'cells.weight_hh' in key:
+        n_layers = n_layers + 1
+
+model = RNN(chars_len, hidden_size, chars_len, n_layers, 0.5)
+model.load_state_dict(checkpoint['model'])
+print(sample(model, args.seed, args.sample_len, args.temperature, args.concatenate))
