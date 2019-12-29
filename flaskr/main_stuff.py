@@ -220,7 +220,7 @@ def datasetEditor():
                 defaultTexts.append(result['file_data'])
 
             # if column selections are entered / submitted...
-            if not EF.columnSelections[-1].errors:
+            if len(EF.columnSelections) == 0 or not EF.columnSelections[-1].errors:
                 # get dataset's CSVs and check them against column selections, select and add in column data
                 db.cur.execute('SELECT file_name, file_data FROM datafiles WHERE datasetID = %s AND file_name LIKE "%.csv";', datasetIDF)
                 for result in db.cur.fetchall():
@@ -301,7 +301,7 @@ def logout():
 def verifyUser(ID):
     #ID = current_user.ID
     
-    
+
 
     VF = f.verifyForm()
     VF.verifyAccountID = ID
