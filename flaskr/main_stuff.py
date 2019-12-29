@@ -299,7 +299,6 @@ def datasetEditor():
 
     EF = datasetEditorForm()
 
-
     columnInquiries = json.loads(request.args.get('columnLists', '{}'))
     
     # add in selections to the form
@@ -341,28 +340,21 @@ def datasetEditor():
             if not EF.columnSelections[-1].errors:
                 # get dataset's CSVs and check them against column selections, select and add in column data
                 db.cur.execute('SELECT file_name, file_data FROM datafiles WHERE datasetID = %s AND file_name LIKE "%.csv";', datasetIDF)
-                defaultTexts.append('yeet')
                 for result in db.cur.fetchall():
-                    defaultTexts.append('result')
                     CSVreader = csv.DictReader(io.StringIO(result['file_data'].decode('utf-8'), newline=''))
                     for entry in EF.columnSelections:
-                        defaultTexts.append(result['file_name'])
-                        defaultTexts.append(entry.id)
                         if entry.id == result['file_name']:
                             correctColumn = entry.select.data
                             CSVtexts = []
-                            defaultTexts.append(correctColumn)
                             for row in CSVreader:
                                 try:
                                     CSVtexts.append(row[correctColumn])
                                 except KeyError:
-                                    defaultTexts.append('fail')
                                     continue
                             defaultTexts.append('\n\n'.join(CSVtexts))
             
             EF.finalText.data = '\n\n\n\n'.join(defaultTexts)
 
-    #EF.finalText.data = 'pee pee poo poo'
     return render_template('dataset-editor.html', datasetName=TS['title'], form=EF, user=current_user)
 
 
