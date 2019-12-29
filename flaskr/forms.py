@@ -77,7 +77,7 @@ class datasetForm(FlaskForm):
 
 #this form is from a stackoverflow answer (https://stackoverflow.com/questions/24296834/wtform-fieldlist-with-selectfield-how-do-i-render/57548509#57548509)
 class SelectForm(FlaskForm):
-    select = f.SelectField('Placeholder', choices=[])
+    select = f.SelectField('Placeholder', [v.DataRequired(message='Please select a column to go into the dataset.')], choices=[])
 
 
 class datasetEditorForm(FlaskForm):

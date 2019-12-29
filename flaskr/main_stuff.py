@@ -195,7 +195,6 @@ def datasetEditor():
         newEntry.select.label = FN
         newEntry.select.id = FN
         newEntry.id = FN
-        newEntry.select.validators = [f.v.DataRequired(message='Please select a column to go into the dataset.')]
 
         choices = []
         for choice in columnInquiries[FN]:
