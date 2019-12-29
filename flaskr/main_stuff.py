@@ -68,7 +68,6 @@ class User():
             
             QA = db.cur.fetchone()
             self.is_active = QA['verified']
-            self.is_authenticated = QA['verified']
             self.ID = QA['ID']
             self.username = QA['username']
             self.email = QA['email_addr']
@@ -77,7 +76,6 @@ class User():
         else:
             self.ID = 0 # wow i'm such a good person
             self.is_anonymous = True
-            self.is_authenticated = False
             self.is_active = False
             self.username = ''
             self.name = 'Anonymous User'
@@ -85,9 +83,6 @@ class User():
     def get_id(self):
         return str(self.ID).encode('utf-8')
 
-
-    def get_id(self):
-        return str(self.ID).encode('utf-8')
 
 @loginManager.user_loader
 def load_user(ID):
