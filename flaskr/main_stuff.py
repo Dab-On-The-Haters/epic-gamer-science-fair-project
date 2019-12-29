@@ -298,7 +298,6 @@ def logout():
 
 
 @app.route('/verify', methods=['GET', 'POST'])
-@login_required
 def verifyUser():
     ID = current_user.ID
     
