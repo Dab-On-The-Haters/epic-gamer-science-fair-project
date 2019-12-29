@@ -345,10 +345,7 @@ def registerUser():
             (RF.email.data, RF.password.data, RF.username.data, RF.name.data))
         db.conn.commit()
 
-        # get the user's ID
-        db.cur.execute('SELECT ID FROM users WHERE email_addr=%s;', (RF.email.data,))
-        accountID = db.cur.fetchone()
-        accountID = accountID['ID']
+        accountID = db.cur.lastrowid
 
         #add the verification code to DB
         verificationCode = randint(1000,9999)
