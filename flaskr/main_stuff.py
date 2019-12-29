@@ -329,7 +329,7 @@ def datasetEditor():
                         defaultTexts.append(result['file_name'])
                         defaultTexts.append(entry.id)
                         if entry.id == result['file_name']:
-                            correctColumn = entry.select.choice.data
+                            correctColumn = entry.select.data
                             CSVtexts = []
                             defaultTexts.append(correctColumn)
                             for row in CSVreader:
