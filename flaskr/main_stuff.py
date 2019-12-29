@@ -97,8 +97,7 @@ import subprocess as subp
 # for reading datasets as they're uploaded
 import csv
 
-
-
+# for downloading dataset files
 import urllib3
 http = urllib3.PoolManager()
 
@@ -304,6 +303,8 @@ def verifyUser():
     ID = current_user.ID
     
     VF = f.verifyForm()
+    VF.verifyAccountID = current_user.ID
+
     VF.verifyAccountID = ID
 
     if VF.validate_on_submit():
@@ -332,7 +333,6 @@ verifyMsg = Message('Verify your email to talk to Joe!', sender='joethernn@gmail
 @app.route('/register', methods=['GET', 'POST'])
 def registerUser():
     RF = f.registerForm()
-    RF.verifyAccountID = current_user.ID
 
     if RF.validate_on_submit():
         
