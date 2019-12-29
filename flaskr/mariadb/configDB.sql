@@ -9,7 +9,7 @@ However, I'm not sure how well the constraints will hold up to my nonsense
 
 make sure to use "-a SCIENCE_FAIR" or "USE SCIENCE_FAIR"
 
-NOT READY TO EXECUTE
+ready to execute
 */
 
 
@@ -66,8 +66,9 @@ CREATE OR REPLACE TABLE datafiles
 (
     ID MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
     file_name VARCHAR(255) NOT NULL,
-    file_data LONGBLOB NOT NULL,
+    file_data LONGTEXT NOT NULL,
     datasetID MEDIUMINT UNSIGNED NOT NULL,
+    CONSTRAINT `datafiles_pk` PRIMARY KEY (ID),
     CONSTRAINT `dataset_file_fk`
         FOREIGN KEY (datasetID) REFERENCES datasets (ID)
         ON DELETE CASCADE
@@ -139,6 +140,7 @@ CREATE OR REPLACE TABLE checkpoints
     iteration MEDIUMINT UNSIGNED NOT NULL,
     epoch FLOAT UNSIGNED NOT NULL,
     learning_rate FLOAT UNSIGNED NOT NULL,
+    pytorch_data LONGBLOB NOT NULL,
     modelID MEDIUMINT UNSIGNED NOT NULL,
     CONSTRAINT `checkpoints_pk` PRIMARY KEY (ID),
     CONSTRAINT `model_checkpoint_fk`

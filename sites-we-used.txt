@@ -21,6 +21,7 @@ https://certbot.eff.org/
 https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins
 http://www.daniloaz.com/en/how-to-create-a-user-in-mysql-mariadb-and-grant-permissions-on-a-specific-database/
 https://pythonhosted.org/Flask-Mail/
+https://stackoverflow.com/questions/24296834/wtform-fieldlist-with-selectfield-how-do-i-render/57548509#57548509
 https://mariadb.com/kb/en/library/documentation/
 https://pytorch.org/
 https://pytorch.org/text/
