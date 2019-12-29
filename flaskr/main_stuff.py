@@ -254,7 +254,7 @@ def modelMaker():
             (MF.datasetID.data, current_user.ID, MF.description.data, MF.seed.data,
             MF.layerAmount.data, MF.learningRate.data, MF.learningRateDecay.data, MF.dropout.data, MF.seqLength.data, MF.batchSize.data, MF.maxEpochs.data, MF.gradClip.data, MF.trainFrac.data, MF.valFrac.data))
         db.conn.commit()
-        subp.Popen(['python3', 'train.py', str(db.cur.lastrowid)], cwd='rnn/')
+        subp.Popen(['python3', 'train.py', str(db.cur.lastrowid)])
         return ('we just friccin died OK')
     if not MF.datasetID.data:
         try: MF.datasetID.data = int(session['dataset'])
@@ -269,7 +269,7 @@ def exploreModels():
 
 @app.route('/about')
 def aboutPage():
-    return render_template('about-index.html')
+    return render_template('about-index.html', user=current_user)
 
 
 @app.route('/login', methods=['GET', 'POST'])

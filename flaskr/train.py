@@ -4,6 +4,8 @@
 # Thanks to Sean Robertson for https://github.com/spro/practical-pytorch
 
 #from tqdm import tqdm
+import db
+
 from torch.autograd import Variable
 import torch.nn as nn
 import torch
@@ -11,12 +13,14 @@ import torch
 import numpy as np
 import math
 import os
-import argparse
+#import argparse
 import pickle
 
 from rnn import *
 
-parser = argparse.ArgumentParser(description='PyTorch char-rnn')
+db.cur.execute('')
+
+#parser = argparse.ArgumentParser(description='PyTorch char-rnn')
 parser.add_argument('--seq_length', type=int, default=50)
 parser.add_argument('--batch_size', type=int, default=50)
 parser.add_argument('--rnn_size', type=int, default=128)
