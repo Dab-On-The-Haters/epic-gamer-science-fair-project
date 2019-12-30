@@ -76,6 +76,7 @@ class User():
         else:
             self.ID = 0 # wow i'm such a good person
             self.is_anonymous = True
+            self.is_authenticated = False
             self.is_active = False
             self.username = ''
             self.name = 'Anonymous User'
