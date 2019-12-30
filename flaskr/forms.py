@@ -101,7 +101,7 @@ class modelMakerForm(FlaskForm):
     learningRateDecay = f5.DecimalField('Learning rate decay for this RNN', [v.NumberRange(0, 1, 'Should be almost at one, not more or less')], default=0.97)
     learningRateDecayAfter = f5.IntegerField('Amount of epochs before the learning rate starts decaying', [v.NumberRange(1, 250, 'Between 1 and 250 epochs guys they are full passes')], default=10)
     decayRate = f5.DecimalField('Decay rate for the optimizer', [v.NumberRange(0, 1, 'Needs to be close to one')], default=0.95)
-    rnnSize = f5.IntegerField('Size of hidden layers in this RNN', v.NumberRange(min=10, max=1000, 'There should be between 10 and 1,000 neurons. Anything else is ridiculous.') default=128)
+    rnnSize = f5.IntegerField('Size of hidden layers in this RNN', [v.NumberRange(min=10, max=1000, 'There should be between 10 and 1,000 neurons. Anything else is ridiculous.')], default=128)
     # maybe add boolean field here so users don't have to say zero?
     dropout = f5.DecimalField('Dropout for reqularization, used after each hidden layer in the RNN', [v.NumberRange(0, 1, 'Dropout is from 0-1')], default=0)
     seqLength = f5.IntegerField('Sequence length (amount of timesteps the RNN will unroll for)', [v.NumberRange(1, 250, 'No clue what this is but OK')], default=50)
