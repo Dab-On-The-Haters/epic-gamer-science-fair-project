@@ -81,7 +81,7 @@ class User():
             self.username = ''
             self.name = 'Anonymous User'
 
-    def authenticate():
+    def authenticate(self):
         self.is_authenticated = True
     
     def get_id(self):
