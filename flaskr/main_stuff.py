@@ -58,7 +58,6 @@ class User():
     ID = int()
     email = str()
     is_anonymous = False # duh
-    is_authenticated = False
     is_active = True
 
     def setValues(self, fieldName, fieldRequest):
@@ -312,6 +311,7 @@ def login():
     if LF.validate_on_submit():
         user = User()
         user.setValues('username', LF.username.data)
+        user.is_authenticated = True
         login_user(user, remember=True)
         
         return redirect(request.args.get('next', '/'))
