@@ -21,7 +21,7 @@
               <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
               <a href="/" class="w3-bar-item w3-button w3-padding-large w3-hover-indigo">Joe</a>
               <a href="/about" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Learn more about Joe</a>
-              <a href="/teach" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Teach with Joe</a>
+              <a href="/teach" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo w3-xlarge"><b>Teach with Joe</b></a>
               <a href="/exploremodels" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Talk to our neural networks with Joe</a>
               {% if user.is_authenticated %}
                 <span class="w3-bar-item w3-right w3-padding-large"><b>{{ user.name|escape }}</b></span>
@@ -35,7 +35,7 @@
         <div class="w3-container">
             <b class="w3-xlarge">About Joe</b>
         </div>
-        <div class = "w3-container w3-center">
+        <div class="w3-container w3-center">
           <iframe width = "80%" height = "1000px" src="https://docs.google.com/document/d/e/2PACX-1vRDCc6CJvEkSbngI3Oj0z0lvI9Mf9kItl8nePiwaOEWimt5ETUAvxLX5aIs2T-2TnM-t3SNpD8ENKZD/pub?embedded=true"></iframe>
         </div>
     </body>
