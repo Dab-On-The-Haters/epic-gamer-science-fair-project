@@ -1,80 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Science fair</title>
-        <link rel="stylesheet" href="/static/w3.css">
-        <link rel="stylesheet" href="/static/w3-colors-2019.css">
-        <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
-        <style>
-        body
-        {
-          background-color:#191970;
-          font-family: Poppins, sans-serif;
+
+<head>
+    <meta charset="UTF-8">
+    <title>Science fair</title>
+    <link rel="stylesheet" href="/static/w3.css">
+    <link rel="stylesheet" href="/static/w3-colors-2019.css">
+    <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #191970;
+            font-family: Poppins, sans-serif;
         }
+    </style>
+    <script>
+        var slideIndex = 0;
 
-        </style>
-        <script>
-            var slideIndex = 0;
-
-            function carousel()
-            {
-              var i;
-              var x = document.getElementsByClassName("mySlides");
-              for (i = 0; i < x.length; i++) {
+        function carousel() {
+            var i;
+            var x = document.getElementsByClassName("mySlides");
+            for (i = 0; i < x.length; i++) {
                 x[i].style.display = "none";
-              }
-              slideIndex++;
-              if (slideIndex > x.length) {slideIndex = 1}
-              x[slideIndex-1].style.display = "block";
-              setTimeout(carousel, 6000);
             }
-        </script>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body class="w3-text-white" onload="carousel()">
-            <div class="w3-top">
-                    <div class="w3-bar w3-2019-galaxy-blue w3-card">
-                      <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
-                      <a href="/" class="w3-bar-item w3-button w3-padding-large w3-hover-indigo">Joe</a>
-                      <a href="/about" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Learn more about Joe</a>
-                      <a href="/teach" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Teach with Joe</a>
-                      <a href="/exploremodels" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Talk to our neural networks with Joe</a>
-                      {% if user.is_authenticated %}
-                        <span class="w3-bar-item w3-right w3-padding-large"><b>{{ user.name|escape }}</b></span>
-                        <a href="/logout" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">My Account</a>
-                      {% else %}
-                        <a href="/login" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">Log In</a>
-                        <a href="/register" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">Sign Up</a>
-                      {% endif %}
-                    </div>
-                  </div>
-                  <div class="mySlides w3-display-container w3-center">
-                    <img src="/static/images/AIface.jpg" style="width:100%">
-                    <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">
-                      <h3>Open to all</h3>
-                      <p><b>Joe brings machine learning to anyone, regardless of programming or computer knowledge</b></p>   
-                    </div>
-                  </div>
-                  <div class="mySlides w3-display-container w3-center">
-                    <img src="/static/images/AItrain.jpg" style="width:100%">
-                    <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">
-                      <h3>Recurrent Neural Network</h3>
-                      <p><b>Joe connects you to both long short-term memory and gated recurrent unit neural networks</b></p>    
-                    </div>
-                  </div>
-                  <div class="mySlides w3-display-container w3-center">
-                    <img src="/static/images/lightbulb.jpg" style="width:100%">
-                    <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">
-                      <h3>Low budget and open source</h3>
-                      <p><b>Joe is built with completely free & open source software, such as Apache2, PyTorch, Flask, MariaDB, and Git.</b></p>    
-                    </div>
-                  </div>
-                  <div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px" id="home">
-                    <h2 class="w3-wide">MEET JOE.</h2>
-                    <p class="w3-opacity"><i>One step closer to the future.</i></p>
-                    <p class="w3-text-align-center">Joe is a project that aims to create a more organized, more accessible, system for machine learning training & tracking.
-                        The machine learning system that we're using will be based off Sherjil Ozair's (@sherjilozair) <b><a href="https://github.com/sherjilozair/char-rnn-tensorflow/">char-rnn-tensorflow project</a></b>.</p>
-                  </div>     
-    </body>
+            slideIndex++;
+            if (slideIndex > x.length) { slideIndex = 1 }
+            x[slideIndex - 1].style.display = "block";
+            setTimeout(carousel, 6000);
+        }
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body class="w3-text-white" onload="carousel()">
+    <div class="w3-top">
+        <div class="w3-bar w3-2019-galaxy-blue w3-card">
+            <a href="/" class="w3-bar-item w3-button w3-padding-large w3-hover-indigo">Joe</a>
+            <a href="/about" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Learn more about Joe</a>
+            <a href="/teach" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Teach with Joe</a>
+            <a href="/exploremodels" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Talk to our neural networks with Joe</a>
+            {% if user.is_authenticated %}
+                <span class="w3-bar-item w3-right w3-padding-large"><b>{{ user.name|escape }}</b></span>
+                <a href="/logout" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">My Account</a>
+            {% else %}
+                <a href="/login" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">Log In</a>
+                <a href="/register" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">Sign Up</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="mySlides w3-display-container w3-center">
+        <img src="/static/images/AIface.jpg" style="width:100%">
+        <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">
+            <h3>Open to all</h3>
+            <p><b>Joe brings machine learning to anyone, regardless of programming or computer knowledge</b></p>
+        </div>
+    </div>
+    <div class="mySlides w3-display-container w3-center">
+        <img src="/static/images/AItrain.jpg" style="width:100%">
+        <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">
+            <h3>Recurrent Neural Network</h3>
+            <p><b>Joe connects you to both long short-term memory and gated recurrent unit neural networks</b></p>
+        </div>
+    </div>
+    <div class="mySlides w3-display-container w3-center">
+        <img src="/static/images/lightbulb.jpg" style="width:100%">
+        <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">
+            <h3>Low budget and open source</h3>
+            <p><b>Joe is built with completely free & open source software, such as Apache2, PyTorch, Flask, MariaDB,
+                    and
+                    Git.</b></p>
+        </div>
+    </div>
+    <div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px" id="home">
+        <h2 class="w3-wide">MEET JOE.</h2>
+        <p class="w3-opacity"><i>One step closer to the future.</i></p>
+        <p class="w3-text-align-center">Joe is a project that aims to create a more organized, more accessible, system
+            for
+            machine learning training & tracking.
+            The machine learning system that we're using will be based off Sherjil Ozair's (@sherjilozair) <b><a
+                    href="https://github.com/sherjilozair/char-rnn-tensorflow/">char-rnn-tensorflow project</a></b>.</p>
+    </div>
+</body>
+
 </html>
