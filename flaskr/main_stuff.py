@@ -92,11 +92,10 @@ class User():
 
 @loginManager.user_loader
 def load_user(ID):
-    user = User()
     if type(ID)==str and ID.startswith('b'):
         ID = ID.split("'")[1]
-    user.setValues('ID', int(ID))
-    return user
+    user = 
+    return User('ID', int(ID), True)
 
 import subprocess as subp
 
