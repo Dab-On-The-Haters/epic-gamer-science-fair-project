@@ -53,6 +53,8 @@ loginManager.login_view = '/login'
 
 # dumb classes just for flask-login
 class User():
+
+    """
     username = str()
     name = str()
     ID = int()
@@ -60,14 +62,16 @@ class User():
     is_anonymous = True # duh
     is_authenticated = False
     is_active = False
+    """
 
-    def setValues(self, fieldName, fieldRequest):
+    def __init__ (self, fieldName, fieldRequest, authenticated):
         db.cur.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE '+fieldName+'=%s;', (fieldRequest,))
         if db.cur.rowcount:
             self.is_anonymous = False
             
             QA = db.cur.fetchone()
             self.is_active = QA['verified']
+            self.is_authenticated = authenticated
             self.ID = QA['ID']
             self.username = QA['username']
             self.email = QA['email_addr']
@@ -79,10 +83,8 @@ class User():
             self.is_authenticated = False
             self.is_active = False
             self.username = ''
+            self.email = ''
             self.name = 'Anonymous User'
-
-    def authenticate(self):
-        self.is_authenticated = True
     
     def get_id(self):
         return str(self.ID).encode('utf-8')
@@ -313,10 +315,7 @@ def login():
     LF = f.loginForm()
 
     if LF.validate_on_submit():
-        user = User()
-        user.setValues('username', LF.username.data)
-        user.authenticate()
-        login_user(user, remember=True)
+        login_user(User('username', LF.username.data, True), remember=True)
         
         return redirect(request.args.get('next', '/'))
     
@@ -334,8 +333,6 @@ def logout():
 @app.route('/verify/<int:ID>', methods=['GET', 'POST'])
 def verifyUser(ID):
     #ID = current_user.ID
-    
-
 
     VF = f.verifyForm()
     VF.verifyAccountID = ID
@@ -347,9 +344,7 @@ def verifyUser(ID):
         db.cur.execute('DELETE FROM verification_codes WHERE accountID=%s;', (ID,))
         db.conn.commit()
 
-        user = User()
-        user.setValues('ID', ID)
-        login_user(user, remember=True)
+        login_user(User('ID', ID, True), remember=True)
 
         return redirect('/')
     
