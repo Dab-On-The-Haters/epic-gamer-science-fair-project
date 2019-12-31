@@ -10,7 +10,7 @@ However, I'm not sure how well the constraints will hold up to my nonsense
 make sure to use "-a SCIENCE_FAIR" or "USE SCIENCE_FAIR"
 
 ready to execute
-*/
+
 
 
 -- table of the site's users contains info like email, username, whether they've verified their email, etc..
@@ -75,16 +75,18 @@ CREATE OR REPLACE TABLE datafiles
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
-
+*/
 
 -- table of models
 CREATE OR REPLACE TABLE models
 (
     ID MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
     user_description TEXT,
+
+    char_file MEDIUMBLOB,
     
     began_training TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    finished_training TIMESTAMP,
+    time_finished TIMESTAMP DEFAULT 0,
     finished_naturally BOOLEAN DEFAULT NULL,
 
     rnn_style VARCHAR(5) NOT NULL DEFAULT 'GRU',
@@ -98,6 +100,7 @@ CREATE OR REPLACE TABLE models
     learning_rate_decay_after SMALLINT UNSIGNED NOT NULL DEFAULT 10,
     dropout FLOAT NOT NULL DEFAULT 0,
     seq_length SMALLINT UNSIGNED NOT NULL DEFAULT 50,
+    rnn_size SMALLINT UNSIGNED NOT NULL DEFAULT 128,
     batch_size SMALLINT UNSIGNED NOT NULL DEFAULT 50,
     max_epochs SMALLINT UNSIGNED NOT NULL DEFAULT 50,
     grad_clip FLOAT UNSIGNED NOT NULL DEFAULT 5,
@@ -136,12 +139,14 @@ CREATE OR REPLACE TABLE checkpoints
 (
     ID BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
     loss FLOAT UNSIGNED NOT NULL,
-    time_saved TIMESTAMP NOT NULL,
+    time_saved TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     iteration MEDIUMINT UNSIGNED NOT NULL,
-    epoch FLOAT UNSIGNED NOT NULL,
-    learning_rate FLOAT UNSIGNED NOT NULL,
-    pytorch_data LONGBLOB NOT NULL,
+    epoch SMALLINT UNSIGNED NOT NULL,
+    -- learning_rate FLOAT UNSIGNED NOT NULL,
+    -- pytorch_data LONGBLOB NOT NULL,
     modelID MEDIUMINT UNSIGNED NOT NULL,
+    final BOOLEAN NOT NULL DEFAULT 0,
+    epoch_final BOOLEAN NOT NULL DEFAULT 0,
     CONSTRAINT `checkpoints_pk` PRIMARY KEY (ID),
     CONSTRAINT `model_checkpoint_fk`
         FOREIGN KEY (modelID) REFERENCES models (ID)
@@ -154,10 +159,11 @@ SHOW WARNINGS;
 CREATE OR REPLACE TABLE logs
 (
     ID BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
-    time_saved TIMESTAMP NOT NULL,
+    time_saved TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     loss FLOAT UNSIGNED NOT NULL,
     iteration MEDIUMINT UNSIGNED NOT NULL,
-    grad_param_norm FLOAT NOT NULL,
+    epoch SMALLINT NOT NULL,
+    -- grad_param_norm FLOAT NOT NULL,
     modelID MEDIUMINT UNSIGNED NOT NULL,
     CONSTRAINT `model_logs_fk`
         FOREIGN KEY (modelID) REFERENCES models (ID)

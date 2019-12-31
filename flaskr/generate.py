@@ -2,6 +2,7 @@ from torch.autograd import Variable
 import torch.nn as nn
 import torch
 
+import db
 import numpy as np
 import os
 import re
@@ -13,14 +14,14 @@ from rnn import *
 parser = argparse.ArgumentParser(description='PyTorch char-rnn')
 parser.add_argument('--temperature', type=float, default=0.8)
 parser.add_argument('--sample_len', type=int, default=500)
-parser.add_argument('--checkpoint', '-c', type=str)
+parser.add_argument('--checkpoint', '-c', type=int)
 parser.add_argument('--seed', type=str, default='a')
 parser.add_argument('--charfile', '-f', type=str)
 parser.add_argument('--concatenate', type=int, default=0)
 args = parser.parse_args()
 
-with open(args.charfile, 'rb') as f:
-    chars = pickle.load(f)
+db.cur.execute('SELECT char_file FROM models WHERE ID=%s;', (args.charfile,))
+chars = pickle.loads(db.cur.fetchone()['char_file'], encoding='utf-8')
 
 chars = sorted(list(set(chars)))
 chars_len = len(chars)
@@ -84,11 +85,12 @@ def sample(model, prime_str, predict_len, temperature, concatenate):
         predicted = re.sub(r'\n', ' ', predicted)
     return predicted
 
-if os.path.exists(args.checkpoint):
-    print('Parameters found at {}... loading'.format(args.checkpoint))
-    checkpoint = torch.load(args.checkpoint, map_location=lambda storage, loc: storage)
+cpPath = os.path.join('/home/thomas/pytorch-models', str(args.checkpoint))
+if os.path.exists(cpPath):
+    print('Parameters found at {}... loading'.format(cpPath))
+    checkpoint = torch.load(cpPath, map_location=lambda storage, loc: storage)
 else:
-    raise ValueError('File not found: {}'.format(args.checkpoint))
+    raise ValueError('File not found: {}'.format(cpPath))
 
 hidden_size = checkpoint['model']['encoder.weight'].size()[1]
 n_layers = 0
@@ -99,3 +101,5 @@ for key in checkpoint['model'].keys():
 model = RNN(chars_len, hidden_size, chars_len, n_layers, 0.5)
 model.load_state_dict(checkpoint['model'])
 print(sample(model, args.seed, args.sample_len, args.temperature, args.concatenate))
+
+db.conn.close()

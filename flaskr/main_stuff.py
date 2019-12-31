@@ -14,7 +14,7 @@ FLASK DOCUMENTATION IS AT https://flask.palletsprojects.com/en/1.1.x/ YOU'LL WAN
 
 
 # import all the flask stuff we'll be needing
-from flask import Flask, request, redirect, render_template, session # etc...
+from flask import Flask, request, redirect, render_template, session, jsonify # etc...
 # initialize flask as "app". this matters not just for literally everything but for the WSGI as well
 app = Flask(__name__)
 
@@ -58,7 +58,7 @@ class User():
     ID = int()
     email = str()
     is_anonymous = False # duh
-    is_authenticated = True
+    
     is_active = True
 
     def setValues(self, fieldName, fieldRequest):
@@ -131,18 +131,16 @@ def newDataset():
             
             # get local uploaded files
             for FN, data in request.files.items():
-                files[data.filename] = data.read()
+                files[data.filename] = data.read().decode(data.mimetype_params.get('charset', 'utf-8'))
             
             # get file links from urllib3
             for URL in DF.URLs.data:
                 req = http.request('GET', URL)
                 if req.status == 200:
-                    files[URL] = req.data
+                    files[URL] = req.data.decode(req.headers.get('charset', 'utf-8'))
             
             columnLists = dict()
             for FN in files:
-                # tidy up file and put it into db
-                files[FN] = files[FN].decode('utf-8')
                 db.cur.execute('INSERT INTO datafiles (file_name, file_data, datasetID) VALUES (%s, %s, %s);', (FN, files[FN], datasetID))
                 
                 # if it's a csv add it to column selections
@@ -261,7 +259,38 @@ def modelMaker():
         try: MF.datasetID.data = int(session['dataset'])
         except: pass
     return render_template('model-maker.html', form=MF)
+"""
+@app.route('/model-progress/<int:ID>')
+@login_required
+def showProgress(ID):
+    return 'wip'
 
+# return json of progress for showprogress route, used for google charts
+@app.route('/get-progress/<int:ID>')
+def progressJson(ID):
+    db.cur.execute('SELECT time_saved, loss, iteration, epoch FROM logs WHERE modelID = %s ORDER BY time_saved ASC;', (ID,))
+
+    logEntries = db.cur.fetchall()
+    
+    lossChartRows = [
+        ['Checkpoint', 'Loss', 'Info', 'Epoch', 'EpochInfo'],
+        ['domain', 'data', 'tooltip', 'annotation', 'annotationText']]
+    
+    prevEp = 420 # nice
+    for i, e in enumerate(logEntries):
+        ep = e['epoch']
+        lossChartRows.append([i,
+            e['loss'],
+            'Batch {} on epoch {} has loss {}'.format(e['iteration'], ep, e['loss']),
+            None if ep == prevEpoch else 'Ep.' + str(ep)),
+
+            
+        prevEp = ep
+    
+
+
+    return jsonify()
+"""
 @app.route('/exploremodels', methods=['GET', 'POST'])
 @login_required
 def exploreModels():
