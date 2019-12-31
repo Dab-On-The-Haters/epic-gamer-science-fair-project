@@ -57,9 +57,9 @@ class User():
     name = str()
     ID = int()
     email = str()
-    is_anonymous = False # duh
-    is_authenticated = False
-    is_active = True
+    is_anonymous = True # duh
+    is_authenticated = bool()
+    is_active = False
 
     def setValues(self, fieldName, fieldRequest):
         db.cur.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE '+fieldName+'=%s;', (fieldRequest,))
