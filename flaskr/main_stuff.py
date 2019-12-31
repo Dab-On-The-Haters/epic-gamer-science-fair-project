@@ -58,6 +58,7 @@ class User():
     ID = int()
     email = str()
     is_anonymous = False # duh
+    is_authenticated = False
     is_active = True
 
     def setValues(self, fieldName, fieldRequest):
