@@ -279,17 +279,15 @@ def progressJson(ID):
 
     logEntries = db.cur.fetchall()
     
-    lossChartRows = [
-        ['Checkpoint', 'Loss', 'Info', 'Epoch', 'EpochInfo'],
-        ['domain', 'data', 'tooltip', 'annotation', 'annotationText']]
+    lossChartRows = []
     
     prevEp = 420 # nice
     for i, e in enumerate(logEntries):
         ep = e['epoch']
-        lossChartRows.append([i,
+        lossChartRows.append([i, # checkpoint
             e['loss'],
             'Batch {} on epoch {} has loss {}'.format(e['iteration'], ep, e['loss']),
-            None if ep == prevEp else 'Ep.'+str(ep),
+            None if ep == prevEp else str(ep),
             'pee pee poo poo'])
             
         prevEp = ep
