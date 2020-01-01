@@ -97,7 +97,7 @@ class modelMakerForm(FlaskForm):
     nlpOptions = f.BooleanField('Settings for NLP')
     # things get real groovy after here, watch out
     layerAmount = f5.IntegerField('Amount of hidden layers in this RNN', [v.NumberRange(1, 250, 'Boi go for a reasonable amount of layers')], default=2)
-    learningRate = f5.DecimalField('Learning rate for this RNN', [v.NumberRange(0, 1, 'We need small numbers')], default=0.002)
+    learningRate = f5.DecimalField('Learning rate for this RNN', [v.NumberRange(0, 1, 'We need small numbers')], places=4, default=0.002)
     learningRateDecay = f5.DecimalField('Learning rate decay for this RNN', [v.NumberRange(0, 1, 'Should be almost at one, not more or less')], default=0.97)
     learningRateDecayAfter = f5.IntegerField('Amount of epochs before the learning rate starts decaying', [v.NumberRange(1, 250, 'Between 1 and 250 epochs guys they are full passes')], default=10)
     decayRate = f5.DecimalField('Decay rate for the optimizer', [v.NumberRange(0, 1, 'Needs to be close to one')], default=0.95)
