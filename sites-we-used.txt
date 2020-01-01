@@ -34,9 +34,9 @@ https://github.com/pallets/flask
 https://github.com/GrahamDumpleton/mod_wsgi
 https://github.com/pytorch/examples/tree/master/word_language_model
 https://github.com/mattupstate/flask-mail
-https://github.com/cyberdelia/flask-mysql
+https://github.com/mysql/mysql-connector-python
 https://github.com/JaniRefsnes/w3css
 https://github.com/maxcountryman/flask-login
 https://github.com/lepture/flask-wtf
 https://github.com/wtforms/wtforms
-https://github.com/certbot/certbot
+// lol https://github.com/certbot/certbot

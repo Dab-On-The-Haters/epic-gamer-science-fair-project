@@ -1,0 +1,38 @@
+[
+    {
+        "name": "Apache2",
+        "short-desc": "Web server",
+        "github": "https://github.com/apache/httpd",
+        "size": 1
+    },
+    {
+        "name": "mod_wsgi",
+        "short-desc": "WSGI for Apache2 and Python",
+        "github": "https://github.com/GrahamDumpleton/mod_wsgi",
+        "size": 3
+    },
+    {
+        "name": "Flask",
+        "short-desc": "Web framework",
+        "github": "https://github.com/pallets/flask",
+        "size": 1
+    },
+    {
+        "name": "WTForms",
+        "short-desc": "Form renderer & validator",
+        "github": "https://github.com/wtforms/wtforms",
+        "size": 2
+    },
+    {
+        "name": "Flask-Login",
+        "short-desc": "Login manager for Flask",
+        "github": "https://github.com/maxcountryman/flask-login",
+        "size": 2
+    },
+    {
+        "name": "PyTorch",
+        "short-desc": "Deep learning framework",
+        "github": "https://github.com/pytorch/pytorch",
+        "size": 1
+    }
+]
