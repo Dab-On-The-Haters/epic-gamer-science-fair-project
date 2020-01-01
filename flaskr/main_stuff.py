@@ -46,7 +46,7 @@ import io
 
 # code with new db model begins here
 import db
-from os import path getcwd
+from os import path, getcwd
 
 # start login manager
 loginManager.init_app(app)
