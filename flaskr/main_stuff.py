@@ -266,7 +266,7 @@ def modelMaker():
         try: MF.datasetID.data = int(session['dataset'])
         except: pass
     return render_template('model-maker.html', form=MF)
-"""
+
 @app.route('/model-progress/<int:ID>')
 @login_required
 def showProgress(ID):
@@ -289,15 +289,13 @@ def progressJson(ID):
         lossChartRows.append([i,
             e['loss'],
             'Batch {} on epoch {} has loss {}'.format(e['iteration'], ep, e['loss']),
-            None if ep == prevEpoch else 'Ep.' + str(ep)),
-
+            None if ep == prevEp else 'Ep.' + str(ep)),
+            'pee pee poo poo']
             
         prevEp = ep
-    
 
+    return jsonify(lossChartRows) # will return more stuff in future
 
-    return jsonify()
-"""
 @app.route('/exploremodels', methods=['GET', 'POST'])
 @login_required
 def exploreModels():
