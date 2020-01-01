@@ -290,7 +290,7 @@ def progressJson(ID):
             e['loss'],
             'Batch {} on epoch {} has loss {}'.format(e['iteration'], ep, e['loss']),
             None if ep == prevEp else 'Ep.'+str(ep),
-            'pee pee poo poo']
+            'pee pee poo poo'])
             
         prevEp = ep
 
