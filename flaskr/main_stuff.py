@@ -46,6 +46,7 @@ import io
 
 # code with new db model begins here
 import db
+from os import path getcwd
 
 # start login manager
 loginManager.init_app(app)
@@ -242,7 +243,7 @@ def datasetEditor():
 
     return render_template('dataset-editor.html', datasetName=TS['title'], form=EF, user=current_user)
 
-trainerCommands = '''python3 train.py {} &
+trainerCommands = '''python3 {} {} &
 echo $!'''
 
 @app.route('/new-model', methods=['GET', 'POST'])
@@ -259,7 +260,7 @@ def modelMaker():
             MF.layerAmount.data, MF.learningRate.data, MF.learningRateDecay.data, MF.dropout.data, MF.seqLength.data, MF.batchSize.data, MF.maxEpochs.data, MF.gradClip.data, MF.trainFrac.data, MF.valFrac.data))
         db.conn.commit()
         modelID = db.cur.lastrowid
-        modelPID = subp.check_call(trainerCommands.format(modelID), shell=True)
+        modelPID = subp.check_call(trainerCommands.format(path.join(getcwd(), 'train.py'), modelID), shell=True)
         db.cur.execute('UPDATE models SET pid = %s WHERE ID = %s;', (modelPID, modelID))
         return ('we just friccin died OK')
     if not MF.datasetID.data:
