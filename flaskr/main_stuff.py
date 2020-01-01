@@ -242,6 +242,8 @@ def datasetEditor():
 
     return render_template('dataset-editor.html', datasetName=TS['title'], form=EF, user=current_user)
 
+trainerCommands = '''python3 train.py {} &
+echo $!'''
 
 @app.route('/new-model', methods=['GET', 'POST'])
 @login_required
@@ -256,7 +258,9 @@ def modelMaker():
             (MF.datasetID.data, current_user.ID, MF.description.data, MF.seed.data,
             MF.layerAmount.data, MF.learningRate.data, MF.learningRateDecay.data, MF.dropout.data, MF.seqLength.data, MF.batchSize.data, MF.maxEpochs.data, MF.gradClip.data, MF.trainFrac.data, MF.valFrac.data))
         db.conn.commit()
-        subp.Popen(['python3', 'train.py', str(db.cur.lastrowid)])
+        modelID = db.cur.lastrowid
+        modelPID = subp.check_call(trainerCommands.format(modelID), shell=True)
+        db.cur.execute('UPDATE models SET pid = %s WHERE ID = %s;', (modelPID, modelID))
         return ('we just friccin died OK')
     if not MF.datasetID.data:
         try: MF.datasetID.data = int(session['dataset'])
