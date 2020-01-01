@@ -95,10 +95,10 @@ CREATE OR REPLACE TABLE models
     -- settings below are based off of the options for char-rnn
     -- signage may be incorrect, i guessed everything
     num_layers TINYINT UNSIGNED NOT NULL DEFAULT 2,
-    learning_rate FLOAT UNSIGNED NOT NULL DEFAULT 0.002,
+    learning_rate DOUBLE UNSIGNED NOT NULL DEFAULT 0.002,
     learning_rate_decay FLOAT UNSIGNED NOT NULL DEFAULT 0.97,
     learning_rate_decay_after SMALLINT UNSIGNED NOT NULL DEFAULT 10,
-    dropout FLOAT NOT NULL DEFAULT 0,
+    dropout FLOAT NOT NULL DEFAULT 0.5,
     seq_length SMALLINT UNSIGNED NOT NULL DEFAULT 50,
     rnn_size SMALLINT UNSIGNED NOT NULL DEFAULT 128,
     batch_size SMALLINT UNSIGNED NOT NULL DEFAULT 50,
