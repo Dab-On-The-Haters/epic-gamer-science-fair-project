@@ -31,7 +31,7 @@
 
         window.onload = function()
         {
-            curID = parseInt(document.getElementById("currentID").value);
+            curID = parseInt(document.getElementById("currentID").innerHTML);
             progBarReq.open('GET', '/epoch-progress/'+curID);
             progressBar = document.getElementById("epochProgress");
             progBarReq.send();
