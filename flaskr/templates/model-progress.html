@@ -14,7 +14,6 @@
             }
             .w3-poppins {
                 font-family: 'Poppins', sans-serif;
-
             }
         </style>
         <script>
@@ -27,7 +26,7 @@
 
         function setProgBar()
         {
-            progressBar.value = this.responseText;
+            progressBar.value = JSON.parse(this.responseText)[0];
             setTimeout(progBarReq.send, 250);
         }
 
