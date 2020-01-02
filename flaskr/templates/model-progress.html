@@ -24,7 +24,7 @@
 
         function setProgBar()
         {
-            progressBar.value = JSON.parse(this.responseText);
+            progressBar.value = JSON.parse(this.responseText)[0];
             setTimeout(newRequest, 250);
         }
 
