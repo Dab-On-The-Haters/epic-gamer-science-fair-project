@@ -276,7 +276,7 @@ def showProgress(ID):
 @app.route('/epoch-progress/<int:ID>')
 def epochProgress(ID):
     db.cur.execute('SELECT epoch FROM logs WHERE modelID = %s ORDER BY time_saved DESC LIMIT 1;', (ID,))
-    if db.cur.rowcount():
+    if db.cur.rowcount:
         return jsonify(db.cur.fetchone()['epoch'])
     else:  return jsonify(0)
 
