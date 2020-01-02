@@ -23,18 +23,25 @@
         progBarReq.addEventListener("load", setProgBar);
 
 
+
         function setProgBar()
         {
             progressBar.value = JSON.parse(this.responseText);
-            setTimeout(progBarReq.send, 250);
+            setTimeout(newRequest, 250);
+        }
+
+        function newRequest()
+        {
+            progBarReq.open('GET', '/epoch-progress/'+curID);
+            progBarReq.send();
         }
 
         window.onload = function()
         {
             curID = parseInt(document.getElementById("currentID").innerHTML);
-            progBarReq.open('GET', '/epoch-progress/'+curID);
+            
             progressBar = document.getElementById("epochProgress");
-            progBarReq.send();
+            newRequest();
         }
         </script>
     </head>
