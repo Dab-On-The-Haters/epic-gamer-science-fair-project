@@ -20,19 +20,19 @@
         var progressBar;
         var curID;
         progBarReq = new XMLHttpRequest();
-        progBarReq.open('GET', '/epoch-progress/'+curID);
         progBarReq.addEventListener("load", setProgBar);
 
 
         function setProgBar()
         {
-            progressBar.value = JSON.parse(this.responseText)[0];
+            progressBar.value = JSON.parse(this.responseText);
             setTimeout(progBarReq.send, 250);
         }
 
         window.onload = function()
         {
             curID = parseInt(document.getElementById("currentID").value);
+            progBarReq.open('GET', '/epoch-progress/'+curID);
             progressBar = document.getElementById("epochProgress");
             progBarReq.send();
         }
