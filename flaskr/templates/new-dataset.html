@@ -17,8 +17,21 @@
 
             }
         </style>
+        <base target="_blank">
     </head>
     <body class="w3-text-white">
+        <div class="w3-top">
+            <div class="w3-bar w3-2019-galaxy-blue w3-card">
+                <a href="/" class="w3-bar-item w3-button w3-padding-large w3-hover-indigo">Joe</a>
+                <a href="/about" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Learn more about Joe</a>
+                <a href="/teach" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-indigo">Teach with Joe</a>
+                <a href="/exploremodels" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Talk to our neural networks with Joe</a>
+                <span class="w3-bar-item w3-right w3-padding-large"><b>{{ user.name|escape }}</b></span>
+                <a href="/logout" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">My Account</a>
+            </div>
+        </div>
+        <div><br><br></div>
+        
         <div class="w3-container w3-poppins">
             <div class="w3-container w3-jumbo w3-center">
                 <b>Create a new dataset</b>
@@ -28,7 +41,6 @@
         <div class="w3-container w3-card w3-margin w3-2019-galaxy-blue">
             <form method="POST" enctype="multipart/form-data">
                 {{ form.csrf_token }}
-                
                 <div class="w3-margin-top">
                     <b>{{ form.title.label }}</b>
                     {{ form.title }}
