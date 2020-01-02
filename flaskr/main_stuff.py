@@ -271,7 +271,7 @@ def modelMaker():
 @login_required
 def showProgress(ID):
     db.cur.execute('SELECT max_epochs FROM models WHERE ID = %s;', (ID,))
-    return render_template('model_progress.html', ID=ID, maxEpochs = db.cur.fetchone()['max_epochs'])
+    return render_template('model-progress.html', ID=ID, maxEpochs = db.cur.fetchone()['max_epochs'])
 
 @app.route('/epoch-progress/<int:ID>')
 def epochProgress(ID):
