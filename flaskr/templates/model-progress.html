@@ -22,8 +22,6 @@
         progBarReq = new XMLHttpRequest();
         progBarReq.addEventListener("load", setProgBar);
 
-
-
         function setProgBar()
         {
             progressBar.value = JSON.parse(this.responseText);

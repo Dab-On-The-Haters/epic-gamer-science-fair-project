@@ -261,6 +261,7 @@ def modelMaker():
         modelID = db.cur.lastrowid
         modelPID = subp.check_call(trainerCommands.format(modelID), shell=True)
         db.cur.execute('UPDATE models SET pid = %s WHERE ID = %s;', (modelPID, modelID))
+        db.conn.commit()
         return redirect('/model-progress/'+str(modelID))
     if not MF.datasetID.data:
         try: MF.datasetID.data = int(session['dataset'])
