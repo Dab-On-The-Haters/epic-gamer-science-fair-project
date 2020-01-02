@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Model #{{ ID }} Progress | Joe</title>
+        <link rel="stylesheet" href="/static/w3.css">
+        <link rel="stylesheet" href="/static/w3-colors-2019.css">
+        <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body
+            {
+               background-color:#191970;
+            }
+            .w3-poppins {
+                font-family: 'Poppins', sans-serif;
+
+            }
+        </style>
+        <script>
+        var progressBar;
+        var curID;
+        progBarReq = new XMLHttpRequest();
+        progBarReq.open('GET', '/epoch-progress/'+curID);
+        progBarReq.addEventListener("load", setProgBar);
+
+
+        function setProgBar()
+        {
+            progressBar.value = this.responseText;
+            setTimeout(progBarReq.send, 250);
+        }
+
+        window.onload = function()
+        {
+            curID = parseInt(document.getElementById("currentID").value);
+            progressBar = document.getElementByID("epochProgress");
+            progBarReq.send();
+        }
+        </script>
+    </head>
+    <body>
+        <div class="w3-center">
+            <h1 class="w3-xxlarge">Progress on model #{{ ID }}</h1>
+        </div>
+        <div class="w3-container">
+            <div>
+                Amount completed
+                <progress max="{{ maxEpochs }}" value="0" id="epochProgress"></progress>
+            </div>
+        </div>
+        <span class="w3-hide" id="currentID">{{ ID }}</span>
+    </body>
+</html>

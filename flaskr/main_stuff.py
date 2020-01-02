@@ -272,6 +272,11 @@ def modelMaker():
 def showProgress(ID):
     return 'wip'
 
+@app.route('/epoch-progress/<int:ID>')
+def epochProgress(ID):
+    db.cur.execute('SELECT epoch FROM logs WHERE modelID = %s ORDER BY time_saved DESC LIMIT 1;', (ID,))
+    return str(db.cur.fetchone()['epoch'])
+
 # return json of progress for showprogress route, used for google charts
 @app.route('/get-progress/<int:ID>')
 def progressJson(ID):
