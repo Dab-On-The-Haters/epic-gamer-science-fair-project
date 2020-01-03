@@ -165,7 +165,7 @@ def newDataset():
             elif DF.removeFile.data: DF.files.pop_entry()
         except: pass
 
-    return render_template('new-dataset.html', form=DF)
+    return render_template('new-dataset.html', form=DF, user=current_user)
 
  
 @app.route('/edit-dataset', methods=['GET', 'POST'])
@@ -266,13 +266,13 @@ def modelMaker():
     if not MF.datasetID.data:
         try: MF.datasetID.data = int(session['dataset'])
         except: pass
-    return render_template('model-maker.html', form=MF)
+    return render_template('model-maker.html', form=MF, user=current_user)
 
 @app.route('/model-progress/<int:ID>')
 @login_required
 def showProgress(ID):
     db.cur.execute('SELECT max_epochs FROM models WHERE ID = %s;', (ID,))
-    return render_template('model-progress.html', ID=ID, maxEpochs = db.cur.fetchone()['max_epochs'])
+    return render_template('model-progress.html', ID=ID, maxEpochs = db.cur.fetchone()['max_epochs'], user=current_user)
 
 @app.route('/epoch-progress/<int:ID>')
 def epochProgress(ID):
