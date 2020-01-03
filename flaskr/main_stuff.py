@@ -211,7 +211,7 @@ def datasetEditor():
             # set dataset final text
             db.cur.execute('UPDATE datasets SET final_text = %s WHERE ID = %s;', (EF.finalText.data, session['datasetID']))
             db.conn.commit()
-            return redirect('/new-model')
+            return redirect('/teach')
         
         # if finaltext isn't filled out
         elif (not EF.finalText.data) or len(EF.finalText.data) < 1000:
@@ -274,12 +274,17 @@ def showProgress(ID):
     db.cur.execute('SELECT max_epochs FROM models WHERE ID = %s;', (ID,))
     return render_template('model-progress.html', ID=ID, maxEpochs = db.cur.fetchone()['max_epochs'], user=current_user)
 
+@app.route('/generate/<int:ID>')
+@login_required
+def generateText(ID):
+    return render_template('todo')
+
 @app.route('/epoch-progress/<int:ID>')
 def epochProgress(ID):
     db.cur.execute('SELECT epoch FROM logs WHERE modelID = %s ORDER BY epoch DESC LIMIT 1;', (ID,))
     if db.cur.rowcount:
         return jsonify(db.cur.fetchone()['epoch'])
-    else:  return jsonify(0, {'boi': True})
+    else: return jsonify(0, {'boi': True})
 
 # return json of progress for showprogress route, used for google charts
 @app.route('/get-progress/<int:ID>')
