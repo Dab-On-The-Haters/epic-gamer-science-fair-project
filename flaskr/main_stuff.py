@@ -144,6 +144,7 @@ def newDataset():
             
             columnLists = dict()
             for FN in files:
+                if FN.endswith('.zip'): return 'UNZIP YOUR DATASETS U DUMB B'
                 db.cur.execute('INSERT INTO datafiles (file_name, file_data, datasetID) VALUES (%s, %s, %s);', (FN, files[FN], datasetID))
                 
                 # if it's a csv add it to column selections
