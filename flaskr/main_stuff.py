@@ -307,7 +307,7 @@ def progressJson(ID):
 
 generatorCommands = 'python3 /var/www/epic-gamer-science-fair-project/flaskr/generate.py {} &'
 
-@app.route('/generate/<int:ID>')
+@app.route('/generate/<int:ID>', methods=['GET', 'POST'])
 @login_required
 def generateText(ID):
     SF = f.sampleForm()
