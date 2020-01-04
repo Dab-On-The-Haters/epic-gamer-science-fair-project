@@ -333,10 +333,12 @@ def generatedText(ID):
         return render_template('generated-text.html', ID=ID, generatedText=generatedText, user=current_user)
     return render_template('generating.html', ID=qResults['modelID'],)
 
-@app.route('/exploremodels', methods=['GET', 'POST'])
+@app.route('/explore-models', methods=['GET', 'POST'])
 @login_required
 def exploreModels():
-    return render_template('explore/models.html')
+    db.cur.execute('''SELECT models.ID, models.user_description, users.real_name, users.username, datasets.ID, datasets.title
+        FROM models LEFT JOIN (users, datasets) ON (users.ID=models.trainerID AND datasets.ID=models.datasetID) ORDER BY models.time_finished DESC;''')
+    return render_template('explore-models.html', models=db.cur.fetchall(), user=current_user)
 
 @app.route('/about')
 def aboutPage():
