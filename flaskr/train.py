@@ -13,7 +13,6 @@ import torch
 import numpy as np
 import math
 import os
-#import argparse
 
 from sys import argv
 
@@ -24,25 +23,11 @@ from rnn import *
 db.cur.execute('SELECT * FROM models WHERE ID = %s;', (int(argv[1]),))
 args = db.cur.fetchone()
 
-"""
-parser = argparse.ArgumentParser(description='PyTorch char-rnn')
-parser.add_argument('--seq_length', type=int, default=50)
-parser.add_argument('--batch_size', type=int, default=50)
-parser.add_argument('--rnn_size', type=int, default=128)
-parser.add_argument('--max_epochs', type=int, default=10)
-parser.add_argument('--num_layers', type=int, default=2)
-parser.add_argument('--learning_rate', type=float, default=2e-3)
-parser.add_argument('--dropout', type=float, default=0.5)
-parser.add_argument('--input', '-i', type=str)
-parser.add_argument('--output', '-o', type=str, default='checkpoints')
-parser.add_argument('--seed', type=str, default='a')
-"""
 
 outputPath = '/home/thomas/pytorch-models'
 
 saveString = 'INSERT INTO checkpoints (modelID, loss, iteration, epoch, epoch_final, final) VALUES (%s, %s, %s, %s, %s, %s);'
 
-#args = parser.parse_args()
 #use_cuda = torch.cuda.is_available()
 
 # randomise runs
@@ -59,20 +44,11 @@ dropout = args['dropout']
 datasetID = args['datasetID']
 modelID = args['ID']
 
-#checkpoint_prepend = os.path.join(args.output, 'checkpoint_')
-#final_checkpoint_prepend = os.path.join(args.output, 'final_checkpoint_')
 
 db.cur.execute('SELECT final_text FROM datasets WHERE ID = %s;', (datasetID,))
 text = db.cur.fetchone()['final_text']
 
 chars = sorted(list(set(text)))
-"""
-# Save chars to charfile for re-use in generate process
-charfile = os.path.splitext(datasetID)[0] + '_chars.pkl'
-with open(charfile, 'wb') as f:
-    , f)
-"""
-
 
 db.cur.execute('UPDATE models SET char_file = %s WHERE ID = %s;', (pickle.dumps(chars), modelID))
 db.conn.commit()

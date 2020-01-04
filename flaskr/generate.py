@@ -8,23 +8,11 @@ import numpy as np
 import os
 import re
 import pickle
-#import argparse
 
 from rnn import *
 
 db.cur.execute('SELECT modelID, checkpointID, temperature, sample_length, seed FROM samples WHERE ID = %s;', (argv[1],))
 args = db.cur.fetchone()
-
-"""
-parser = argparse.ArgumentParser(description='PyTorch char-rnn')
-parser.add_argument('--temperature', type=float, default=0.8)
-parser.add_argument('--sample_len', type=int, default=500)
-parser.add_argument('--checkpoint', '-c', type=int)
-parser.add_argument('--seed', type=str, default='a')
-parser.add_argument('--charfile', '-f', type=str)
-parser.add_argument('--concatenate', type=int, default=0)
-args = parser.parse_args()
-"""
 
 db.cur.execute('SELECT char_file FROM models WHERE ID=%s;', (args['modelID'],))
 chars = pickle.loads(db.cur.fetchone()['char_file'], encoding='utf-8')
