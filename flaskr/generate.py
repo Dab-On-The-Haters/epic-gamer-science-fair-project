@@ -77,7 +77,7 @@ def sample(model, prime_str, predict_len, temperature):
         top_i = manual_sample(output.data.numpy(), temperature)
 
         # Add predicted character to string and use as next input
-        predicted_char = index_to_char[top_i]model
+        predicted_char = index_to_char[top_i]
         predicted += predicted_char
         inp = index_to_tensor(char_to_index[predicted_char])
 
