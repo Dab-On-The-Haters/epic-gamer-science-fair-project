@@ -360,7 +360,7 @@ def showUser(username):
 @login_required
 def showModel(ID):
     db.cur.execute('''SELECT models.*, users.username, users.real_name, datasets.ID, datasets.title, datasets.user_description
-        FROM models LEFT JOIN (users, datasets) ON (AND users.ID=models.trainerID AND datasets.ID=models.datasetID) WHERE models.ID = %s;''', (ID,))
+        FROM models LEFT JOIN (users, datasets) ON (users.ID=models.trainerID AND datasets.ID=models.datasetID) WHERE models.ID = %s;''', (ID,))
     if not db.cur.rowcount: return render_template('404.html', missing='model')
     return render_template('model.html', m=db.cur.fetchone(), user=current_user)
 
