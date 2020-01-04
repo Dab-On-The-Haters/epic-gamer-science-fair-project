@@ -284,8 +284,8 @@ def generateText(ID):
 def epochProgress(ID):
     db.cur.execute('SELECT epoch FROM logs WHERE modelID = %s ORDER BY epoch DESC LIMIT 1;', (ID,))
     if db.cur.rowcount:
-        return jsonify(db.cur.fetchone()['epoch'])
-    else: return jsonify(0, {'boi': True})
+        return jsonify([db.cur.fetchone()['epoch']])
+    else: return jsonify([0, {'boi': True}])
 
 # return json of progress for showprogress route, used for google charts
 @app.route('/get-progress/<int:ID>')
