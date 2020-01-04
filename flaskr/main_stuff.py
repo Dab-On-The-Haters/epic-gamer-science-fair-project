@@ -336,7 +336,7 @@ def generatedText(ID):
 @app.route('/explore-models', methods=['GET', 'POST'])
 @login_required
 def exploreModels():
-    db.cur.execute('''SELECT models.ID, models.user_description, users.real_name, users.username, datasets.ID, datasets.title
+    db.cur.execute('''SELECT models.ID, models.user_description, models.datasetID, users.real_name, users.username, datasets.title
         FROM models LEFT JOIN (users, datasets) ON (users.ID=models.trainerID AND datasets.ID=models.datasetID) ORDER BY models.time_finished DESC;''')
     return render_template('explore-models.html', models=db.cur.fetchall(), user=current_user)
 

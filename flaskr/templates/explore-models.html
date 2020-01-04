@@ -33,10 +33,10 @@
         <div class="w3-container w3-margin">
             {% for model in models %}
                 <div class="w3-container w3-margin-top">
-                    <b>Model #{{ model['models.ID'] }}</b> by <a href="/u/{{ model['user.user_name'] }}">{{ model['users.real_name'] }}</a>
-                    <p>{{ model['models.user_description'] }}</p>
-                    <p>Dataset: <a href="/d/{{ model['datasets.ID'] }}">{{ model['datasets.title'] }}</a></p>
-                    <a href="/m/{{ model['models.ID'] }}">More about this model</a>
+                    <b>Model #{{ model['ID'] }}</b> by <a href="/u/{{ model['user_name'] }}">{{ model['real_name'] }}</a>
+                    <p>{{ model['user_description'] }}</p>
+                    <p>Dataset: <a href="/d/{{ model['datasetID'] }}">{{ model['title'] }}</a></p>
+                    <a href="/m/{{ model['ID'] }}">More about this model</a>
                 </div>
             {% endfor %}
         </div>
