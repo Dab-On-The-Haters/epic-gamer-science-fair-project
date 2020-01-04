@@ -112,3 +112,11 @@ class modelMakerForm(FlaskForm):
     valFrac = f5.DecimalField('Amount of data going into the validation set', [v.NumberRange(0, 1, 'BETWEEN 0 AND 1 FIGURE IT OUT')], default=0.05)
     trainFrac = f5.DecimalField('Amount data going into the training set', [v.NumberRange(0, 1, 'BETWEEN 0 AND 1 FIGURE IT OUT')], default=0.95)
     seed = f5.IntegerField('Seed for making random numbers', [v.NumberRange(1, 250, 'Set your seed between 1 and 250, it really doesn\'t matter')], default=123)
+
+
+class sampleForm(FlaskForm):
+    checkpointID = f5.IntegerField('ID of checkpoint to sample')
+    seed = f.TextAreaField('Text to start the generation with', [v.Length(min=1, max=5000, 'The prompt should be at least one letter and not over 5,000.S')], default='a')
+    temperature = f.FloatField('Temperature for text generation. Higher = more creative / risk taking', [v.NumberRange(0, 1, 'Temperature is on a scale of 0 to 1')], default=0.8)
+    sampleLength = f5.IntegerField('Amount of characters to generate', [v.NumberRange(5, 100000, 'Between 5 and 100,000 characters should be generated.')], default=5000)
+    
