@@ -179,7 +179,7 @@ def datasetEditor():
     db.cur.execute('SELECT title, posterID from datasets WHERE ID=%s;', datasetIDF)
     TS = db.cur.fetchone()
     if not TS.get('title', False):
-        return if not db.cur.rowcount: return render_template('404.html', missing='dataset')
+        if not db.cur.rowcount: return render_template('404.html', missing='dataset')
     
     if TS['posterID'] != current_user.ID:
         return 'you don\'t have permission to edit that dataset'
