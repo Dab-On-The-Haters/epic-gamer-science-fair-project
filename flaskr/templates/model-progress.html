@@ -26,7 +26,7 @@
         {
             progressBar.value = JSON.parse(this.responseText)[0];
             if (progressBar.value == maxEpoch){
-                window.location.href = ""
+                window.location.href = "/generate/" + curId
             }
             
             setTimeout(newRequest, 250); 
