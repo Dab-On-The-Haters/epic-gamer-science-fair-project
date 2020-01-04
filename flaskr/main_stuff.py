@@ -303,16 +303,35 @@ def progressJson(ID):
         prevEp = ep
 
     return jsonify(lossChartRows) # will return more stuff in future
-    
+
+
+generatorCommands = 'python3 /var/www/epic-gamer-science-fair-project/flaskr/generate.py {} &'
+
 @app.route('/generate/<int:ID>')
 @login_required
 def generateText(ID):
-    return render_template('generateText.html', ID=ID)
+    SF = f.sampleForm()
+    if SF.validate_on_submit():
+        db.cur.execute('INSERT INTO samples (modelID, checkpointID, temperature, sample_length, seed) VALUES (%s, %s, %s, %s, %s);',
+        (ID, SF.checkpointID.data, SF.temperature.data, SF.sampleLength.data, SF.seed.data))
+        db.conn.commit()
+        subp.call(generatorCommands.format(ID), shell=True)
+        return redirect('/generated/'+str(db.cur.lastrowid))
 
+    return render_template('generateText.html', form=SF ID=ID)
+
+# id here is for sample, not for model
 @app.route('/generated/<int:ID>')
 @login_required
 def generatedText(ID):
-    return render_template('generatedText.html', ID=ID, generatedText='todo haha poop')
+    db.cur.execute('SELECT results FROM samples WHERE ID = %s;')
+    if not db.cur.rowcount: return 'boi'
+
+    generatedText = db.cur.fetchone()['results']
+
+    if generatedText:
+        return render_template('generatedText.html', ID=ID, generatedText=generatedText)
+    return render_template('generating.html', ID=ID)
 
 @app.route('/exploremodels', methods=['GET', 'POST'])
 @login_required

@@ -2,15 +2,20 @@ from torch.autograd import Variable
 import torch.nn as nn
 import torch
 
+from sys import argv
 import db
 import numpy as np
 import os
 import re
 import pickle
-import argparse
+#import argparse
 
 from rnn import *
 
+db.cur.execute('SELECT modelID, checkpoint, temperature, sample_length, seed FROM samples WHERE ID = %s;', (argv[1],))
+args = db.cur.fetchone()
+
+"""
 parser = argparse.ArgumentParser(description='PyTorch char-rnn')
 parser.add_argument('--temperature', type=float, default=0.8)
 parser.add_argument('--sample_len', type=int, default=500)
@@ -19,8 +24,9 @@ parser.add_argument('--seed', type=str, default='a')
 parser.add_argument('--charfile', '-f', type=str)
 parser.add_argument('--concatenate', type=int, default=0)
 args = parser.parse_args()
+"""
 
-db.cur.execute('SELECT char_file FROM models WHERE ID=%s;', (args.charfile,))
+db.cur.execute('SELECT char_file FROM models WHERE ID=%s;', (args['modelID'],))
 chars = pickle.loads(db.cur.fetchone()['char_file'], encoding='utf-8')
 
 chars = sorted(list(set(chars)))
@@ -50,7 +56,7 @@ def manual_sample(x, temperature):
     x = np.argmax(x)
     return x.astype(np.int64)
 
-def sample(model, prime_str, predict_len, temperature, concatenate):
+def sample(model, prime_str, predict_len, temperature):
     with torch.no_grad():
         hidden = model.create_hidden(1)
     prime_tensors = [index_to_tensor(char_to_index[char]) for char in prime_str]
@@ -71,7 +77,7 @@ def sample(model, prime_str, predict_len, temperature, concatenate):
         top_i = manual_sample(output.data.numpy(), temperature)
 
         # Add predicted character to string and use as next input
-        predicted_char = index_to_char[top_i]
+        predicted_char = index_to_char[top_i]model
         predicted += predicted_char
         inp = index_to_tensor(char_to_index[predicted_char])
 
@@ -81,11 +87,12 @@ def sample(model, prime_str, predict_len, temperature, concatenate):
     predicted = re.sub(r'([.?!]\n *\n)([a-z])', uppercase_sentences, predicted)
     if predicted.find('.'):
         predicted = predicted[:predicted.rfind('.')+1]
+    """
     if concatenate == -1:
-        predicted = re.sub(r'\n', ' ', predicted)
+        predicted = re.sub(r'\n', ' ', predicted)"""
     return predicted
 
-cpPath = os.path.join('/home/thomas/pytorch-models', str(args.checkpoint))
+cpPath = os.path.join('/home/thomas/pytorch-models', str(args['checkpoint']))
 if os.path.exists(cpPath):
     print('Parameters found at {}... loading'.format(cpPath))
     checkpoint = torch.load(cpPath, map_location=lambda storage, loc: storage)
@@ -100,6 +107,6 @@ for key in checkpoint['model'].keys():
 
 model = RNN(chars_len, hidden_size, chars_len, n_layers, 0.5)
 model.load_state_dict(checkpoint['model'])
-print(sample(model, args.seed, args.sample_len, args.temperature, args.concatenate))
+db.cur.execute('UPDATE checkpoints SET result = %s WHERE ID = %s;', (sample(model, args['seed'], args['sample_len'], args['temperature']), argv[1]))
 
 db.conn.close()
