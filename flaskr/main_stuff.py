@@ -308,6 +308,11 @@ def progressJson(ID):
         prevEp = ep
 
     return jsonify(lossChartRows) # will return more stuff in future
+    
+@app.route('/generate/<int:ID>')
+@login_required
+def generateText(ID):
+    return render_template('generateText.html', ID=ID)
 
 @app.route('/generated/<int:ID>')
 @login_required
