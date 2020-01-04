@@ -309,11 +309,15 @@ def progressJson(ID):
 
     return jsonify(lossChartRows) # will return more stuff in future
 
+@app.route('/generated/<int:ID>')
+@login_required
+def generatedText(ID):
+    return render_template('generatedText.html', ID=ID, generatedText='todo haha poop')
+
 @app.route('/exploremodels', methods=['GET', 'POST'])
 @login_required
 def exploreModels():
     return render_template('explore/models.html')
-
 
 @app.route('/about')
 def aboutPage():
