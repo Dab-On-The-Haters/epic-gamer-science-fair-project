@@ -97,5 +97,5 @@ model = RNN(chars_len, hidden_size, chars_len, n_layers, 0.5)
 model.load_state_dict(checkpoint['model'])
 db.cur.execute('UPDATE samples SET result = %s WHERE ID = %s;', (sample(model, args['seed'], args['sample_length'], args['temperature']), argv[1]))
 db.conn.commit()
-
+db.cur.close()
 db.conn.close()
