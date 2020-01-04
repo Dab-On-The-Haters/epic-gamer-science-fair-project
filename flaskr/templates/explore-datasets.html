@@ -35,7 +35,7 @@
                 <div class="w3-container w3-card w3-indigo w3-margin w3-padding">
                     <b>{{ d['title']|escape }}</b> by <a href="/u/{{ d['user_name'] }}">{{ d['real_name']|escape }}</a>
                     <p>{{ d['user_description']|escape }}</p>
-                    <p class="w3-small">Size: d['LENGTH(final_text)']</p>
+                    <p class="w3-small">Size: {{ d['LENGTH(datasets.final_text)'] }}</p>
                     <a href="/d/{{ d['ID'] }}">More about this dataset</a>
                 </div>
             {% endfor %}
