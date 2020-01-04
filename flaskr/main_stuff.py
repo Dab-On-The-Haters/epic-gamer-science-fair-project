@@ -327,7 +327,7 @@ def generatedText(ID):
     db.cur.execute('SELECT result FROM samples WHERE ID = %s;', (ID,))
     if not db.cur.rowcount: return 'boi'
 
-    generatedText = db.cur.fetchone()['results']
+    generatedText = db.cur.fetchone().get('results')
 
     if generatedText:
         return render_template('generated-text.html', ID=ID, generatedText=generatedText, user=current_user)
