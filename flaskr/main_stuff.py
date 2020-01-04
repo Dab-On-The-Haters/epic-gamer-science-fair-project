@@ -327,6 +327,7 @@ def generateText(ID):
 @app.route('/generated/<int:ID>')
 @login_required
 def generatedText(ID):
+    db.conn.commit()
     db.cur.execute('SELECT result, modelID FROM samples WHERE ID = %s;', (ID,))
     if not db.cur.rowcount: return render_template('404.html', missing='sample')
     qResults = db.cur.fetchone()
