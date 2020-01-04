@@ -25,8 +25,8 @@
         function setProgBar()
         {
             progressBar.value = JSON.parse(this.responseText)[0];
-            if (progressBar.value == maxEpoch){
-                window.location.href = "/generate/" + curId
+            if (progressBar.value == maxEpochs){
+                window.location.href = "/generate/" + curID
             }
             
             setTimeout(newRequest, 250); 
