@@ -179,7 +179,7 @@ def datasetEditor():
     db.cur.execute('SELECT title, posterID from datasets WHERE ID=%s;', datasetIDF)
     TS = db.cur.fetchone()
     if not TS.get('title', False):
-        return 'lol we can\'t find that dataset'
+        return if not db.cur.rowcount: return render_template('404.html', missing='dataset')
     
     if TS['posterID'] != current_user.ID:
         return 'you don\'t have permission to edit that dataset'
@@ -273,6 +273,8 @@ def modelMaker():
 @login_required
 def showProgress(ID):
     db.cur.execute('SELECT max_epochs FROM models WHERE ID = %s;', (ID,))
+    if not db.cur.rowcount: return render_template('404.html', missing='model')
+
     return render_template('model-progress.html', ID=ID, maxEpochs = db.cur.fetchone()['max_epochs'], user=current_user)
 
 @app.route('/epoch-progress/<int:ID>')
@@ -325,7 +327,7 @@ def generateText(ID):
 @login_required
 def generatedText(ID):
     db.cur.execute('SELECT result, modelID FROM samples WHERE ID = %s;', (ID,))
-    if not db.cur.rowcount: return 'boi'
+    if not db.cur.rowcount: return render_template('404.html', missing='sample')
     qResults = db.cur.fetchone()
     generatedText = qResults.get('result')
 
@@ -335,18 +337,41 @@ def generatedText(ID):
 
 
 @app.route('/explore-models', methods=['GET', 'POST'])
-@login_required
 def exploreModels():
     db.cur.execute('''SELECT models.ID, models.user_description, models.datasetID, users.real_name, users.username, datasets.title
         FROM models LEFT JOIN (users, datasets) ON (users.ID=models.trainerID AND datasets.ID=models.datasetID) ORDER BY models.time_finished ASC;''')
     return render_template('explore-models.html', models=db.cur.fetchall(), user=current_user)
 
 @app.route('/explore-datasets', methods=['GET', 'POST'])
-@login_required
 def exploreDatasets():
     db.cur.execute('''SELECT datasets.ID, datasets.title, datasets.user_description, LENGTH(datasets.final_text), users.real_name, users.username
         FROM datasets LEFT JOIN users ON users.ID=datasets.posterID ORDER BY datasets.time_posted ASC;''')
     return render_template('explore-datasets.html', datasets=db.cur.fetchall(), user=current_user)
+
+
+@app.route('/u/<username>')
+@login_required
+def showUser(username):
+    db.cur.execute('SELECT real_name, self_description, time_joined FROM users WHERE verified=1 AND username = %s;', (username,))
+    if not db.cur.rowcount: return render_template('404.html', missing='user')
+    return render_template('user.html', u=db.cur.fetchone(), user=current_user)
+
+@app.route('/m/<int:ID>')
+@login_required
+def showModel(ID):
+    db.cur.execute('''SELECT models.*, users.username, users.real_name, datasets.ID, datasets.title, datasets.user_description
+        FROM models LEFT JOIN (users, datasets) ON (models.ID=%s AND users.ID=models.trainerID AND datasets.ID=models.datasetID);''', ID)
+    if not db.cur.rowcount: return render_template('404.html', missing='model')
+    return render_template('model.html', m=db.cur.fetchone(), user=current_user)
+
+@app.route('/d/<int:ID>')
+@login_required
+def showDataset(ID):
+    db.cur.execute('''SELECT datasets.title, datasets.user_description, datasets.time_posted, LENGTH(datasets.final_text), users.real_name, users.username
+        FROM datasets LEFT JOIN users ON (datasets.ID=%s AND users.ID=datasets.posterID);''', ID)
+    if not db.cur.rowcount: return render_template('404.html', missing='dataset')
+    return render_template('dataset.html', d=db.cur.fetchone(), user=current_user)
+
 
 
 @app.route('/about')
