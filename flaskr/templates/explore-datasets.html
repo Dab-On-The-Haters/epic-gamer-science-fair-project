@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Models | Joe</title>
+        <title>Datasets | Joe</title>
         <link rel="stylesheet" href="/static/w3.css">
         <link rel="stylesheet" href="/static/w3-colors-2019.css">
         <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
@@ -31,12 +31,12 @@
         </div>
         <div><br><br></div>
         <div class="w3-container">
-            {% for m in models %}
+            {% for d in datasets %}
                 <div class="w3-container w3-card w3-indigo w3-margin w3-padding">
-                    <b>Model #{{ m['ID'] }}</b> by <a href="/u/{{ m['username'] }}">{{ m['real_name']|escape }}</a>
-                    <p>{{ m['user_description']|escape }}</p>
-                    <p>Dataset: <a href="/d/{{ m['datasetID'] }}">{{ m['title']|escape }}</a></p>
-                    <a href="/m/{{ m['ID'] }}">More about this model</a>
+                    <b>{{ d['title']|escape }}</b> by <a href="/u/{{ d['user_name'] }}">{{ d['real_name']|escape }}</a>
+                    <p>{{ d['user_description']|escape }}</p>
+                    <p class="w3-small">Size: d['LENGTH(final_text)']</p>
+                    <a href="/d/{{ d['ID'] }}">More about this dataset</a>
                 </div>
             {% endfor %}
         </div>
