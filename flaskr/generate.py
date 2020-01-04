@@ -12,7 +12,7 @@ import pickle
 
 from rnn import *
 
-db.cur.execute('SELECT modelID, checkpoint, temperature, sample_length, seed FROM samples WHERE ID = %s;', (argv[1],))
+db.cur.execute('SELECT modelID, checkpointID, temperature, sample_length, seed FROM samples WHERE ID = %s;', (argv[1],))
 args = db.cur.fetchone()
 
 """
@@ -92,7 +92,7 @@ def sample(model, prime_str, predict_len, temperature):
         predicted = re.sub(r'\n', ' ', predicted)"""
     return predicted
 
-cpPath = os.path.join('/home/thomas/pytorch-models', str(args['checkpoint']))
+cpPath = os.path.join('/home/thomas/pytorch-models', str(args['checkpointID']))
 if os.path.exists(cpPath):
     print('Parameters found at {}... loading'.format(cpPath))
     checkpoint = torch.load(cpPath, map_location=lambda storage, loc: storage)
@@ -107,6 +107,7 @@ for key in checkpoint['model'].keys():
 
 model = RNN(chars_len, hidden_size, chars_len, n_layers, 0.5)
 model.load_state_dict(checkpoint['model'])
-db.cur.execute('UPDATE checkpoints SET result = %s WHERE ID = %s;', (sample(model, args['seed'], args['sample_len'], args['temperature']), argv[1]))
+db.cur.execute('UPDATE samples SET result = %s WHERE ID = %s;', (sample(model, args['seed'], args['sample_length'], args['temperature']), argv[1]))
+db.conn.commit()
 
 db.conn.close()
