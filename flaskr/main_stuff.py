@@ -333,17 +333,25 @@ def generatedText(ID):
         return render_template('generated-text.html', ID=ID, generatedText=generatedText, user=current_user)
     return render_template('generating.html', ID=qResults['modelID'],)
 
+
 @app.route('/explore-models', methods=['GET', 'POST'])
 @login_required
 def exploreModels():
     db.cur.execute('''SELECT models.ID, models.user_description, models.datasetID, users.real_name, users.username, datasets.title
-        FROM models LEFT JOIN (users, datasets) ON (users.ID=models.trainerID AND datasets.ID=models.datasetID) ORDER BY models.time_finished DESC;''')
+        FROM models LEFT JOIN (users, datasets) ON (users.ID=models.trainerID AND datasets.ID=models.datasetID) ORDER BY models.time_finished ASC;''')
     return render_template('explore-models.html', models=db.cur.fetchall(), user=current_user)
+
+@app.route('/explore-datasets', methods=['GET', 'POST'])
+@login_required
+def exploreDatasets():
+    db.cur.execute('''SELECT datasets.ID, datasets.title, datasets.user_description, LENGTH(datasets.final_text), users.real_name, users.username
+        FROM datasets LEFT JOIN users ON users.ID=datasets.posterID ORDER BY datasets.time_posted ASC;''')
+    return render_template('explore-models.html', datasets=db.cur.fetchall(), user=current_user)
+
 
 @app.route('/about')
 def aboutPage():
     return render_template('about-index.html', user=current_user)
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
