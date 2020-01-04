@@ -116,7 +116,7 @@ class modelMakerForm(FlaskForm):
 
 class sampleForm(FlaskForm):
     checkpointID = f5.IntegerField('ID of checkpoint to sample')
-    seed = f.TextAreaField('Text to start the generation with', [v.Length(min=1, max=5000, 'The prompt should be at least one letter and not over 5,000.S')], default='a')
+    seed = f.TextAreaField('Text to start the generation with', [v.Length(1, 5000, 'The prompt should be at least one letter and not over 5,000.S')], default='a')
     temperature = f.FloatField('Temperature for text generation. Higher = more creative / risk taking', [v.NumberRange(0, 1, 'Temperature is on a scale of 0 to 1')], default=0.8)
     sampleLength = f5.IntegerField('Amount of characters to generate', [v.NumberRange(5, 100000, 'Between 5 and 100,000 characters should be generated.')], default=5000)
     
