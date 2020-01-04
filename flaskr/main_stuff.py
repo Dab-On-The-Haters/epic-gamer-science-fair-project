@@ -324,14 +324,14 @@ def generateText(ID):
 @app.route('/generated/<int:ID>')
 @login_required
 def generatedText(ID):
-    db.cur.execute('SELECT result FROM samples WHERE ID = %s;', (ID,))
+    db.cur.execute('SELECT result, modelID FROM samples WHERE ID = %s;', (ID,))
     if not db.cur.rowcount: return 'boi'
-
-    generatedText = db.cur.fetchone().get('results')
+    qResults = db.cur.fetchone()
+    generatedText = qResults.get('results')
 
     if generatedText:
         return render_template('generated-text.html', ID=ID, generatedText=generatedText, user=current_user)
-    return render_template('generating.html', ID=ID)
+    return render_template('generating.html', ID=qResults['modelID'],)
 
 @app.route('/exploremodels', methods=['GET', 'POST'])
 @login_required
