@@ -324,7 +324,7 @@ def generateText(ID):
 @app.route('/generated/<int:ID>')
 @login_required
 def generatedText(ID):
-    db.cur.execute('SELECT results FROM samples WHERE ID = %s;')
+    db.cur.execute('SELECT result FROM samples WHERE ID = %s;')
     if not db.cur.rowcount: return 'boi'
 
     generatedText = db.cur.fetchone()['results']
