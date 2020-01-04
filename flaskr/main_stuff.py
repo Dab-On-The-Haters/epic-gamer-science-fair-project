@@ -317,7 +317,7 @@ def generateText(ID):
         db.cur.execute('INSERT INTO samples (modelID, checkpointID, temperature, sample_length, seed) VALUES (%s, %s, %s, %s, %s);',
         (ID, SF.checkpointID.data, SF.temperature.data, SF.sampleLength.data, SF.seed.data))
         db.conn.commit()
-        subp.call(generatorCommands.format(ID), shell=True)
+        subp.Popen(generatorCommands.format(ID), shell=True)
         return redirect('/generated/'+str(db.cur.lastrowid))
 
     return render_template('generate-text.html', form=SF, ID=ID, user=current_user)
