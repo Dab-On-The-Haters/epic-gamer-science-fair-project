@@ -318,7 +318,7 @@ def generateText(ID):
         subp.call(generatorCommands.format(ID), shell=True)
         return redirect('/generated/'+str(db.cur.lastrowid))
 
-    return render_template('generateText.html', form=SF ID=ID)
+    return render_template('generateText.html', form=SF, ID=ID)
 
 # id here is for sample, not for model
 @app.route('/generated/<int:ID>')
