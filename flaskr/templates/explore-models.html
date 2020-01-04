@@ -30,9 +30,9 @@
             </div>
         </div>
         <div><br><br></div>
-        <div class="w3-container w3-margin">
+        <div class="w3-container">
             {% for model in models %}
-                <div class="w3-container w3-margin-top">
+                <div class="w3-container w3-margin">
                     <b>Model #{{ model['ID'] }}</b> by <a href="/u/{{ model['user_name'] }}">{{ model['real_name'] }}</a>
                     <p>{{ model['user_description'] }}</p>
                     <p>Dataset: <a href="/d/{{ model['datasetID'] }}">{{ model['title'] }}</a></p>
