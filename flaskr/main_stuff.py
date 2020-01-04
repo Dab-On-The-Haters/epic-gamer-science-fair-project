@@ -318,7 +318,7 @@ def generateText(ID):
         subp.call(generatorCommands.format(ID), shell=True)
         return redirect('/generated/'+str(db.cur.lastrowid))
 
-    return render_template('generateText.html', form=SF, ID=ID)
+    return render_template('generate-text.html', form=SF, ID=ID)
 
 # id here is for sample, not for model
 @app.route('/generated/<int:ID>')
@@ -330,7 +330,7 @@ def generatedText(ID):
     generatedText = db.cur.fetchone()['results']
 
     if generatedText:
-        return render_template('generatedText.html', ID=ID, generatedText=generatedText)
+        return render_template('generated-text.html', ID=ID, generatedText=generatedText)
     return render_template('generating.html', ID=ID)
 
 @app.route('/exploremodels', methods=['GET', 'POST'])
