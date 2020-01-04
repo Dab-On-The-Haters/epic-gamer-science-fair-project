@@ -360,7 +360,7 @@ def showUser(username):
 @login_required
 def showModel(ID):
     db.cur.execute('''SELECT models.*, users.username, users.real_name, datasets.ID, datasets.title, datasets.user_description
-        FROM models LEFT JOIN (users, datasets) ON (models.ID=%s AND users.ID=models.trainerID AND datasets.ID=models.datasetID);''', ID)
+        FROM models LEFT JOIN (users, datasets) ON (AND users.ID=models.trainerID AND datasets.ID=models.datasetID) WHERE models.ID = %s;''', (ID,))
     if not db.cur.rowcount: return render_template('404.html', missing='model')
     return render_template('model.html', m=db.cur.fetchone(), user=current_user)
 
@@ -368,7 +368,7 @@ def showModel(ID):
 @login_required
 def showDataset(ID):
     db.cur.execute('''SELECT datasets.title, datasets.user_description, datasets.time_posted, LENGTH(datasets.final_text), users.real_name, users.username
-        FROM datasets LEFT JOIN users ON (datasets.ID=%s AND users.ID=datasets.posterID);''', ID)
+        FROM datasets LEFT JOIN users ON users.ID=datasets.posterID WHERE datasets.ID = %s;''', (ID,))
     if not db.cur.rowcount: return render_template('404.html', missing='dataset')
     return render_template('dataset.html', d=db.cur.fetchone(), user=current_user)
 
