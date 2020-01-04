@@ -3,7 +3,17 @@
     <head>
         <title>Generating...</title>
         <script>
-            window.onload = function() {setTimeout(location.reload(true), 500);};
+
+            window.onload = function()
+            {
+                clearTimeout(reload);
+                setTimeout(location.reload(true), 1000);
+            };
+
+            function reload()
+            {
+                location.reload(true);
+            }
         </script>
     </head>
     <body>
