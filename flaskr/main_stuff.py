@@ -327,7 +327,7 @@ def generatedText(ID):
     db.cur.execute('SELECT result, modelID FROM samples WHERE ID = %s;', (ID,))
     if not db.cur.rowcount: return 'boi'
     qResults = db.cur.fetchone()
-    generatedText = qResults.get('results')
+    generatedText = qResults.get('result')
 
     if generatedText:
         return render_template('generated-text.html', ID=ID, generatedText=generatedText, user=current_user)
