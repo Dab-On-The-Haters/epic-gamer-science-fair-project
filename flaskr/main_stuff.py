@@ -346,7 +346,7 @@ def exploreModels():
 def exploreDatasets():
     db.cur.execute('''SELECT datasets.ID, datasets.title, datasets.user_description, LENGTH(datasets.final_text), users.real_name, users.username
         FROM datasets LEFT JOIN users ON users.ID=datasets.posterID ORDER BY datasets.time_posted ASC;''')
-    return render_template('explore-models.html', datasets=db.cur.fetchall(), user=current_user)
+    return render_template('explore-datasets.html', datasets=db.cur.fetchall(), user=current_user)
 
 
 @app.route('/about')
