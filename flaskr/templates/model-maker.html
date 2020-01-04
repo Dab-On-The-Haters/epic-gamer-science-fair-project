@@ -37,7 +37,7 @@
         </div>
 
         <div class="w3-container w3-card w3-margin w3-2019-galaxy-blue">
-            <form method="POST">
+            <form method="POST" target="_self">
                 {% for field in form %}
                     {% if field in [form.csrf_token] %}
                         {{ field }}

@@ -39,7 +39,7 @@
         </div>
 
         <div class="w3-container w3-card w3-margin w3-2019-galaxy-blue">
-            <form method="POST" enctype="multipart/form-data">
+            <form method="POST" target="_self" enctype="multipart/form-data">
                 {{ form.csrf_token }}
                 <div class="w3-margin-top">
                     <b>{{ form.title.label }}</b>
