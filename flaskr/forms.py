@@ -120,3 +120,6 @@ class sampleForm(FlaskForm):
     temperature = f.FloatField('Temperature for text generation. Higher = more creative / risk taking', [v.NumberRange(0, 1, 'Temperature is on a scale of 0 to 1')], default=0.8)
     sampleLength = f5.IntegerField('Amount of characters to generate', [v.NumberRange(5, 100000, 'Between 5 and 100,000 characters should be generated.')], default=5000)
     
+
+class survey(FlaskForm):
+    q = lamda s : 'On a scale of 1 to 10, how '+s+'?'
