@@ -320,6 +320,17 @@ def generateText(ID):
         db.conn.commit()
         sampleID = db.cur.lastrowid
         subp.call(generatorCommands.format(sampleID), shell=True)
+        uID = current_user.ID
+        db.cur.execute('SELECT ID FROM survey WHERE userID = %s;', (uID,))
+        db.cur.fetchone()
+        if not db.cur.rowcount:
+            db.cur.execute('SELECT ID FROM datasets WHERE posterID = %s;', (uID,))
+            db.cur.fetchone()
+            if db.cur.rowcount():
+                db.cur.execute('SELECT ID FROM models WHERE trainerID = %s;', (uID,))
+                db.cur.fetchone()
+                if db.cur.rowcount():
+                    surveyRequest()
         return redirect('/generated/'+str(sampleID))
 
     return render_template('generate-text.html', form=SF, ID=ID, user=current_user)
@@ -478,3 +489,9 @@ def survey():
         return 'Thank you for your feedback!'
     
     return render_template('survey.html', form=SF)
+
+def surveyRequest(user):
+    reqBody = '''Hi {},
+    please fill out som'''
+    surveyReq = Message(recipients=[user.email], subject='Please give us some feedback on how to improve our site!', sender='joethernn@gmail.com')
+    mail.send(surveyReq)
