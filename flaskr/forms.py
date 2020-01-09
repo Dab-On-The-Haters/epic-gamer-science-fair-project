@@ -115,11 +115,28 @@ class modelMakerForm(FlaskForm):
 
 
 class sampleForm(FlaskForm):
-    checkpointID = f5.IntegerField('ID of checkpoint to sample')
-    seed = f.TextAreaField('Text to start the generation with', [v.Length(1, 5000, 'The prompt should be at least one letter and not over 5,000.S')], default='a')
-    temperature = f.FloatField('Temperature for text generation. Higher = more creative / risk taking', [v.NumberRange(0, 1, 'Temperature is on a scale of 0 to 1')], default=0.8)
+    checkpointID = f5.IntegerField('ID of checkpoint to sample', [v.DataRequired()])
+    seed = f.TextAreaField('Text to start the generation with', [v.Length(1, 5000, 'The prompt should be at least one letter and not over 5,000.')], default='a')
+    temperature = f5.DecimalRangeField('Temperature for text generation. Higher = more creative / risk taking', [v.NumberRange(0, 1, 'Temperature is on a scale of 0 to 1')], default=0.8)
     sampleLength = f5.IntegerField('Amount of characters to generate', [v.NumberRange(5, 100000, 'Between 5 and 100,000 characters should be generated.')], default=5000)
     
 
+_feedback = f.TextAreaField('How should we improve this?', [v.Length(max=50000, 'Feedback cannot be longer than 50,000 characters.')])
 class survey(FlaskForm):
-    q = lamda s : 'On a scale of 1 to 10, how '+s+'?'
+    q = lamda s : f5.IntegerRangeField('On a scale of 1 to 10, '+s+'?', [v.NumberRange(1, 10, 'Must be between 1 and 10'), default=5])
+
+    techComfort = q('how comfortable are you with computers and technology in general')
+    navigation = q('how hard/confusing did you find navigating the website')
+    navigationF = _feedback
+    datasets = q('how hard/confusing was uploading a dataset')
+    datasetsF = _feedback
+    models = q('how hard/confusing was creating a model')
+    modelsF = _feedback
+    samples = q('how hard/confusing was generating text from the models')
+    samplesF = _feedback
+    descriptions = q('how clear were the descriptions and explanations on the website')
+    descriptionsF = _feedback
+
+    generalFeedback = f.TextAreaField('What are some overall suggestions?', [v.Length(max=60000, 'Feedback cannot be longer than 60,000 characters.')])
+
+
