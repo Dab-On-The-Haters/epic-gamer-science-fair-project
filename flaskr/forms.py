@@ -12,7 +12,7 @@ urlValidChars = string.ascii_letters + string.digits + '._-+'
 # message for InputRequired
 r = lambda fieldValue : 'Please enter your ' + fieldValue
 
-w3Button = {'class': 'w3-2019-galaxy-blue w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo'}
+w3Button = {'class': 'w3-2019-galaxy-blue w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo', 'style': 'background-color : #191970'}
 
 class registerForm(FlaskForm):
     # for checking if password is varied enough
