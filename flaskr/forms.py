@@ -124,21 +124,21 @@ class sampleForm(FlaskForm):
     
 
 class survey(FlaskForm):
-    f lambda s: = f.TextAreaField(s if len(s) else 'How should we improve this?', [v.Length(max=50000, message='Feedback cannot be longer than 50,000 characters.')])
+    fe = lambda s : f.TextAreaField(s if len(s) else 'How should we improve this?', [v.Length(max=50000, message='Feedback cannot be longer than 50,000 characters.')])
     q = lambda s : f5.IntegerRangeField('On a scale of 1 to 10, '+s+'?', [v.NumberRange(1, 10, 'Must be between 1 and 10')], render_kw={'min':'1', 'max':'10'}, default=5)
 
     techComfort = q('how comfortable are you with computers and technology in general')
     navigation = q('how hard/confusing did you find navigating the website')
-    navigationF = f('')
+    navigationF = fe('')
     datasets = q('how hard/confusing was uploading a dataset')
-    datasetsF = f('')
+    datasetsF = fe('')
     models = q('how hard/confusing was creating a model')
-    modelsF = f('')
+    modelsF = fe('')
     samples = q('how hard/confusing was generating text from the models')
-    samplesF = f('')
+    samplesF = fe('')
     descriptions = q('how clear were the descriptions and explanations on the website')
-    descriptionsF = f('')
+    descriptionsF = fe('')
 
-    generalFeedback = f('What are some overall suggestions?')
+    generalFeedback = fe('What are some overall suggestions?')
 
 
