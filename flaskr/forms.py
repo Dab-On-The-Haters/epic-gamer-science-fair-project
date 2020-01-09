@@ -12,6 +12,8 @@ urlValidChars = string.ascii_letters + string.digits + '._-+'
 # message for InputRequired
 r = lambda fieldValue : 'Please enter your ' + fieldValue
 
+w3Button = {'class': 'w3-2019-galaxy-blue w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo'}
+
 class registerForm(FlaskForm):
     # for checking if password is varied enough
     def PasswordCheck(form, field):
@@ -67,12 +69,12 @@ class datasetForm(FlaskForm):
     title = f.StringField('Name of this dataset', [v.InputRequired(r('dataset name')), v.length(5, 250, 'Dataset title must be between 5 and 250 characters long')])
     description = f.TextAreaField('Dataset description', [v.length(max=65500, message='Description can not be longer than 65,500 characters.')])
     files = f.FieldList(f.FileField('Custom dataset file'), max_entries=100)
-    newFile = f.SubmitField('Add a new dataset file')
-    removeFile = f.SubmitField('Remove the last dataset file')
+    newFile = f.SubmitField('Add a new dataset file', render_kw=w3Button)
+    removeFile = f.SubmitField('Remove the last dataset file', render_kw=w3Button)
     URLs = f.FieldList(f5.URLField('URL of dataset of file', [v.InputRequired(urlm), v.URL(urlm)]), max_entries=100)
-    newURL = f.SubmitField('Add a new dataset URL')
-    removeURL = f.SubmitField('Remove the last URL')
-    uploadDataset = f.SubmitField('Upload the dataset')
+    newURL = f.SubmitField('Add a new dataset URL', render_kw=w3Button)
+    removeURL = f.SubmitField('Remove the last URL', render_kw=w3Button)
+    uploadDataset = f.SubmitField('Upload the dataset', render_kw=w3Button)
 
 #this form is from a stackoverflow answer (https://stackoverflow.com/questions/24296834/wtform-fieldlist-with-selectfield-how-do-i-render/57548509#57548509)
 class SelectForm(FlaskForm):
@@ -82,7 +84,7 @@ class SelectForm(FlaskForm):
 class datasetEditorForm(FlaskForm):
     columnSelections = f.FieldList(f.FormField(SelectForm))
     finalText = f.TextAreaField('Edit your dataset to remove unwanted data', [v.length(min=1000, message='The final text cannot be shorter than 1,000 characters.')])
-    datasetRefresh = f.SubmitField('Refresh dataset text')
+    datasetRefresh = f.SubmitField('Refresh dataset text', render_kw=w3Button)
 
 class modelMakerForm(FlaskForm):
     def datasetCheck(form, field):
@@ -121,22 +123,22 @@ class sampleForm(FlaskForm):
     sampleLength = f5.IntegerField('Amount of characters to generate', [v.NumberRange(5, 100000, 'Between 5 and 100,000 characters should be generated.')], default=5000)
     
 
-_feedback = f.TextAreaField('How should we improve this?', [v.Length(max=50000, message='Feedback cannot be longer than 50,000 characters.')])
 class survey(FlaskForm):
+    f lambda s: = f.TextAreaField(s if len(s) else 'How should we improve this?', [v.Length(max=50000, message='Feedback cannot be longer than 50,000 characters.')])
     q = lambda s : f5.IntegerRangeField('On a scale of 1 to 10, '+s+'?', [v.NumberRange(1, 10, 'Must be between 1 and 10')], render_kw={'min':'1', 'max':'10'}, default=5)
 
     techComfort = q('how comfortable are you with computers and technology in general')
     navigation = q('how hard/confusing did you find navigating the website')
-    navigationF = _feedback
+    navigationF = f('')
     datasets = q('how hard/confusing was uploading a dataset')
-    datasetsF = _feedback
+    datasetsF = f('')
     models = q('how hard/confusing was creating a model')
-    modelsF = _feedback
+    modelsF = f('')
     samples = q('how hard/confusing was generating text from the models')
-    samplesF = _feedback
+    samplesF = f('')
     descriptions = q('how clear were the descriptions and explanations on the website')
-    descriptionsF = _feedback
+    descriptionsF = f('')
 
-    generalFeedback = f.TextAreaField('What are some overall suggestions?', [v.Length(max=60000, message='Feedback cannot be longer than 60,000 characters.')])
+    generalFeedback = f('What are some overall suggestions?')
 
 
