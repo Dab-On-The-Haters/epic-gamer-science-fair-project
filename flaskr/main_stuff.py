@@ -265,7 +265,7 @@ def modelMaker():
         db.conn.commit()
         return redirect('/model-progress/'+str(modelID))
     if not MF.datasetID.data:
-        try: MF.datasetID.data = int(session['dataset'])
+        try: MF.datasetID.data = int(session['datasetID'])
         except: pass
     return render_template('model-maker.html', form=MF, user=current_user)
 
