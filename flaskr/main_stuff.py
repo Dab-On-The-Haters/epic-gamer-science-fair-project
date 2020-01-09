@@ -330,7 +330,7 @@ def generateText(ID):
                 db.cur.execute('SELECT ID FROM models WHERE trainerID = %s;', (uID,))
                 db.cur.fetchone()
                 if db.cur.rowcount():
-                    surveyRequest()
+                    surveyRequest(current_user)
         return redirect('/generated/'+str(sampleID))
 
     return render_template('generate-text.html', form=SF, ID=ID, user=current_user)
@@ -492,6 +492,9 @@ def survey():
 
 def surveyRequest(user):
     reqBody = '''Hi {},
-    please fill out som'''
-    surveyReq = Message(recipients=[user.email], subject='Please give us some feedback on how to improve our site!', sender='joethernn@gmail.com')
+    please fill out a quick survey for Joe at https://99.199.44.233/survey. Your feedback is essential to keep on improving our service.'''
+    reqHTML= ''' Hi {},<br>
+    please fill out a quick survey for Joe <a href="https://99.199.44.233/survey">right here<\a>. Your feedback is essential to keep on improving our service.'''
+    
+    surveyReq = Message(recipients=[user.email], body=reqBody, html=reqHTML, subject='Please give us some feedback on how to improve our site!', sender='joethernn@gmail.com')
     mail.send(surveyReq)
