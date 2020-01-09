@@ -83,7 +83,7 @@ class SelectForm(FlaskForm):
 
 class datasetEditorForm(FlaskForm):
     columnSelections = f.FieldList(f.FormField(SelectForm))
-    finalText = f.TextAreaField('Edit your dataset to remove unwanted data', [v.length(min=1000, message='The final text cannot be shorter than 1,000 characters.')])
+    finalText = f.TextAreaField('Edit your dataset to remove unwanted data', [v.length(min=1000, message='The final text cannot be shorter than 1,000 characters.')], render_kw={'width':'75%'})
     datasetRefresh = f.SubmitField('Refresh dataset text', render_kw=w3Button)
 
 class modelMakerForm(FlaskForm):
@@ -119,7 +119,7 @@ class modelMakerForm(FlaskForm):
 class sampleForm(FlaskForm):
     checkpointID = f5.IntegerField('ID of checkpoint to sample', [v.DataRequired()])
     seed = f.TextAreaField('Text to start the generation with', [v.Length(1, 5000, 'The prompt should be at least one letter and not over 5,000.')], default='a')
-    temperature = f5.DecimalRangeField('Temperature for text generation. Higher = more creative / risk taking', [v.NumberRange(0, 1, 'Temperature is on a scale of 0 to 1')], default=0.8)
+    temperature = f5.DecimalRangeField('Temperature for text generation. Higher = more creative / risk taking', [v.NumberRange(0, 1, 'Temperature is on a scale of 0 to 1')], default=0.8, render_kw={'min':'0','max':'1','step':'0.01'})
     sampleLength = f5.IntegerField('Amount of characters to generate', [v.NumberRange(5, 100000, 'Between 5 and 100,000 characters should be generated.')], default=5000)
     
 
