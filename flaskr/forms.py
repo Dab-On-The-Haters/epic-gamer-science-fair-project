@@ -137,6 +137,6 @@ class survey(FlaskForm):
     descriptions = q('how clear were the descriptions and explanations on the website')
     descriptionsF = _feedback
 
-    generalFeedback = f.TextAreaField('What are some overall suggestions?', [v.Length(max=60000, 'Feedback cannot be longer than 60,000 characters.')])
+    generalFeedback = f.TextAreaField('What are some overall suggestions?', [v.Length(max=60000, message='Feedback cannot be longer than 60,000 characters.')])
 
 
