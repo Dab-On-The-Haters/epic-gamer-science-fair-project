@@ -121,7 +121,7 @@ class sampleForm(FlaskForm):
     sampleLength = f5.IntegerField('Amount of characters to generate', [v.NumberRange(5, 100000, 'Between 5 and 100,000 characters should be generated.')], default=5000)
     
 
-_feedback = f.TextAreaField('How should we improve this?', [v.Length(max=50000, 'Feedback cannot be longer than 50,000 characters.')])
+_feedback = f.TextAreaField('How should we improve this?', [v.Length(max=50000, message='Feedback cannot be longer than 50,000 characters.')])
 class survey(FlaskForm):
     q = lambda s : f5.IntegerRangeField('On a scale of 1 to 10, '+s+'?', [v.NumberRange(1, 10, 'Must be between 1 and 10')], default=5)
 
