@@ -265,8 +265,8 @@ def modelMaker():
         db.conn.commit()
         return redirect('/model-progress/'+str(modelID))
     if not MF.datasetID.data:
-        try: MF.datasetID.data = int(session['datasetID'])
-        except: pass
+        MF.datasetID.data = int(request.args.get('datasetID', session.get('datasetID', None)))
+    
     return render_template('model-maker.html', form=MF, user=current_user)
 
 @app.route('/model-progress/<int:ID>')
@@ -491,10 +491,11 @@ def survey():
     return render_template('survey.html', form=SF)
 
 def surveyRequest(user):
+    firstName = user.name.split()[0]
     reqBody = '''Hi {},
     please fill out a quick survey for Joe at https://99.199.44.233/survey. Your feedback is essential to keep on improving our service.'''
     reqHTML= ''' Hi {},<br>
     please fill out a quick survey for Joe <a href="https://99.199.44.233/survey">right here<\a>. Your feedback is essential to keep on improving our service.'''
     
-    surveyReq = Message(recipients=[user.email], body=reqBody, html=reqHTML, subject='Please give us some feedback on how to improve our site!', sender='joethernn@gmail.com')
+    surveyReq = Message(recipients=[user.email], body=reqBody.format(firstName), html=reqHTML.format(firstName), subject='Please give us some feedback on how to improve our site!', sender='joethernn@gmail.com')
     mail.send(surveyReq)
