@@ -124,7 +124,7 @@ class sampleForm(FlaskForm):
     
 
 class survey(FlaskForm):
-    fe lambda s: = f.TextAreaField(s if len(s) else 'How should we improve this?', [v.Length(max=50000, message='Feedback cannot be longer than 50,000 characters.')])
+    fe = lambda s : f.TextAreaField(s if len(s) else 'How should we improve this?', [v.Length(max=50000, message='Feedback cannot be longer than 50,000 characters.')])
     q = lambda s : f5.IntegerRangeField('On a scale of 1 to 10, '+s+'?', [v.NumberRange(1, 10, 'Must be between 1 and 10')], render_kw={'min':'1', 'max':'10'}, default=5)
 
     techComfort = q('how comfortable are you with computers and technology in general')
