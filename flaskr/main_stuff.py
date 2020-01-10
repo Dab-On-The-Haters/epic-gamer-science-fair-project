@@ -326,10 +326,10 @@ def generateText(ID):
         if not db.cur.rowcount:
             db.cur.execute('SELECT ID FROM datasets WHERE posterID = %s;', (uID,))
             db.cur.fetchone()
-            if db.cur.rowcount():
+            if db.cur.rowcount:
                 db.cur.execute('SELECT ID FROM models WHERE trainerID = %s;', (uID,))
                 db.cur.fetchone()
-                if db.cur.rowcount():
+                if db.cur.rowcount:
                     surveyRequest(current_user)
         return redirect('/generated/'+str(sampleID))
 
