@@ -493,9 +493,9 @@ def survey():
 def surveyRequest(user):
     firstName = user.name.split()[0]
     reqBody = '''Hi {},
-    please fill out a quick survey for Joe at https://99.199.44.233/survey. Your feedback is essential to keep on improving our service.'''
+    please fill out a quick survey for Joe at http://99.199.44.233/survey. Your feedback is essential to keep on improving our service.'''
     reqHTML= ''' Hi {},<br>
-    please fill out a quick survey for Joe <a href="https://99.199.44.233/survey">right here</a>. Your feedback is essential to keep on improving our service.'''
+    please fill out a quick survey for Joe <a href="http://99.199.44.233/survey">right here</a>. Your feedback is essential to keep on improving our service.'''
     
     surveyReq = Message(recipients=[user.email], body=reqBody.format(firstName), html=reqHTML.format(firstName), subject='Please give us some feedback on how to improve our site!', sender='joethernn@gmail.com')
     mail.send(surveyReq)
