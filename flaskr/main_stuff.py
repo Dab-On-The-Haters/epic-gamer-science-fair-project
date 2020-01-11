@@ -351,7 +351,7 @@ def generateText(ID):
 
     if not SF.checkpointID.data:
         db.cur.execute('SELECT ID FROM checkpoints WHERE modelID=%s AND final=1;', (ID,))
-        SF.checkpointID.data = db.cur.fetchone('ID')
+        SF.checkpointID.data = db.cur.fetchone()['ID']
 
     
     return render_template('generate-text.html', form=SF, ID=ID, user=current_user)
