@@ -263,7 +263,7 @@ def modelMaker():
     if MF.validate_on_submit():
         db.cur.execute('''INSERT INTO models
             (datasetID, trainerID, model_description, seed,
-            num_layers, learning_rate, dropout, seq_length, batch_size, max_epochs, , , 
+            num_layers, learning_rate, dropout, seq_length, batch_size, max_epochs 
             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);''',
             (MF.datasetID.data, current_user.ID, MF.description.data, MF.seed.data,
             MF.layerAmount.data, MF.learningRate.data, MF.dropout.data, MF.seqLength.data, MF.batchSize.data, MF.maxEpochs.data,))
