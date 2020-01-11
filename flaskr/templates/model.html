@@ -38,9 +38,9 @@
             <p>
                 Began training on {{ m['began_training']}}<br>
                 {% if m['finished_naturally']==False %}
-                    Training was stopped on {{ m['finished_training']|datetime }}
+                    Training was stopped on {{ m['time_finished']|datetime }}
                 {% elif m['finished_naturally']==True %}
-                    Training finished on {{ m['finished_training']|datetime }}
+                    Training finished on {{ m['time_finished']|datetime }}
                 {% else %}
                     <b>This model has not finished training</b>
                 {% endif %} 
