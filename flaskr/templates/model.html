@@ -33,7 +33,7 @@
             <p class="w3-xlarge"><b>Model #{{ m['ID'] }} by <a href="/u/{{ d['username'] }}">{{ m['real_name']|escape }}</a></b></p>
         </div>
         <div class="w3-container w3-margin">
-            <p class=" w3-container w3-large w3-card"><b>{{ m['model_description']|escape }}</b></p>
+            <p class=" w3-container w3-large w3-card w3-padding w3-2019-galaxy-blue"><b>{{ m['model_description']|escape }}</b></p>
             <br>
             <p>
                 Began training on {{ m['began_training']}}<br>
@@ -53,7 +53,7 @@
                 Dropout: <b>{{ m['dropout'] }}</b><br>
             </div>
             <div>
-                <b><a href="/generate/{{ m['ID'] }}">Generate text from this model</a></b>
+                <b><a href="/generate/{{ m['ID'] }}" class="w3-button w3-2019-galaxy-blue w3-padding-large w3-hide-small w3-hover-indigo">Generate text from this model</a></b>
             </div>
             <div class="w3-container w3-margin-top">
                 <p class="w3-large"><b>Dataset</b></p>
@@ -63,7 +63,7 @@
                     <p class="w3-small">Size: {{ d['LENGTH(datasets.final_text)'] }} <b>ID: {{ m['datasetID'] }}</b></p>
                     <a href="/d/{{ m['datasetID'] }}">More about this dataset</a>
                     <br>
-                    <b><a href="/new-model?datasetID={{ m['datasetID'] }}">Train from this dataset</a></b>
+                    <b><a href="/new-model?datasetID={{ m['datasetID'] }}" class="w3-button w3-2019-galaxy-blue w3-padding w3-hide-small w3-hover-indigo">Train from this dataset</a></b>
                 </div>
             </div>
         </div>
