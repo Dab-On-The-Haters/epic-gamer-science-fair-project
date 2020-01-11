@@ -37,6 +37,8 @@
                     <p>{{ m['model_description']|escape }}</p>
                     <p>Dataset: <a href="/d/{{ m['datasetID'] }}">{{ m['title']|escape }}</a></p>
                     <a href="/m/{{ m['ID'] }}">More about this model</a>
+                    <br>
+                    <b><a href="/generate/{{ m['ID'] }}">Generate text from this model</a></b>
                 </div>
             {% endfor %}
         </div>
