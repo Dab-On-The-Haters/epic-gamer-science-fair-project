@@ -503,6 +503,7 @@ def registerUser():
 
     return render_template('register.html', form=RF)
 
+
 @app.route('/survey', methods=['GET', 'POST'])
 @login_required
 def survey():
