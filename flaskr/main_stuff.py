@@ -323,7 +323,7 @@ def generateText(ID):
     if SF.validate_on_submit():
         db.cur.execute('SELECT modelID FROM checkpoints WHERE ID=%s;', (SF.checkpointID.data,))
         cpRow = db.cur.fetchone()
-        if not db.cur.rowcount(): return render_template('404.html', missing='checkpoint')
+        if not db.cur.rowcount: return render_template('404.html', missing='checkpoint')
         if cpRow['modelID'] != ID: return render_template('404.html', missing='sample in that model')
 
         db.cur.execute('INSERT INTO samples (modelID, checkpointID, temperature, sample_length, seed) VALUES (%s, %s, %s, %s, %s);',
