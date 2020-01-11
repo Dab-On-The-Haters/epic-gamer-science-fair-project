@@ -38,7 +38,7 @@
                     <p class="w3-small">Size: {{ d['LENGTH(datasets.final_text)'] }} <b>ID: {{ d['ID'] }}</b></p>
                     <a href="/d/{{ d['ID'] }}">More about this dataset</a>
                     <br>
-                    <b><a href="/new-model?datasetID={{ d['ID'] }}" class="w3-button w3-2019-galaxy-blue w3-padding-large w3-hide-small" style="background-color : #191970">Train from this dataset</a></b>
+                    <b><a href="/new-model?datasetID={{ d['ID'] }}" class="w3-button w3-2019-galaxy-blue w3-padding-large w3-hide-small w3-margin" style="background-color : #191970">Train from this dataset</a></b>
                 </div>
             {% endfor %}
         </div>
