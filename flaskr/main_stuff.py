@@ -378,13 +378,13 @@ def generatedText(ID):
 @app.route('/explore-models', methods=['GET', 'POST'])
 def exploreModels():
     db.cur.execute('''SELECT models.ID, models.model_description, models.datasetID, users.username, datasets.title
-        FROM models LEFT JOIN (users, datasets) ON (users.ID=models.trainerID AND datasets.ID=models.datasetID) ORDER BY models.time_finished ASC;''')
+        FROM models LEFT JOIN (users, datasets) ON (users.ID=models.trainerID AND datasets.ID=models.datasetID) ORDER BY models.time_finished DESC;''')
     return render_template('explore-models.html', models=db.cur.fetchall(), user=current_user)
 
 @app.route('/explore-datasets', methods=['GET', 'POST'])
 def exploreDatasets():
     db.cur.execute('''SELECT datasets.ID, datasets.title, datasets.user_description, LENGTH(datasets.final_text), users.username
-        FROM datasets LEFT JOIN users ON users.ID=datasets.posterID ORDER BY datasets.time_posted ASC;''')
+        FROM datasets LEFT JOIN users ON users.ID=datasets.posterID ORDER BY datasets.time_posted DESC;''')
     return render_template('explore-datasets.html', datasets=db.cur.fetchall(), user=current_user)
 
 
