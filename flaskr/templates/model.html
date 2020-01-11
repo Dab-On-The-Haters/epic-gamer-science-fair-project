@@ -57,10 +57,10 @@
                 <div>
                     <b>{{ d['title']|escape }}</b> by <a href="/u/{{ d['username'] }}">{{ d['real_name']|escape }}</a>
                     <p>{{ d['user_description']|escape }}</p>
-                    <p class="w3-small">Size: {{ d['LENGTH(datasets.final_text)'] }} <b>ID: {{ d['ID'] }}</b></p>
-                    <a href="/d/{{ d['ID'] }}">More about this dataset</a>
+                    <p class="w3-small">Size: {{ d['LENGTH(datasets.final_text)'] }} <b>ID: {{ m['datasetID'] }}</b></p>
+                    <a href="/d/{{ m['datasetID'] }}">More about this dataset</a>
                     <br>
-                    <b><a href="/new-model?datasetID={{ d['ID'] }}">Train from this dataset</a></b>
+                    <b><a href="/new-model?datasetID={{ m['datasetID'] }}">Train from this dataset</a></b>
                 </div>
             </div>
         </div>
