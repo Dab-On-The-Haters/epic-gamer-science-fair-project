@@ -33,7 +33,7 @@
         <div class="w3-container">
             {% for m in models %}
                 <div class="w3-container w3-card w3-indigo w3-margin w3-padding">
-                    <b>Model #{{ m['ID'] }}</b> by <a href="/u/{{ m['username'] }}">{{ m['real_name']|escape }}</a>
+                    <b>Model #{{ m['ID'] }}</b> by <a href="/u/{{ m['username'] }}">{{ m['username']|escape }}</a>
                     <p>{{ m['model_description']|escape }}</p>
                     <p>Dataset: <a href="/d/{{ m['datasetID'] }}">{{ m['title']|escape }}</a></p>
                     <a href="/m/{{ m['ID'] }}">More about this model</a>

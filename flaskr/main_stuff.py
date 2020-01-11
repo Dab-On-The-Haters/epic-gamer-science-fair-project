@@ -377,13 +377,13 @@ def generatedText(ID):
 
 @app.route('/explore-models', methods=['GET', 'POST'])
 def exploreModels():
-    db.cur.execute('''SELECT models.ID, models.model_description, models.datasetID, users.real_name, users.username, datasets.title
+    db.cur.execute('''SELECT models.ID, models.model_description, models.datasetID, users.username, datasets.title
         FROM models LEFT JOIN (users, datasets) ON (users.ID=models.trainerID AND datasets.ID=models.datasetID) ORDER BY models.time_finished ASC;''')
     return render_template('explore-models.html', models=db.cur.fetchall(), user=current_user)
 
 @app.route('/explore-datasets', methods=['GET', 'POST'])
 def exploreDatasets():
-    db.cur.execute('''SELECT datasets.ID, datasets.title, datasets.user_description, LENGTH(datasets.final_text), users.real_name, users.username
+    db.cur.execute('''SELECT datasets.ID, datasets.title, datasets.user_description, LENGTH(datasets.final_text), users.username
         FROM datasets LEFT JOIN users ON users.ID=datasets.posterID ORDER BY datasets.time_posted ASC;''')
     return render_template('explore-datasets.html', datasets=db.cur.fetchall(), user=current_user)
 
@@ -391,7 +391,7 @@ def exploreDatasets():
 @app.route('/u/<username>')
 @login_required
 def showUser(username):
-    db.cur.execute('SELECT real_name, self_description, time_joined FROM users WHERE verified=1 AND username = %s;', (username,))
+    db.cur.execute('SELECT self_description, time_joined FROM users WHERE verified=1 AND username = %s;', (username,))
     u=db.cur.fetchone()
     if not db.cur.rowcount: return render_template('404.html', missing='user'), 404
     return render_template('user.html', u=u, user=current_user)
@@ -399,11 +399,11 @@ def showUser(username):
 @app.route('/m/<int:ID>')
 @login_required
 def showModel(ID):
-    db.cur.execute('''SELECT models.*, users.username, users.real_name
+    db.cur.execute('''SELECT models.*, users.username,
         FROM models LEFT JOIN users ON users.ID=models.trainerID WHERE models.ID = %s;''', (ID,))
     m=db.cur.fetchone()
     if not db.cur.rowcount: return render_template('404.html', missing='model'), 404
-    db.cur.execute('''SELECT datasets.title, datasets.user_description, datasets.time_posted, LENGTH(datasets.final_text), users.real_name, users.username
+    db.cur.execute('''SELECT datasets.title, datasets.user_description, datasets.time_posted, LENGTH(datasets.final_text), users.username
         FROM datasets LEFT JOIN users ON users.ID=datasets.posterID WHERE datasets.ID = %s;''', (m['datasetID'],))
     d=db.cur.fetchone()
     return render_template('model.html', m=m, d=d, user=current_user)
@@ -411,7 +411,7 @@ def showModel(ID):
 @app.route('/d/<int:ID>')
 @login_required
 def showDataset(ID):
-    db.cur.execute('''SELECT datasets.title, datasets.user_description, datasets.time_posted, LENGTH(datasets.final_text), users.real_name, users.username
+    db.cur.execute('''SELECT datasets.title, datasets.user_description, datasets.time_posted, LENGTH(datasets.final_text),users.username
         FROM datasets LEFT JOIN users ON users.ID=datasets.posterID WHERE datasets.ID = %s;''', (ID,))
     d=db.cur.fetchone()
     if not db.cur.rowcount: return render_template('404.html', missing='dataset'), 404

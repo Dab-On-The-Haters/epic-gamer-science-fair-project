@@ -30,7 +30,7 @@
         </div>
         <div><br><br></div>
         <div class="w3-center">
-            <p class="w3-xlarge"><b>Model #{{ m['ID'] }} by <a href="/u/{{ d['username'] }}">{{ m['real_name']|escape }}</a></b></p>
+            <p class="w3-xlarge"><b>Model #{{ m['ID'] }} by <a href="/u/{{ d['username'] }}">{{ m['username'] }}</a></b></p>
         </div>
         <div class="w3-container w3-margin">
             <p class=" w3-container w3-large w3-card w3-padding w3-2019-galaxy-blue"><b>{{ m['model_description']|escape }}</b></p>
@@ -58,7 +58,7 @@
             <div class="w3-container w3-margin-top">
                 <p class="w3-large"><b>Dataset</b></p>
                 <div>
-                    <b>{{ d['title']|escape }}</b> by <a href="/u/{{ d['username'] }}">{{ d['real_name']|escape }}</a>
+                    <b>{{ d['title']|escape }}</b> by <a href="/u/{{ d['username'] }}">{{ d['username'] }}</a>
                     <p>{{ d['user_description']|escape }}</p>
                     <p class="w3-small">Size: {{ d['LENGTH(datasets.final_text)'] }} <b>ID: {{ m['datasetID'] }}</b></p>
                     <a href="/d/{{ m['datasetID'] }}">More about this dataset</a>
