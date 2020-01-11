@@ -111,6 +111,10 @@ http = urllib3.PoolManager()
 def friendlyTime(dateAndTime):
     return dateAndTime.strftime('%-I:%M %p on %a. %b. %-d, %Y')
 
+@app.errorhandler(e)
+def pageNotFound(e):
+    return render_template('404.html', missing='page'), 404
+
 @app.route('/')
 def welcome():
     return render_template('homepage.html', user=current_user)
@@ -184,7 +188,7 @@ def datasetEditor():
     db.cur.execute('SELECT title, posterID from datasets WHERE ID=%s;', datasetIDF)
     TS = db.cur.fetchone()
     if not db.cur.rowcount:
-        return render_template('404.html', missing='dataset')
+        return render_template('404.html', missing='dataset'), 404
     
     if TS['posterID'] != current_user.ID:
         return 'you don\'t have permission to edit that dataset'
@@ -278,7 +282,7 @@ def modelMaker():
 @login_required
 def showProgress(ID):
     db.cur.execute('SELECT max_epochs FROM models WHERE ID = %s;', (ID,))
-    if not db.cur.rowcount: return render_template('404.html', missing='model')
+    if not db.cur.rowcount: return render_template('404.html', missing='model'), 404
 
     return render_template('model-progress.html', ID=ID, maxEpochs = db.cur.fetchone()['max_epochs'], user=current_user)
 
@@ -323,8 +327,8 @@ def generateText(ID):
     if SF.validate_on_submit():
         db.cur.execute('SELECT modelID FROM checkpoints WHERE ID = %s;', (SF.checkpointID.data,))
         cpRow = db.cur.fetchone()
-        if not db.cur.rowcount: return render_template('404.html', missing='checkpoint')
-        if cpRow['modelID'] != ID: return render_template('404.html', missing='sample in that model')
+        if not db.cur.rowcount: return render_template('404.html', missing='checkpoint'), 404
+        if cpRow['modelID'] != ID: return render_template('404.html', missing='sample in that model'), 404
 
         db.cur.execute('INSERT INTO samples (modelID, checkpointID, temperature, sample_length, seed) VALUES (%s, %s, %s, %s, %s);',
         (ID, SF.checkpointID.data, SF.temperature.data, SF.sampleLength.data, SF.seed.data))
@@ -347,7 +351,7 @@ def generateText(ID):
     db.cur.execute('SELECT time_finished FROM models WHERE ID=%s;', (ID,))
     modelStuff = db.cur.fetchone()
     if not (db.cur.rowcount and modelStuff['time_finished']):
-        return render_template('404.html', missing='model')
+        return render_template('404.html', missing='model'), 404
 
     if not SF.checkpointID.data:
         db.cur.execute('SELECT ID FROM checkpoints WHERE modelID=%s AND final=1;', (ID,))
@@ -362,7 +366,7 @@ def generateText(ID):
 def generatedText(ID):
     db.conn.commit()
     db.cur.execute('SELECT result, modelID FROM samples WHERE ID = %s;', (ID,))
-    if not db.cur.rowcount: return render_template('404.html', missing='sample')
+    if not db.cur.rowcount: return render_template('404.html', missing='sample'), 404
     qResults = db.cur.fetchone()
     generatedText = qResults.get('result')
 
@@ -389,7 +393,7 @@ def exploreDatasets():
 def showUser(username):
     db.cur.execute('SELECT real_name, self_description, time_joined FROM users WHERE verified=1 AND username = %s;', (username,))
     u=db.cur.fetchone()
-    if not db.cur.rowcount: return render_template('404.html', missing='user')
+    if not db.cur.rowcount: return render_template('404.html', missing='user'), 404
     return render_template('user.html', u=u, user=current_user)
 
 @app.route('/m/<int:ID>')
@@ -398,7 +402,7 @@ def showModel(ID):
     db.cur.execute('''SELECT models.*, users.username, users.real_name
         FROM models LEFT JOIN users ON users.ID=models.trainerID WHERE models.ID = %s;''', (ID,))
     m=db.cur.fetchone()
-    if not db.cur.rowcount: return render_template('404.html', missing='model')
+    if not db.cur.rowcount: return render_template('404.html', missing='model'), 404
     db.cur.execute('''SELECT datasets.title, datasets.user_description, datasets.time_posted, LENGTH(datasets.final_text), users.real_name, users.username
         FROM datasets LEFT JOIN users ON users.ID=datasets.posterID WHERE datasets.ID = %s;''', (m['datasetID'],))
     d=db.cur.fetchone()
@@ -410,7 +414,7 @@ def showDataset(ID):
     db.cur.execute('''SELECT datasets.title, datasets.user_description, datasets.time_posted, LENGTH(datasets.final_text), users.real_name, users.username
         FROM datasets LEFT JOIN users ON users.ID=datasets.posterID WHERE datasets.ID = %s;''', (ID,))
     d=db.cur.fetchone()
-    if not db.cur.rowcount: return render_template('404.html', missing='dataset')
+    if not db.cur.rowcount: return render_template('404.html', missing='dataset'), 404
     return render_template('dataset.html', d=d, user=current_user)
 
 
