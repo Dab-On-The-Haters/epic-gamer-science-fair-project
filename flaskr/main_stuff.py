@@ -494,8 +494,7 @@ def registerUser():
         db.conn.commit()
 
         # log in unverified user
-        newUser = User()
-        newUser.setValues('ID', accountID)
+        newUser = User('ID', accountID, True)
         login_user(newUser, remember=True)
 
         # send the verification message
