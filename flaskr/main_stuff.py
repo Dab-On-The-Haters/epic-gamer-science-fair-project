@@ -111,7 +111,7 @@ http = urllib3.PoolManager()
 def friendlyTime(dateAndTime):
     return dateAndTime.strftime('%-I:%M %p on %a. %b. %-d, %Y')
 
-@app.errorhandler(e)
+@app.errorhandler(404)
 def pageNotFound(e):
     return render_template('404.html', missing='page'), 404
 
