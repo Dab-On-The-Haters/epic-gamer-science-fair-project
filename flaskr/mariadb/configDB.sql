@@ -90,33 +90,23 @@ CREATE OR REPLACE TABLE models
     finished_naturally BOOLEAN DEFAULT NULL,
 
     rnn_style VARCHAR(5) NOT NULL DEFAULT 'GRU',
-    npl_level TINYINT NOT NULL DEFAULT 0,
 
     -- settings below are based off of the options for char-rnn
     -- signage may be incorrect, i guessed everything
     num_layers TINYINT UNSIGNED NOT NULL DEFAULT 2,
     learning_rate DOUBLE UNSIGNED NOT NULL DEFAULT 0.002,
-    learning_rate_decay FLOAT UNSIGNED NOT NULL DEFAULT 0.97,
-    learning_rate_decay_after SMALLINT UNSIGNED NOT NULL DEFAULT 10,
     dropout FLOAT NOT NULL DEFAULT 0.5,
     seq_length SMALLINT UNSIGNED NOT NULL DEFAULT 50,
     rnn_size SMALLINT UNSIGNED NOT NULL DEFAULT 128,
     batch_size SMALLINT UNSIGNED NOT NULL DEFAULT 50,
     max_epochs SMALLINT UNSIGNED NOT NULL DEFAULT 50,
-    grad_clip FLOAT UNSIGNED NOT NULL DEFAULT 5,
-    train_frac FLOAT UNSIGNED NOT NULL DEFAULT 0.95,
-    val_frac FLOAT UNSIGNED NOT NULL DEFAULT 0.05,
     -- seed is for generating random numbers
     seed TINYINT NOT NULL DEFAULT 123,
 
     -- stuff not generated until later begins here (hopefully no nulls tho)
-
-    -- loader.ntrain = iterations_per_epoch
     iterations_per_epoch SMALLINT UNSIGNED,
     -- iterations = loader.ntrain * epochs
     iterations MEDIUMINT UNSIGNED,
-
-    param_amount SMALLINT UNSIGNED,
     
     pid MEDIUMINT UNSIGNED,
 

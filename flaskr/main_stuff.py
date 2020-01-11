@@ -263,10 +263,10 @@ def modelMaker():
     if MF.validate_on_submit():
         db.cur.execute('''INSERT INTO models
             (datasetID, trainerID, model_description, seed,
-            num_layers, learning_rate, learning_rate_decay, dropout, seq_length, batch_size, max_epochs, grad_clip, train_frac, val_frac
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);''',
+            num_layers, learning_rate, dropout, seq_length, batch_size, max_epochs, , , 
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);''',
             (MF.datasetID.data, current_user.ID, MF.description.data, MF.seed.data,
-            MF.layerAmount.data, MF.learningRate.data, MF.learningRateDecay.data, MF.dropout.data, MF.seqLength.data, MF.batchSize.data, MF.maxEpochs.data, MF.gradClip.data, MF.trainFrac.data, MF.valFrac.data))
+            MF.layerAmount.data, MF.learningRate.data, MF.dropout.data, MF.seqLength.data, MF.batchSize.data, MF.maxEpochs.data,))
         db.conn.commit()
         modelID = db.cur.lastrowid
         modelPID = subp.check_call(trainerCommands.format(modelID), shell=True)

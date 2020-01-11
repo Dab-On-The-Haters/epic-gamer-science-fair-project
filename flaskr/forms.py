@@ -97,22 +97,15 @@ class modelMakerForm(FlaskForm):
     datasetID = f5.IntegerField('ID of dataset being used', [datasetCheck])
     description = f.TextAreaField('Description of this model')
     #nnType = f.SelectField('Type of RNN for this model')
-    nlpOptions = f.BooleanField('Settings for NLP')
     # things get real groovy after here, watch out
     layerAmount = f5.IntegerField('Amount of hidden layers in this RNN', [v.NumberRange(1, 250, 'Boi go for a reasonable amount of layers')], default=2)
     learningRate = f5.DecimalField('Learning rate for this RNN', [v.NumberRange(0, 1, 'We need small numbers')], places=4, default=0.002)
-    learningRateDecay = f5.DecimalField('Learning rate decay for this RNN', [v.NumberRange(0, 1, 'Should be almost at one, not more or less')], default=0.97)
-    learningRateDecayAfter = f5.IntegerField('Amount of epochs before the learning rate starts decaying', [v.NumberRange(1, 250, 'Between 1 and 250 epochs guys they are full passes')], default=10)
-    decayRate = f5.DecimalField('Decay rate for the optimizer', [v.NumberRange(0, 1, 'Needs to be close to one')], default=0.95)
     rnnSize = f5.IntegerField('Size of hidden layers in this RNN', [v.NumberRange(min=10, max=1000, message='There should be between 10 and 1,000 neurons. Anything else is ridiculous.')], default=128)
     # maybe add boolean field here so users don't have to say zero?
     dropout = f5.DecimalField('Dropout for reqularization, used after each hidden layer in the RNN', [v.NumberRange(0, 1, 'Dropout is from 0-1')], default=0.5)
     seqLength = f5.IntegerField('Sequence length (amount of timesteps the RNN will unroll for)', [v.NumberRange(1, 250, 'No clue what this is but OK')], default=50)
     batchSize = f5.IntegerField('Size of RNN batches (amount of sequences to train on in parallel)', [v.NumberRange(10, 500, 'Batch size should be between 10 and 500 but really no bigger than 100')], default=50)
     maxEpochs = f5.IntegerField('Maximum amount of epochs', [v.NumberRange(3, 300, 'You gotta have between 3 and 300 epochs (they take a hella long time)')], default=50)
-    gradClip = f5.DecimalField('Value to clip gradients at', [v.NumberRange(1, 100, 'IDK what this should be but that seems ridiculous')], default=5)
-    valFrac = f5.DecimalField('Amount of data going into the validation set', [v.NumberRange(0, 1, 'BETWEEN 0 AND 1 FIGURE IT OUT')], default=0.05)
-    trainFrac = f5.DecimalField('Amount data going into the training set', [v.NumberRange(0, 1, 'BETWEEN 0 AND 1 FIGURE IT OUT')], default=0.95)
     seed = f5.IntegerField('Seed for making random numbers', [v.NumberRange(1, 250, 'Set your seed between 1 and 250, it really doesn\'t matter')], default=123)
 
 
