@@ -108,7 +108,7 @@ import urllib3
 http = urllib3.PoolManager()
 
 @app.template_filter('datetime')
-def friendlyTime(dateAndTime)
+def friendlyTime(dateAndTime):
     return dateAndTime.strftime('%-I:%M %p on %a. %b. %-d, %Y')
 
 @app.route('/')
