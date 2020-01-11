@@ -321,7 +321,7 @@ def generateText(ID):
     SF = f.sampleForm()    
 
     if SF.validate_on_submit():
-        db.cur.execute('SELECT modelID FROM checkpoints WHERE ID=%s;', ('ID'))
+        db.cur.execute('SELECT modelID FROM checkpoints WHERE ID=%s;', (SF.checkpointID.data))
         cpRow = db.cur.fetchone()
         if not db.cur.rowcount(): return render_template('404.html', missing='checkpoint')
         if cpRow['modelID'] != ID: return render_template('404.html', missing='sample in that model')
