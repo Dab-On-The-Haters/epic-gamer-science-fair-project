@@ -321,7 +321,7 @@ def generateText(ID):
     SF = f.sampleForm()    
 
     if SF.validate_on_submit():
-        db.cur.execute('SELECT modelID FROM checkpoints WHERE ID=%s;', (SF.checkpointID.data,))
+        db.cur.execute('SELECT modelID FROM checkpoints WHERE ID = %s;', (SF.checkpointID.data,))
         cpRow = db.cur.fetchone()
         if not db.cur.rowcount: return render_template('404.html', missing='checkpoint')
         if cpRow['modelID'] != ID: return render_template('404.html', missing='sample in that model')
@@ -395,12 +395,12 @@ def showUser(username):
 @app.route('/m/<int:ID>')
 @login_required
 def showModel(ID):
-    db.cur.execute('''SELECT models.*, users.username, users.real_name, datasets.ID, datasets.title, datasets.user_description, datasets.posterID,
-        FROM models LEFT JOIN (users, datasets) ON (users.ID=models.trainerID AND datasets.ID=models.datasetID) WHERE models.ID = %s;''', (ID,))
+    db.cur.execute('''SELECT models.*, users.username, users.real_name
+        FROM models LEFT JOIN users ON users.ID=models.trainerID WHERE models.ID = %s;''', (ID,))
     m=db.cur.fetchone()
     if not db.cur.rowcount: return render_template('404.html', missing='model')
     db.cur.execute('''SELECT datasets.title, datasets.user_description, datasets.time_posted, LENGTH(datasets.final_text), users.real_name, users.username
-        FROM datasets LEFT JOIN users ON users.ID=datasets.posterID WHERE datasets.ID = %s;''', (ID,))
+        FROM datasets LEFT JOIN users ON users.ID=datasets.posterID WHERE datasets.ID = %s;''', (m['datasetID'],))
     d=db.cur.fetchone()
     return render_template('model.html', m=m, d=d, user=current_user)
 
