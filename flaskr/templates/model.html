@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Model | Joe</title>
+        <title>Model #{{ m['ID'] }} | Joe</title>
         <link rel="stylesheet" href="/static/w3.css">
         <link rel="stylesheet" href="/static/w3-colors-2019.css">
         <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
@@ -29,5 +29,40 @@
             </div>
         </div>
         <div><br><br></div>
+        <div class="w3-center">
+            <p class="w3-xlarge"><b>Model #{{ m['ID'] }} by <a href="/u/{{ d['username'] }}">{{ m['real_name']|escape }}</a></b></p>
+        </div>
+        <div class="w3-container w3-margin">
+            <p class=" w3-container w3-large w3-card"><b>{{ m['model_description']|escape }}</b></p>
+            <br>
+            <p>
+                Began training on {{ m['began_training']}}<br>
+                {% if model['finished_naturally']==False %}
+                    Training was stopped on {{ model['finished_training']|datetime }}
+                {% elif model['finished_naturally']==True %}
+                    Training finished on {{ model['finished_training']|datetime }}
+                {% else %}
+                    <b>This model has not finished training</b>
+                {% endif %} 
+            </p>
+            <div>
+                Amount of hidden layers: <b>{{ m['num_layers'] }}</b><br>
+                Size of hidden layers: <b>{{ m['learning_rate'] }}</b><br>
+                Size of batches:<b>{{ m['batch_size'] }}</b><br>
+                Learning rate: <b>{{ m['learning_rate'] }}</b><br>
+                Dropout: <b>{{ m['dropout'] }}</b><br>
+            </div>
+            <div class="w3-container w3-margin-top">
+                <p class="w3-large"><b>Dataset</b></p>
+                <div>
+                    <b>{{ d['title']|escape }}</b> by <a href="/u/{{ d['username'] }}">{{ d['real_name']|escape }}</a>
+                    <p>{{ d['user_description']|escape }}</p>
+                    <p class="w3-small">Size: {{ d['LENGTH(datasets.final_text)'] }} <b>ID: {{ d['ID'] }}</b></p>
+                    <a href="/d/{{ d['ID'] }}">More about this dataset</a>
+                    <br>
+                    <b><a href="/new-model?datasetID={{ d['ID'] }}">Train from this dataset</a></b>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

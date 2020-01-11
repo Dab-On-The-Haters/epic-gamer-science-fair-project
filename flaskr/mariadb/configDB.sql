@@ -81,7 +81,7 @@ SHOW WARNINGS;
 CREATE OR REPLACE TABLE models
 (
     ID MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
-    user_description TEXT,
+    model_description TEXT,
 
     char_file MEDIUMBLOB,
     

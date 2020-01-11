@@ -22,6 +22,8 @@ app = Flask(__name__)
 from flask_login import LoginManager, login_required, current_user, login_user, logout_user
 loginManager = LoginManager()
 
+import datetime as dt
+
 #import super secure stuff (passwords stored in json)
 import json
 with open('/home/thomas/.private-stuff.json') as f:
@@ -105,6 +107,9 @@ import csv
 import urllib3
 http = urllib3.PoolManager()
 
+@app.template_filter('datetime')
+def friendlyTime(dateAndTime)
+    return dateAndTime.strftime('%-I:%M %p on %a. %b. %-d, %Y')
 
 @app.route('/')
 def welcome():
@@ -178,8 +183,8 @@ def datasetEditor():
 
     db.cur.execute('SELECT title, posterID from datasets WHERE ID=%s;', datasetIDF)
     TS = db.cur.fetchone()
-    if not TS.get('title', False):
-        if not db.cur.rowcount: return render_template('404.html', missing='dataset')
+    if not db.cur.rowcount:
+        return render_template('404.html', missing='dataset')
     
     if TS['posterID'] != current_user.ID:
         return 'you don\'t have permission to edit that dataset'
@@ -253,7 +258,7 @@ def modelMaker():
 
     if MF.validate_on_submit():
         db.cur.execute('''INSERT INTO models
-            (datasetID, trainerID, user_description, seed,
+            (datasetID, trainerID, model_description, seed,
             num_layers, learning_rate, learning_rate_decay, dropout, seq_length, batch_size, max_epochs, grad_clip, train_frac, val_frac
             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);''',
             (MF.datasetID.data, current_user.ID, MF.description.data, MF.seed.data,
@@ -313,8 +318,14 @@ generatorCommands = 'python3 /var/www/epic-gamer-science-fair-project/flaskr/gen
 @app.route('/generate/<int:ID>', methods=['GET', 'POST'])
 @login_required
 def generateText(ID):
-    SF = f.sampleForm()
+    SF = f.sampleForm()    
+
     if SF.validate_on_submit():
+        db.cur.execute('SELECT modelID FROM checkpoints WHERE ID=%s;', ('ID'))
+        cpRow = db.cur.fetchone()
+        if not db.cur.rowcount(): return render_template('404.html', missing='checkpoint')
+        if cpRow['modelID'] != ID: return render_template('404.html', missing='sample in that model')
+
         db.cur.execute('INSERT INTO samples (modelID, checkpointID, temperature, sample_length, seed) VALUES (%s, %s, %s, %s, %s);',
         (ID, SF.checkpointID.data, SF.temperature.data, SF.sampleLength.data, SF.seed.data))
         db.conn.commit()
@@ -332,7 +343,17 @@ def generateText(ID):
                 if db.cur.rowcount:
                     surveyRequest(current_user)
         return redirect('/generated/'+str(sampleID))
+    
+    db.cur.execute('SELECT time_finished FROM models WHERE ID=%s;', (ID,))
+    modelStuff = db.cur.fetchone()
+    if not (db.cur.rowcount and modelStuff['time_finished']):
+        return render_template('404.html', missing='model')
 
+    if not SF.checkpointID.data:
+        db.cur.execute('SELECT ID FROM checkpoints WHERE modelID=%s AND final=1;', (ID,))
+        SF.checkpointID.data = db.cur.fetchone('ID')
+
+    
     return render_template('generate-text.html', form=SF, ID=ID, user=current_user)
 
 # id here is for sample, not for model
@@ -352,7 +373,7 @@ def generatedText(ID):
 
 @app.route('/explore-models', methods=['GET', 'POST'])
 def exploreModels():
-    db.cur.execute('''SELECT models.ID, models.user_description, models.datasetID, users.real_name, users.username, datasets.title
+    db.cur.execute('''SELECT models.ID, models.model_description, models.datasetID, users.real_name, users.username, datasets.title
         FROM models LEFT JOIN (users, datasets) ON (users.ID=models.trainerID AND datasets.ID=models.datasetID) ORDER BY models.time_finished ASC;''')
     return render_template('explore-models.html', models=db.cur.fetchall(), user=current_user)
 
@@ -367,24 +388,30 @@ def exploreDatasets():
 @login_required
 def showUser(username):
     db.cur.execute('SELECT real_name, self_description, time_joined FROM users WHERE verified=1 AND username = %s;', (username,))
+    u=db.cur.fetchone()
     if not db.cur.rowcount: return render_template('404.html', missing='user')
-    return render_template('user.html', u=db.cur.fetchone(), user=current_user)
+    return render_template('user.html', u=u, user=current_user)
 
 @app.route('/m/<int:ID>')
 @login_required
 def showModel(ID):
-    db.cur.execute('''SELECT models.*, users.username, users.real_name, datasets.ID, datasets.title, datasets.user_description
+    db.cur.execute('''SELECT models.*, users.username, users.real_name, datasets.ID, datasets.title, datasets.user_description, datasets.posterID,
         FROM models LEFT JOIN (users, datasets) ON (users.ID=models.trainerID AND datasets.ID=models.datasetID) WHERE models.ID = %s;''', (ID,))
+    m=db.cur.fetchone()
     if not db.cur.rowcount: return render_template('404.html', missing='model')
-    return render_template('model.html', m=db.cur.fetchone(), user=current_user)
+    db.cur.execute('''SELECT datasets.title, datasets.user_description, datasets.time_posted, LENGTH(datasets.final_text), users.real_name, users.username
+        FROM datasets LEFT JOIN users ON users.ID=datasets.posterID WHERE datasets.ID = %s;''', (ID,))
+    d=db.cur.fetchone()
+    return render_template('model.html', m=m, d=d, user=current_user)
 
 @app.route('/d/<int:ID>')
 @login_required
 def showDataset(ID):
     db.cur.execute('''SELECT datasets.title, datasets.user_description, datasets.time_posted, LENGTH(datasets.final_text), users.real_name, users.username
         FROM datasets LEFT JOIN users ON users.ID=datasets.posterID WHERE datasets.ID = %s;''', (ID,))
+    d=db.cur.fetchone()
     if not db.cur.rowcount: return render_template('404.html', missing='dataset')
-    return render_template('dataset.html', d=db.cur.fetchone(), user=current_user)
+    return render_template('dataset.html', d=d, user=current_user)
 
 
 
