@@ -37,13 +37,13 @@
             <br>
             <b>{{ d['title']|escape }}</b> by <a href="/u/{{ d['username'] }}">{{ d['username'] }}</a>
             <p>{{ d['user_description']|escape }}</p>
-            <p class="w3-small">Size: {{ d['LENGTH(datasets.final_text)'] }} <b>ID: {{ d['ID'] }}</b><p>
-            <a href="/d/{{ d['ID'] }}">More about this dataset</a>
+            <p class="w3-small">Size: {{ d['LENGTH(datasets.final_text)'] }} <b>ID: {{ ID }}</b><p>
+            <a href="/d/{{ ID }}">More about this dataset</a>
             <br>
-            <b><a href="/new-model?datasetID={{ d['ID'] }}" class="w3-button w3-2019-galaxy-blue w3-padding-large w3-hide-small w3-margin w3-hover-indigo">Train from this dataset</a></b>
+            <b><a href="/new-model?datasetID={{ ID }}" class="w3-button w3-2019-galaxy-blue w3-padding-large w3-hide-small w3-margin w3-hover-indigo">Train from this dataset</a></b>
             <p class="w3-small">Posted on {{ d['time_posted']|datetime }}</p>
             <div>
-                <b><a href="/new-model?datasetID={{ d['ID'] }}" class="w3-button w3-2019-galaxy-blue w3-padding-large w3-hide-small w3-hover-indigo">Train a model with this dataset</a></b>
+                <b><a href="/new-model?datasetID={{ ID }}" class="w3-button w3-2019-galaxy-blue w3-padding-large w3-hide-small w3-hover-indigo">Train a model with this dataset</a></b>
             </div>
         </div>
     </body>

@@ -407,7 +407,7 @@ def showDataset(ID):
         FROM datasets LEFT JOIN users ON users.ID=datasets.posterID WHERE datasets.ID = %s;''', (ID,))
     d=db.cur.fetchone()
     if not db.cur.rowcount: return render_template('404.html', missing='dataset'), 404
-    return render_template('dataset.html', d=d, user=current_user)
+    return render_template('dataset.html', d=d, user=current_user, ID=ID)
 
 
 
