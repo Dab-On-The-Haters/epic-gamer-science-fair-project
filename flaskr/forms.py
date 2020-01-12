@@ -83,7 +83,7 @@ class SelectForm(FlaskForm):
 
 class datasetEditorForm(FlaskForm):
     columnSelections = f.FieldList(f.FormField(SelectForm))
-    finalText = f.TextAreaField('Edit your dataset to remove unwanted data', [v.length(min=1000, message='The final text cannot be shorter than 1,000 characters.')], render_kw={'width':'75%'})
+    finalText = f.TextAreaField('Edit your dataset to remove unwanted data', [v.length(min=1000, message='The final text cannot be shorter than 1,000 characters.')], render_kw={'rows':'20', 'cols':'40'})
     datasetRefresh = f.SubmitField('Refresh dataset text', render_kw=w3Button)
 
 class modelMakerForm(FlaskForm):
