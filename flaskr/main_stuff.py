@@ -403,7 +403,7 @@ def showModel(ID):
 @app.route('/d/<int:ID>')
 @login_required
 def showDataset(ID):
-    db.cur.execute('''SELECT datasets.title, datasets.user_description, datasets.time_posted, LENGTH(datasets.final_text),users.username
+    db.cur.execute('''SELECT datasets.title, datasets.user_description, datasets.time_posted, LENGTH(datasets.final_text), users.username
         FROM datasets LEFT JOIN users ON users.ID=datasets.posterID WHERE datasets.ID = %s;''', (ID,))
     d=db.cur.fetchone()
     if not db.cur.rowcount: return render_template('404.html', missing='dataset'), 404
