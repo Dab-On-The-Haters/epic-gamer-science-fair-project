@@ -49,7 +49,7 @@ def sample(model, prime_str, predict_len, temperature):
         hidden = model.create_hidden(1)
     prime_tensors = [index_to_tensor(char_to_index[char]) for char in prime_str]
 
-    for prime_tensor in prime_tensors#[-2:]:
+    for prime_tensor in prime_tensors:#[-2:]:
         _, hidden = model(prime_tensor, hidden)
 
     inp = prime_tensors[-1]
