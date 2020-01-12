@@ -46,11 +46,11 @@
                 {% endif %} 
             </p>
             <div>
-                Amount of hidden layers: <b>{{ m['num_layers'] }}</b><br>
-                Size of hidden layers: <b>{{ m['learning_rate'] }}</b><br>
-                Size of batches:<b>{{ m['batch_size'] }}</b><br>
-                Learning rate: <b>{{ m['learning_rate'] }}</b><br>
-                Dropout: <b>{{ m['dropout'] }}</b><br>
+                <p>Amount of hidden layers: <b>{{ m['num_layers'] }}</b></p>
+                <p>Size of hidden layers: <b>{{ m['learning_rate'] }}</b></p>
+                <p>Size of batches: <b>{{ m['batch_size'] }}</b></p>
+                <p>Learning rate: <b>{{ m['learning_rate'] }}</b></p>
+                <p>Dropout: <b>{{ m['dropout'] }}</b></p>
             </div>
             <div>
                 <b><a href="/generate/{{ m['ID'] }}" class="w3-button w3-2019-galaxy-blue w3-padding-large w3-hide-small w3-hover-indigo">Generate text from this model</a></b>
