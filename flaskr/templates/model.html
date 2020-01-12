@@ -36,7 +36,7 @@
             <p class=" w3-container w3-large w3-card w3-padding w3-2019-galaxy-blue"><b>{{ m['model_description']|escape }}</b></p>
             <br>
             <p>
-                Began training on {{ m['began_training']}}<br>
+                Began training on {{ m['began_training']|datetime }}<br>
                 {% if m['finished_naturally']==False %}
                     Training was stopped on {{ m['time_finished']|datetime }}
                 {% elif m['finished_naturally']==True %}
