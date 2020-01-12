@@ -22,4 +22,4 @@ class RNN(nn.Module):
     def create_hidden(self, batch_size):
         # should this be small random instead of zeros
         # should this also be stored in the class rather than being passed around?
-        return torch.zeros(self.n_layers, batch_size, self.hidden_size)
+        return torch.randn(self.n_layers, batch_size, self.hidden_size)

@@ -49,7 +49,7 @@ def sample(model, prime_str, predict_len, temperature):
         hidden = model.create_hidden(1)
     prime_tensors = [index_to_tensor(char_to_index[char]) for char in prime_str]
 
-    for prime_tensor in prime_tensors[-2:]:
+    for prime_tensor in prime_tensors#[-2:]:
         _, hidden = model(prime_tensor, hidden)
 
     inp = prime_tensors[-1]
@@ -69,13 +69,14 @@ def sample(model, prime_str, predict_len, temperature):
         predicted += predicted_char
         inp = index_to_tensor(char_to_index[predicted_char])
 
+    """
     predicted = predicted.split(' ', 1)[1].capitalize()
     predicted = re.sub(r'([.?!]) ([a-z])', uppercase_sentences, predicted)
     predicted = re.sub(r'([.?!]\n)([a-z])', uppercase_sentences, predicted)
     predicted = re.sub(r'([.?!]\n *\n)([a-z])', uppercase_sentences, predicted)
     if predicted.find('.'):
         predicted = predicted[:predicted.rfind('.')+1]
-    """
+    
     if concatenate == -1:
         predicted = re.sub(r'\n', ' ', predicted)"""
     return predicted
