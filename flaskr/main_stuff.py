@@ -330,22 +330,14 @@ def generateText(ID):
         if not db.cur.rowcount: return render_template('404.html', missing='checkpoint'), 404
         if cpRow['modelID'] != ID: return render_template('404.html', missing='sample in that model'), 404
 
-        db.cur.execute('INSERT INTO samples (modelID, checkpointID, temperature, sample_length, seed) VALUES (%s, %s, %s, %s, %s);',
-        (ID, SF.checkpointID.data, SF.temperature.data, SF.sampleLength.data, SF.seed.data))
+        surveyRequest(current_user)
+
+        db.cur.execute('INSERT INTO samples (modelID, checkpointID, temperature, sample_length, seed, userID) VALUES (%s, %s, %s, %s, %s, %s);',
+        (ID, SF.checkpointID.data, SF.temperature.data, SF.sampleLength.data, SF.seed.data, current_user.ID))
         db.conn.commit()
         sampleID = db.cur.lastrowid
         subp.call(generatorCommands.format(sampleID), shell=True)
-        uID = current_user.ID
-        db.cur.execute('SELECT ID FROM survey WHERE userID = %s;', (uID,))
-        db.cur.fetchone()
-        if not db.cur.rowcount:
-            db.cur.execute('SELECT ID FROM datasets WHERE posterID = %s;', (uID,))
-            db.cur.fetchone()
-            if db.cur.rowcount:
-                db.cur.execute('SELECT ID FROM models WHERE trainerID = %s;', (uID,))
-                db.cur.fetchone()
-                if db.cur.rowcount:
-                    surveyRequest(current_user)
+        
         return redirect('/generated/'+str(sampleID))
     
     db.cur.execute('SELECT time_finished FROM models WHERE ID=%s;', (ID,))
@@ -522,6 +514,20 @@ def survey():
     return render_template('survey.html', form=SF)
 
 def surveyRequest(user):
+    uID = user.ID
+        db.cur.execute('SELECT ID FROM samples WHERE userID = %s;', (uID,))
+        db.cur.fetchone()
+        if db.cur.rowcount: return False
+        db.cur.execute('SELECT ID FROM survey WHERE userID = %s;', (uID,))
+        db.cur.fetchone()
+        if db.cur.rowcount: return False
+        db.cur.execute('SELECT ID FROM datasets WHERE posterID = %s;', (uID,))
+        db.cur.fetchone()
+        if not db.cur.rowcount: return False
+        db.cur.execute('SELECT ID FROM models WHERE trainerID = %s;', (uID,))
+        db.cur.fetchone()
+        if not db.cur.rowcount: return False
+    
     firstName = user.name.split()[0]
     reqBody = '''Hi {},
     please fill out a quick survey for Joe at http://99.199.44.233/survey. Your feedback is essential to keep on improving our service.'''
@@ -530,3 +536,4 @@ def surveyRequest(user):
     
     surveyReq = Message(recipients=[user.email], body=reqBody.format(firstName), html=reqHTML.format(firstName), subject='Please give us some feedback on how to improve our site!', sender='joethernn@gmail.com')
     mail.send(surveyReq)
+    return True

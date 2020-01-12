@@ -51,7 +51,7 @@ class verifyForm(FlaskForm):
         if db.cur.fetchone()['codeNumber'] != int(field.data):
             raise ValidationError('Incorrect verification code. Try redoing the register form if you think you might have made a typo over there.')
     
-    verificationCode = f.IntegerField('Verification code', [v.InputRequired(message=r("4-digit verification code. You should have received it via email. If it's been a while and you still haven't gotten it, please fill out the register form again in case you mistyped it.")), verificationCodeCheck]) 
+    verificationCode = f.IntegerField('Verification code', [v.InputRequired(message=r('4-digit verification code. You should have received it via email. If it's been a while and you still haven't gotten it, please fill out the register form again in case you mistyped it.')), verificationCodeCheck]) 
 
 
 class loginForm(FlaskForm):
@@ -83,7 +83,7 @@ class SelectForm(FlaskForm):
 
 class datasetEditorForm(FlaskForm):
     columnSelections = f.FieldList(f.FormField(SelectForm))
-    finalText = f.TextAreaField('Edit your dataset to remove unwanted data', [v.length(min=1000, message='The final text cannot be shorter than 1,000 characters.')], render_kw={'rows':'20', 'cols':'40', 'placeholder':'Click "refresh dataset text" to automatically fill out this field'})
+    finalText = f.TextAreaField('Edit your dataset to remove unwanted data', [v.length(min=1000, message='The final text cannot be shorter than 1,000 characters.')], render_kw={'rows':'20', 'cols':'40', 'placeholder':'Click &quot;refresh dataset text&quot; to automatically fill out this field'})
     datasetRefresh = f.SubmitField('Refresh dataset text', render_kw=w3Button)
 
 class modelMakerForm(FlaskForm):

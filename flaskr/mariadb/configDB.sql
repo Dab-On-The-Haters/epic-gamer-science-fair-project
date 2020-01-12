@@ -174,7 +174,12 @@ CREATE OR REPLACE TABLE samples
     result TEXT,
     modelID MEDIUMINT UNSIGNED NOT NULL,
     checkpointID BIGINT UNSIGNED NOT NULL,
+    userID MEDIUMINT UNSIGNED,
     CONSTRAINT `samples_pk` PRIMARY KEY (ID),
+    CONSTRAINT `user_surveyreq_fk`
+        FOREIGN KEY (userID) REFERENCES users (ID)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE,
     CONSTRAINT `model_sample_fk`
         FOREIGN KEY (modelID) REFERENCES models (ID)
         ON DELETE CASCADE
