@@ -391,7 +391,7 @@ def showUser(username):
 @app.route('/m/<int:ID>')
 @login_required
 def showModel(ID):
-    db.cur.execute('''SELECT models.*, users.username,
+    db.cur.execute('''SELECT models.*, users.username
         FROM models LEFT JOIN users ON users.ID=models.trainerID WHERE models.ID = %s;''', (ID,))
     m=db.cur.fetchone()
     if not db.cur.rowcount: return render_template('404.html', missing='model'), 404
