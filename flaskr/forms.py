@@ -25,13 +25,13 @@ class registerForm(FlaskForm):
         db.cur.execute('SELECT verified FROM users WHERE email_addr=%s;', (field.data,))
         for verification in db.cur.fetchall():
             if verification['verified']:
-                raise ValidationError('An account with that email address is already verified')
+                raise ValidationError('An account with that email address has already been verified.')
     # for checking if username is wack or taken
     def usernameStuffCheck(form, field):
         db.cur.execute('SELECT verified FROM users WHERE username=%s;', (field.data,))
         for verification in db.cur.fetchall():
             if verification['verified']:
-                raise ValidationError('The username "'+field.data+'" is taken')
+                raise ValidationError('The username "'+field.data+'" is taken.')
 
         for char in field.data:
             if char not in urlValidChars:
@@ -39,7 +39,7 @@ class registerForm(FlaskForm):
 
     email = f5.EmailField('Email address', [v.InputRequired(r('email address')), v.Email('Must be a valid email address'), v.Length(5, 250, 'Must be a complete email address'), emailTakenCheck])
     name = f.StringField('Name', [v.InputRequired(r('name')), v.Length(2, 250, r('name'))])
-    username = f.StringField('Username', [v.InputRequired(r('username')), v.Length(5, 250, 'Username must be between 5 and 250 characters long'), usernameStuffCheck])
+    username = f.StringField('Username', [v.InputRequired(r('username')), v.Length(3, 100, 'Username must be between 3 and 100 characters long'), usernameStuffCheck])
     password = f.PasswordField('Password', [v.InputRequired(r('password')), v.Length(8, 250, 'Password must be at least 8 characters long'), PasswordCheck])
     confirm = f.PasswordField('Confirm password', [v.InputRequired(r('password confirmation')), v.EqualTo('password', 'Confirmation password does not match')])
 
@@ -68,12 +68,12 @@ urlm = 'Please enter a valid URL'
 class datasetForm(FlaskForm):
     title = f.StringField('Name of this dataset', [v.InputRequired(r('dataset name')), v.length(5, 250, 'Dataset title must be between 5 and 250 characters long')])
     description = f.TextAreaField('Dataset description', [v.length(max=65500, message='Description can not be longer than 65,500 characters.')])
-    files = f.FieldList(f.FileField('Custom dataset file'), max_entries=100)
-    newFile = f.SubmitField('Add a new dataset file', render_kw=w3Button)
-    removeFile = f.SubmitField('Remove the last dataset file', render_kw=w3Button)
+    files = f.FieldList(f.FileField('Custom dataset file from your computer'), max_entries=100)
+    newFile = f.SubmitField('Add a new dataset file from your computer', render_kw=w3Button)
+    removeFile = f.SubmitField('Remove the last dataset file entry', render_kw=w3Button)
     URLs = f.FieldList(f5.URLField('URL of dataset of file', [v.InputRequired(urlm), v.URL(urlm)]), max_entries=100)
     newURL = f.SubmitField('Add a new dataset URL', render_kw=w3Button)
-    removeURL = f.SubmitField('Remove the last URL', render_kw=w3Button)
+    removeURL = f.SubmitField('Remove the last URL entry', render_kw=w3Button)
     uploadDataset = f.SubmitField('Upload the dataset', render_kw=w3Button)
 
 #this form is from a stackoverflow answer (https://stackoverflow.com/questions/24296834/wtform-fieldlist-with-selectfield-how-do-i-render/57548509#57548509)
@@ -83,14 +83,14 @@ class SelectForm(FlaskForm):
 
 class datasetEditorForm(FlaskForm):
     columnSelections = f.FieldList(f.FormField(SelectForm))
-    finalText = f.TextAreaField('Edit your dataset to remove unwanted data', [v.length(min=1000, message='The final text cannot be shorter than 1,000 characters.')], render_kw={'rows':'20', 'cols':'40'})
+    finalText = f.TextAreaField('Edit your dataset to remove unwanted data', [v.length(min=1000, message='The final text cannot be shorter than 1,000 characters.')], render_kw={'rows':'20', 'cols':'40', 'placeholder':'Click "refresh dataset text" to automatically fill out this field'})
     datasetRefresh = f.SubmitField('Refresh dataset text', render_kw=w3Button)
 
 class modelMakerForm(FlaskForm):
     def datasetCheck(form, field):
         db.cur.execute('SELECT title FROM datasets WHERE ID=%s;', (field.data,))
         if not db.cur.fetchall():
-            raise ValidationError('We couldn\'t find any models with that ID')
+            raise ValidationError('We couldn\'t find any datasets with that ID')
 
 
 
@@ -112,7 +112,7 @@ class modelMakerForm(FlaskForm):
 class sampleForm(FlaskForm):
     checkpointID = f5.IntegerField('ID of checkpoint to sample', [v.DataRequired()])
     seed = f.TextAreaField('Text to start the generation with', [v.Length(1, 5000, 'The prompt should be at least one letter and not over 5,000.')], default='a')
-    temperature = f5.DecimalRangeField('Temperature for text generation. Higher = more creative / risk taking', [v.NumberRange(0, 1, 'Temperature is on a scale of 0 to 1')], default=0.8, render_kw={'min':'0','max':'1','step':'0.01'})
+    temperature = f5.DecimalRangeField('Temperature for text generation. Higher = more creative / risk taking', [v.NumberRange(0.01, 1, 'Temperature is on a scale of 0 to 1')], default=0.8, render_kw={'min':'0.01','max':'1','step':'0.01'})
     sampleLength = f5.IntegerField('Amount of characters to generate', [v.NumberRange(5, 100000, 'Between 5 and 100,000 characters should be generated.')], default=5000)
     
 

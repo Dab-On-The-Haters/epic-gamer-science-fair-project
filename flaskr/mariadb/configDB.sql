@@ -18,7 +18,7 @@ CREATE OR REPLACE TABLE users
 (
     ID MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
     email_addr VARCHAR(254) NOT NULL,
-    username VARCHAR(255) NOT NULL,
+    username VARCHAR(128) NOT NULL,
     real_name VARCHAR(255) NOT NULL,
     self_description TEXT,
     own_password VARCHAR(255) NOT NULL,
@@ -107,7 +107,7 @@ CREATE OR REPLACE TABLE models
     iterations_per_epoch SMALLINT UNSIGNED,
     -- iterations = loader.ntrain * epochs
     iterations MEDIUMINT UNSIGNED,
-    
+
     pid MEDIUMINT UNSIGNED,
 
     datasetID MEDIUMINT UNSIGNED NOT NULL,
