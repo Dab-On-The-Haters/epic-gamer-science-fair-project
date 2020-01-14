@@ -384,6 +384,7 @@ def showModel(ID):
         FROM datasets LEFT JOIN users ON users.ID=datasets.posterID WHERE datasets.ID = %s;''', (m['datasetID'],))
     d=db.cur.fetchone()
 
+    db.conn.commit()
     # get log
     db.cur.execute('SELECT time_saved, loss, iteration, epoch FROM logs WHERE modelID = %s ORDER BY time_saved ASC;', (ID,))
     logEntries = db.cur.fetchall()
