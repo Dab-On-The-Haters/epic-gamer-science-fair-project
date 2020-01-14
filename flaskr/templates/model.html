@@ -18,7 +18,7 @@
             }
         </style>
         <script>
-            var chartRows = "{{ chartRows }}";
+            var chartRows = "{{ chartRows|safe }}";
 
             google.charts.load('current', {'packages': ['corechart']});
             google.charts.setOnLoadCallback(drawChart);
