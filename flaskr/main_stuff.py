@@ -409,9 +409,14 @@ def showDataset(ID):
     d=db.cur.fetchone()
     if not db.cur.rowcount: return render_template('404.html', missing='dataset'), 404
     return render_template('dataset.html', d=d, user=current_user, ID=ID)
-
-
-
+"""
+@app.route('explore-models')
+@login_required
+def showDataset(ID):
+    db.cur.execute('''SELECT samples.ID, LENGTH(samples.results), samples, LENGTH(datasets.final_text), users.username
+        FROM datasets LEFT JOIN (users, models) ON users.ID=datasets.posterID WHERE datasets.ID = %s;''', (ID,))
+    return render_template('dataset.html', samples=db.cur.fetchall(), user=current_user)
+"""
 @app.route('/about')
 def aboutPage():
     return render_template('about-index.html', user=current_user)
