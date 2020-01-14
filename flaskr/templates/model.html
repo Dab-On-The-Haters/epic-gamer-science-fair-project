@@ -35,7 +35,8 @@
 
                 var options = {
                     title: 'Loss test',
-                    legend: {position: 'bottom'}
+                    legend: {position: 'top'},
+                    chartArea:{left:10,top:20,width:"100%",height:"100%"}
                 };
                 var chart = new google.visualization.LineChart(document.getElementById("chart"));
                 chart.draw(data, options);
