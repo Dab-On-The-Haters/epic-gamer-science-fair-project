@@ -286,8 +286,8 @@ def epochProgress(ID):
 
     db.cur.execute('SELECT epoch FROM logs WHERE modelID = %s ORDER BY epoch DESC LIMIT 1;', (ID,))
     if db.cur.rowcount:
-        return jsonify(db.cur.fetchone()['epoch'], finished != None)
-    else: return jsonify(0)
+        return jsonify([db.cur.fetchone()['epoch'], finished != None])
+    else: return jsonify([0, False])
 
 
 generatorCommands = 'python3 /var/www/epic-gamer-science-fair-project/flaskr/generate.py {} &'
