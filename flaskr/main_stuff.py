@@ -399,7 +399,7 @@ def showModel(ID):
             'Start of epoch {}'.format(ep)])
             
         prevEp = ep
-    return render_template('model.html', m=m, d=d, user=current_user, chartRows=jsonify(lossChartRows))
+    return render_template('model.html', m=m, d=d, user=current_user, chartRows=json.dumps(lossChartRows))
 
 @app.route('/d/<int:ID>')
 @login_required
