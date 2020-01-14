@@ -281,7 +281,7 @@ def modelMaker():
 @app.route('/epoch-progress/<int:ID>')
 def epochProgress(ID):
     db.conn.commit()
-    db.cur.execute('SELECT finished_naturally FROM models WHERE modelID = %s;', (ID,))
+    db.cur.execute('SELECT finished_naturally FROM models WHERE ID = %s;', (ID,))
     finished = db.cur.fetchone()['finished_naturally']
 
     db.cur.execute('SELECT epoch FROM logs WHERE modelID = %s ORDER BY epoch DESC LIMIT 1;', (ID,))
@@ -365,7 +365,7 @@ def showUser(username):
 @login_required
 def showModel(ID):
     db.conn.commit()
-    db.cur.execute('SELECT finished_naturally FROM models WHERE modelID = %s;', (ID,))
+    db.cur.execute('SELECT finished_naturally FROM models WHERE ID = %s;', (ID,))
     
     if not db.cur.rowcount: return render_template('404.html', missing='model'), 404
     
@@ -384,7 +384,6 @@ def showModel(ID):
         FROM datasets LEFT JOIN users ON users.ID=datasets.posterID WHERE datasets.ID = %s;''', (m['datasetID'],))
     d=db.cur.fetchone()
 
-    db.conn.commit()
     # get log
     db.cur.execute('SELECT time_saved, loss, iteration, epoch FROM logs WHERE modelID = %s ORDER BY time_saved ASC;', (ID,))
     logEntries = db.cur.fetchall()
