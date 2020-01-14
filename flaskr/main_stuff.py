@@ -272,49 +272,22 @@ def modelMaker():
         modelPID = subp.check_call(trainerCommands.format(modelID), shell=True)
         db.cur.execute('UPDATE models SET pid = %s WHERE ID = %s;', (modelPID, modelID))
         db.conn.commit()
-        return redirect('/model-progress/'+str(modelID))
+        return redirect('/m/'+str(modelID))
     if not MF.datasetID.data:
         MF.datasetID.data = int(request.args.get('datasetID', session.get('datasetID', 1)))
     
     return render_template('model-maker.html', form=MF, user=current_user)
 
-@app.route('/model-progress/<int:ID>')
-@login_required
-def showProgress(ID):
-    db.cur.execute('SELECT max_epochs FROM models WHERE ID = %s;', (ID,))
-    if not db.cur.rowcount: return render_template('404.html', missing='model'), 404
-
-    return render_template('model-progress.html', ID=ID, maxEpochs = db.cur.fetchone()['max_epochs'], user=current_user)
-
 @app.route('/epoch-progress/<int:ID>')
 def epochProgress(ID):
     db.conn.commit()
+    db.cur.execute('SELECT finished_naturally FROM models WHERE modelID = %s;', (ID,))
+    finished = db.cur.fetchone()['finished_naturally']
+
     db.cur.execute('SELECT epoch FROM logs WHERE modelID = %s ORDER BY epoch DESC LIMIT 1;', (ID,))
     if db.cur.rowcount:
-        return jsonify([db.cur.fetchone()['epoch']])
-    else: return jsonify([0, {'boi': True}])
-
-# return json of progress for showprogress route, used for google charts
-@app.route('/get-progress/<int:ID>')
-def progressJson(ID):
-    db.cur.execute('SELECT time_saved, loss, iteration, epoch FROM logs WHERE modelID = %s ORDER BY time_saved ASC;', (ID,))
-
-    logEntries = db.cur.fetchall()
-    
-    lossChartRows = []
-    
-    prevEp = 420 # nice
-    for i, e in enumerate(logEntries):
-        ep = e['epoch']
-        lossChartRows.append([i, # checkpoint
-            e['loss'],
-            'Batch {} on epoch {} has loss {}'.format(e['iteration'], ep, e['loss']),
-            None if ep == prevEp else str(ep),
-            'pee pee poo poo'])
-            
-        prevEp = ep
-
-    return jsonify(lossChartRows) # will return more stuff in future
+        return jsonify(db.cur.fetchone()['epoch'], finished != None)
+    else: return jsonify(0)
 
 
 generatorCommands = 'python3 /var/www/epic-gamer-science-fair-project/flaskr/generate.py {} &'
@@ -391,14 +364,42 @@ def showUser(username):
 @app.route('/m/<int:ID>')
 @login_required
 def showModel(ID):
+    db.conn.commit()
+    db.cur.execute('SELECT finished_naturally FROM models WHERE modelID = %s;', (ID,))
+    
+    if not db.cur.rowcount: return render_template('404.html', missing='model'), 404
+    
+    # return progress page if it isn't done training yet
+    if db.cur.fetchone()['finished_naturally'] == None:
+        db.cur.execute('SELECT max_epochs FROM models WHERE ID = %s;', (ID,))
+        return render_template('model-progress.html', ID=ID, maxEpochs = db.cur.fetchone()['max_epochs'], user=current_user)
+
+    # get model info
     db.cur.execute('''SELECT models.*, users.username
         FROM models LEFT JOIN users ON users.ID=models.trainerID WHERE models.ID = %s;''', (ID,))
     m=db.cur.fetchone()
-    if not db.cur.rowcount: return render_template('404.html', missing='model'), 404
+    
+    # get dataset info
     db.cur.execute('''SELECT datasets.title, datasets.user_description, datasets.time_posted, LENGTH(datasets.final_text), users.username
         FROM datasets LEFT JOIN users ON users.ID=datasets.posterID WHERE datasets.ID = %s;''', (m['datasetID'],))
     d=db.cur.fetchone()
-    return render_template('model.html', m=m, d=d, user=current_user)
+
+    # get log
+    db.cur.execute('SELECT time_saved, loss, iteration, epoch FROM logs WHERE modelID = %s ORDER BY time_saved ASC;', (ID,))
+    logEntries = db.cur.fetchall()
+    
+    lossChartRows = []
+    prevEp = 420 # nice
+    for i, e in enumerate(logEntries):
+        ep = e['epoch']
+        lossChartRows.append([i, # checkpoint
+            e['loss'],
+            'Batch {} on epoch {} has loss {}'.format(e['iteration'], ep, e['loss']),
+            None if ep == prevEp else str(ep),
+            'Start of epoch {}'.format(ep)])
+            
+        prevEp = ep
+    return render_template('model.html', m=m, d=d, user=current_user, chartRows=jsonify(lossChartRows))
 
 @app.route('/d/<int:ID>')
 @login_required

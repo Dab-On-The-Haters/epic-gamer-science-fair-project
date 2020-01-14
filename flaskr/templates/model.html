@@ -5,6 +5,7 @@
         <title>Model #{{ m['ID'] }} | Joe</title>
         <link rel="stylesheet" href="/static/w3.css">
         <link rel="stylesheet" href="/static/w3-colors-2019.css">
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
@@ -16,6 +17,30 @@
                 font-family: 'Poppins', sans-serif;
             }
         </style>
+        <script>
+            var chartRows = "{{ chartRows }}";
+
+            google.charts.load('current', {'packages': ['corechart']});
+            google.charts.setOnLoadCallback(drawChart);
+
+            function drawChart()
+            {
+                var data = new google.visualization.DataTable();
+                data.addColumn("number", "Checkpoint");
+                data.addColumn("number", "Loss");
+                data.addColumn({type:"string", role:"tooltip"});
+                data.addColumn({type:"string", role:"annotation"});
+                data.addColumn({type:"string", role:"annotationText"});
+                data.addRows(JSON.parse(chartRows));
+
+                var options = {
+                    title: 'Loss test',
+                    legend: {position: 'bottom'}
+                };
+                var chart = new google.visualization.LineChart(document.getElementById("chart"));
+                chart.draw(data, options);
+            }
+        </script>
     </head>
     <body class="w3-text-white">
         <div class="w3-top">
@@ -37,13 +62,11 @@
             <br>
             <p>
                 Began training on {{ m['began_training']|datetime }}<br>
-                {% if m['finished_naturally']==False %}
-                    Training was stopped on {{ m['time_finished']|datetime }}
-                {% elif m['finished_naturally']==True %}
+                {% if m['finished_naturally'] %}
                     Training finished on {{ m['time_finished']|datetime }}
                 {% else %}
-                    <b>This model has not finished training</b>
-                {% endif %} 
+                    Training was stopped on {{ m['time_finished']|datetime }}
+                {% endif %}
             </p>
             <div>
                 <p>Amount of hidden layers: <b>{{ m['num_layers'] }}</b></p>
@@ -55,7 +78,7 @@
             <div>
                 <b><a href="/generate/{{ m['ID'] }}" class="w3-button w3-2019-galaxy-blue w3-padding-large w3-hide-small w3-hover-indigo">Generate text from this model</a></b>
             </div>
-            <div class="w3-container w3-margin-top">
+            <div class="w3-container w3-margin">
                 <p class="w3-large"><b>Dataset</b></p>
                 <div>
                     <b>{{ d['title']|escape }}</b> by <a href="/u/{{ d['username'] }}">{{ d['username'] }}</a>
@@ -65,6 +88,10 @@
                     <br>
                     <b><a href="/new-model?datasetID={{ m['datasetID'] }}" class="w3-button w3-2019-galaxy-blue w3-padding w3-hide-small w3-hover-indigo">Train from this dataset</a></b>
                 </div>
+            </div>
+            <div class="w3-container w3-margin">
+                <div class="w3-large"><b>Loss of this model over time</b></div>
+                <div style="overflow: scroll;" id="chart"></div>
             </div>
         </div>
     </body>

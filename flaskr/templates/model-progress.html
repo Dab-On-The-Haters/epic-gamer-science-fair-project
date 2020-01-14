@@ -24,9 +24,10 @@
 
         function setProgBar()
         {
-            progressBar.value = JSON.parse(this.responseText)[0];
-            if (progressBar.value == maxEpochs) {
-                setTimeout(generatePage, 5000);
+            responseArr = JSON.parse(this.responseText)
+            progressBar.value = responseArr[0];
+            if (responseArr[0]) {
+                setTimeout(generatePage, 1000);
             }
             
             else {
@@ -48,8 +49,6 @@
         window.onload = function()
         {
             curID = parseInt(document.getElementById("currentID").innerHTML);
-            maxEpochs = parseInt(document.getElementById("maxEpochs").innerHTML);
-
             progressBar = document.getElementById("epochProgress");
             newRequest();
         }
@@ -80,6 +79,5 @@
             </div>
         </div>
         <span class="w3-hide" id="currentID">{{ ID }}</span>
-        <span class="w3-hide" id="maxEpochs">{{ maxEpochs }}</span>
     </body>
 </html>
