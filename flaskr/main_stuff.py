@@ -504,6 +504,9 @@ def registerUser():
 
     return render_template('register.html', form=RF)
 
+@app.route('/thank-you')
+def thank-you():
+    return render_template('thank-you.html')
 
 @app.route('/survey', methods=['GET', 'POST'])
 @login_required
@@ -515,7 +518,7 @@ def survey():
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''', (current_user.ID, SF.generalFeedback.data, SF.techComfort.data,
         SF.navigation.data, SF.navigationF.data, SF.datasets.data, SF.datasetsF.data, SF.models.data, SF.modelsF.data, SF.samples.data, SF.samplesF.data, SF.descriptions.data, SF.descriptionsF.data))
         db.conn.commit()
-        return 'Thank you for your feedback!'
+        return redirect('thank-you')
     
     return render_template('survey.html', form=SF)
 
