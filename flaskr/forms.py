@@ -17,7 +17,7 @@ w3Button = {'class': 'w3-2019-galaxy-blue w3-button w3-padding-large w3-large', 
 
 from jinja2 import Template
 popup = Template('''
-<span class="popup" onmouseenter=""document.getElementById('{{ id|escape }}-popuptext').classList.add('show');" onmouseleave="document.getElementById('{{ id|escape }}-popuptext').classList.remove('show');">
+<span class="popup" onmouseenter="document.getElementById('{{ id|escape }}-popuptext').classList.add('show');" onmouseleave="document.getElementById('{{ id|escape }}-popuptext').classList.remove('show');">
     {{ label }}
     <span class="popuptext" id="{{ id|escape }}-popuptext">{{ popupText|escape }}</span>
 </span>''')
