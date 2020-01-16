@@ -13,7 +13,12 @@ urlValidChars = string.ascii_letters + string.digits + '._-+'
 # message for InputRequired
 r = lambda fieldValue : 'Please enter your ' + fieldValue
 
-w3Button = {'class': 'w3-2019-galaxy-blue w3-button w3-padding-large', 'style': 'background-color : #191970'}
+w3Button = {'class': 'w3-2019-galaxy-blue w3-button w3-padding-large w3-large', 'style': 'background-color : #191970'}
+
+from jinja2 import Template
+
+
+
 
 class registerForm(FlaskForm):
     # for checking if password is varied enough
