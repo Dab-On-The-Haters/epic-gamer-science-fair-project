@@ -129,9 +129,10 @@ class Votes():
         db.cur.execute('SELECT positivity, negativity FROM votes WHERE {}=%s AND userID=%s;'.format(self.tableIDF), (self.tableID, self.userID))
         UV = db.cur.fetchone()
         
-        if UV['positivity']: self.userVote = 1
+        if not db.cur.rowcount: self.userVote = 0
+        elif UV['positivity']: self.userVote = 1
         elif UV['negativity']: self.userVote = -1
-        else: self.userVote = 0
+        
     
     def countVotes(self):
         db.cur.execute('SELECT COUNT(positivity), COUNT(negativity) FROM votes WHERE {}=%s;'.format(self.tableIDF), (self.tableID,))
