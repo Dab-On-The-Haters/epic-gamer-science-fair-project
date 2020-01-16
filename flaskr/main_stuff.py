@@ -126,7 +126,7 @@ class Votes():
         self.voterStatus()
     
     def voterStatus(self):
-        db.cur.execute('SELECT positivity, negativity, FROM votes WHERE {}=%s AND userID=%s;'.format(self.tableIDF), (self.tableID, self.userID))
+        db.cur.execute('SELECT positivity, negativity FROM votes WHERE {}=%s AND userID=%s;'.format(self.tableIDF), (self.tableID, self.userID))
         UV = db.cur.fetchone()
         
         if UV['positivity']: self.userVote = 1
