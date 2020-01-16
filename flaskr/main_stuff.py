@@ -535,7 +535,7 @@ def verifyUser(ID):
 
         login_user(User('ID', ID, True), remember=True)
 
-        return redirect('/')
+        return render_template('noobs.html')
     
     return render_template('verify-email.html', form=VF)
 
