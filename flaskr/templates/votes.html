@@ -16,12 +16,12 @@
         <div class="w3-large">
             <form method="POST">
                 <div class="w3-center">
-                    {% if upvoted %}<button type="submit" name="upvote" class="w3-button w3-padding-large w3-hide-small w3-indigo">Upvoted 😃</button>
-                    {% else %}<button type="submit" name="upvote" class="w3-button w3-2019-galaxy-blue w3-padding-large w3-hide-small w3-hover-indigo">Upvote 😃</button>
+                    {% if upvoted %}<button type="submit" name="upvote" class="w3-button w3-padding-large w3-indigo">Upvoted 😃</button>
+                    {% else %}<button type="submit" name="upvote" class="w3-button w3-2019-galaxy-blue w3-padding-large w3-hover-indigo">Upvote 😃</button>
                     {% endif %} {{ upvotes }}
                     <span class="w3-margin"> </span>
-                    {% if downvoted %}<button type="submit" name="downvote" class="w3-button w3-padding-large w3-hide-small w3-indigo">Downvoted 😕</button>
-                    {% else %}<button type="submit" name="downvote" class="w3-butto w3-2019-galaxy-blue w3-padding-large w3-hide-small w3-hover-indigo">Downvote 😕</button>
+                    {% if downvoted %}<button type="submit" name="downvote" class="w3-button w3-padding-large w3-indigo">Downvoted 😕</button>
+                    {% else %}<button type="submit" name="downvote" class="w3-butto w3-2019-galaxy-blue w3-padding-large w3-hover-indigo">Downvote 😕</button>
                     {% endif %} {{ downvotes }}
                 </div>
                 <div class="w3-center">
