@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/static/w3.css">
+        <link rel="stylesheet" href="/static/w3-colors-2019.css">
+        <style>
+            body {
+                background-color: #191970;
+            }
+        </style>
+    </head>
+
+    <body class="w3-text-white">
+        <div class="w3-large">
+            <form method="POST">
+                <div class="w3-center">
+                    {% if upvoted %}<button type="submit" name="upvote" class="w3-button w3-padding-large w3-hide-small w3-indigo">Upvoted 😃</button>
+                    {% else %}<button type="submit" name="upvote" class="w3-button w3-2019-galaxy-blue w3-padding-large w3-hide-small w3-hover-indigo">Upvote 😃</button>
+                    {% endif %} {{ upvotes }}
+                    <span class="w3-margin"> </span>
+                    {% if downvoted %}<button type="submit" name="downvote" class="w3-button w3-padding-large w3-hide-small w3-indigo">Downvoted 😕</button>
+                    {% else %}<button type="submit" name="downvote" class="w3-butto w3-2019-galaxy-blue w3-padding-large w3-hide-small w3-hover-indigo">Downvote 😕</button>
+                    {% endif %} {{ downvotes }}
+                </div>
+                <div class="w3-center">
+                    <meter min="0" max="100" optimum="90" high="75" low="30" value="{{ positivity }}"></meter>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>

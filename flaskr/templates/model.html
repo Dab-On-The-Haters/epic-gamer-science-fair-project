@@ -60,10 +60,11 @@
         </div>
         <div><br><br></div>
         <div class="w3-center">
-            <p class="w3-xlarge"><b>Model #{{ m['ID'] }} by <a href="/u/{{ d['username'] }}">{{ m['username'] }}</a></b></p>
+            <p class="w3-xlarge w3-center"><b>Model #{{ m['ID'] }} by <a href="/u/{{ d['username'] }}">{{ m['username'] }}</a></b></p>
         </div>
         <div class="w3-container w3-margin">
             <p class=" w3-container w3-large w3-card w3-padding w3-2019-galaxy-blue"><b>{{ m['model_description']|escape }}</b></p>
+            <div><iframe src="/votes?modelID={{ m['ID'] }}"></iframe></div>
             <br>
             <p>
                 Began training on {{ m['began_training']|datetime }}<br>

@@ -67,7 +67,7 @@ class User():
     """
 
     def __init__ (self, fieldName, fieldRequest, authenticated):
-        db.cur.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE '+fieldName+'=%s;', (fieldRequest,))
+        db.cur.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE {}=%s;'.format(fieldName), (fieldRequest,))
         if db.cur.rowcount:
             self.is_anonymous = False
             
@@ -106,6 +106,75 @@ import csv
 # for downloading dataset files
 import urllib3
 http = urllib3.PoolManager()
+
+
+class Votes():
+    def __init__(self, userID, datasetID=None, modelID=None):
+        tableID = 'modelID' 
+        if datasetID:
+            self.tableIDF = "datasetID"
+            self.tableID = datasetID
+        elif modelID:
+            self.tableIDF = "modelID"
+            self.tableID = modelID
+        else: return
+
+        self.userID = userID
+        self.datasetID = datasetID
+        self.modelID = modelID
+
+        self.countVotes()
+    
+    def voterStatus(self):
+        db.cur.execute('SELECT positivity, negativity, FROM votes WHERE {}=%s AND userID=%s;'.format(self.tableIDF), (self.tableID, self.userID))
+        UV = db.cur.fetchone()
+        
+        if UV['positivity']: self.userVote = 1
+        elif UV['negativity']: self.userVote = -1
+        else: self.userVote = 0
+    
+    def countVotes(self):
+        db.cur.execute('SELECT COUNT(positivity), COUNT(negativity) FROM votes WHERE {}=%s;'.format(self.tableIDF), (self.tableID,))
+        votes = db.cur.fetchone()
+        self.upvotes = votes['COUNT(positivity)']
+        self.downvotes = votes['COUNT(negativity)']
+        self.positivity = (self.upvotes / (self.upvotes + self.downvotes)) * 100
+
+    def upvote(self):
+        self.voterStatus()
+
+        if not self.userVote:
+            db.cur.execute('INSERT INTO votes (userID, positivity, {}) VALUES (%s, 1, %s);'.format(self.tableIDF),
+            (self.userID, self.tableID))
+        else:
+            db.cur.execute('UPDATE votes SET negativity=NULL, positivity=1 WHERE userID = %s AND {} = %s;'.format(self.tableIDF),
+            (self.userID, self.tableID))
+        db.conn.commit()
+        self.userVote = 1
+    
+    def downvote(self):
+        self.voterStatus()
+
+        if not self.userVote:
+            db.cur.execute('INSERT INTO votes (userID, negativity, {}) VALUES (%s, 1, %s);'.format(self.tableIDF),
+            (self.userID, self.tableID))
+        else:
+            db.cur.execute('UPDATE votes SET positivity=NULL, negativity=1 WHERE userID = %s AND {} = %s;'.format(self.tableIDF),
+            (self.userID, self.tableID))
+        db.conn.commit()
+        self.userVote = -1
+
+@app.route('/votes', methods=['GET', 'POST'])
+@login_required
+def votePage(votes):
+    votes = Votes(current_user.ID, request.args.get('datasetID'), request.args.get('modelID'))
+    if request.method == 'POST':
+        if request.form['upvote']: votes.upvote()
+        elif request.form['downvote']: votes.downvote()
+    
+    votes.countVotes()
+    return render_template('votes.html', upvotes=votes.upvotes, downvotes=votes.downvotes, upvoted=(votes.userVote==1), downvoted=(votes.userVote==-1), positivity=votes.positivity)
+
 
 @app.template_filter('datetime')
 def friendlyTime(dateAndTime):
