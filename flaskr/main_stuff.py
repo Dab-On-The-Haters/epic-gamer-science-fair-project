@@ -138,7 +138,11 @@ class Votes():
         votes = db.cur.fetchone()
         self.upvotes = votes['COUNT(positivity)']
         self.downvotes = votes['COUNT(negativity)']
-        self.positivity = (self.upvotes / (self.upvotes + self.downvotes)) * 100
+        try:
+            self.positivity = (self.upvotes / (self.upvotes + self.downvotes)) * 100
+        except ZeroDivisionError:
+            self.positivity = 0
+
 
     def upvote(self):
         self.voterStatus()
