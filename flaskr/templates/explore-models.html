@@ -25,8 +25,13 @@
                 <a href="/about" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Learn more about Joe</a>
                 <a href="/teach" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Teach with Joe</a>
                 <a href="/explore-models" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-indigo">Talk to our neural networks with Joe</a>
-                <span class="w3-bar-item w3-right w3-padding-large"><b>{{ user.name|escape }}</b></span>
-                <a href="/logout" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">My Account</a>
+                {% if user.is_authenticated %}
+                    <span class="w3-bar-item w3-right w3-padding-large"><b>{{ user.name|escape }}</b></span>
+                    <a href="/logout" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">My Account</a>
+                {% else %}
+                    <a href="/login" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">Log In</a>
+                    <a href="/register" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">Sign Up</a>
+                {% endif %}
             </div>
         </div>
         <div><br><br></div>
