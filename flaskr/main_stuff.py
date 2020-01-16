@@ -123,7 +123,7 @@ class Votes():
         self.datasetID = datasetID
         self.modelID = modelID
 
-        self.countVotes()
+        self.voterStatus()
     
     def voterStatus(self):
         db.cur.execute('SELECT positivity, negativity, FROM votes WHERE {}=%s AND userID=%s;'.format(self.tableIDF), (self.tableID, self.userID))
