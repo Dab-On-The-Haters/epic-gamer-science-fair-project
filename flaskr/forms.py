@@ -16,6 +16,11 @@ r = lambda fieldValue : 'Please enter your ' + fieldValue
 w3Button = {'class': 'w3-2019-galaxy-blue w3-button w3-padding-large w3-large', 'style': 'background-color : #191970'}
 
 from jinja2 import Template
+popup = Template('''
+<span class="popup" onmouseenter=""document.getElementById('{{ id|escape }}-popuptext').classList.add('show');" onmouseleave="document.getElementById('{{ id|escape }}-popuptext').classList.remove('show');">
+    {{ label }}
+    <span class="popuptext" id="{{ id|escape }}-popuptext">{{ popupText|escape }}</span>
+</span>''')
 
 
 
@@ -98,21 +103,19 @@ class modelMakerForm(FlaskForm):
         if not db.cur.fetchall():
             raise ValidationError('We couldn\'t find any datasets with that ID')
 
-
-
     datasetID = f5.IntegerField('ID of dataset being used', [datasetCheck])
     description = f.TextAreaField('Description of this model')
     #nnType = f.SelectField('Type of RNN for this model')
     # things get real groovy after here, watch out
-    layerAmount = f5.IntegerField('Amount of hidden layers in this RNN', [v.NumberRange(1, 250, 'Boi go for a reasonable amount of layers')], default=2)
-    learningRate = f5.DecimalField('Learning rate for this RNN', [v.NumberRange(0, 1, 'We need small numbers')], places=4, default=0.002)
-    rnnSize = f5.IntegerField('Size of hidden layers in this RNN', [v.NumberRange(min=10, max=1000, message='There should be between 10 and 1,000 neurons. Anything else is ridiculous.')], default=128)
+    layerAmount = f5.IntegerField(popup.render(id='layerAmount', label='Amount of hidden layers in this RNN', popupText='Hidden layers are layers of neurons in the neural network, which are between the input layer and the output layers. Changing this value has a drastic impact on the model\'s structure.'), [v.NumberRange(1, 250, 'Boi go for a reasonable amount of layers')], default=2)
+    learningRate = f5.DecimalField(popup.render(id='learningRate', label='Learning rate for this RNN', popupText='The learning rate is basically how quickly the model will adapt to new information. Things go badly if it adapts to quickly but you don\'t want it to be lagging behind as information passes by. Slow values are good.'), [v.NumberRange(0, 1, 'We need small numbers')], places=4, default=0.002)
+    rnnSize = f5.IntegerField(popup.render(id='rnnSize', label='Size of hidden layers in this RNN', popupText='This is the amount neurons (values) in each hidden layer, which has a large impact on the model\'s structure.'), [v.NumberRange(min=10, max=1000, message='There should be between 10 and 1,000 neurons. Anything else is ridiculous.')], default=128)
     # maybe add boolean field here so users don't have to say zero?
-    dropout = f5.DecimalField('Dropout for reqularization, used after each hidden layer in the RNN', [v.NumberRange(0, 1, 'Dropout is from 0-1')], default=0.5)
-    seqLength = f5.IntegerField('Sequence length (amount of timesteps the RNN will unroll for)', [v.NumberRange(1, 250, 'No clue what this is but OK')], default=50)
-    batchSize = f5.IntegerField('Size of RNN batches (amount of sequences to train on in parallel)', [v.NumberRange(10, 500, 'Batch size should be between 10 and 500 but really no bigger than 100')], default=50)
-    maxEpochs = f5.IntegerField('Maximum amount of epochs', [v.NumberRange(3, 300, 'You gotta have between 3 and 300 epochs (they take a hella long time)')], default=50)
-    seed = f5.IntegerField('Seed for making random numbers', [v.NumberRange(1, 250, 'Set your seed between 1 and 250, it really doesn\'t matter')], default=123)
+    dropout = f5.DecimalField(popup.render(id='dropout', label='Dropout for reqularization, used after each hidden layer in the RNN', popupText='Dropout is a system which disconnects certain neurons from others where weights might get messed up, meaning that some things will stop influencing the model (but usually not in noticeable ways).'), [v.NumberRange(0, 1, 'Dropout is from 0-1')], default=0.5)
+    seqLength = f5.IntegerField(popup.render(id='seqLength', label='Sequence length (amount of timesteps the RNN will unroll for)', popupText='This is the amount of times that inputs are fully passed to the outputs during a forward pass through the dataset.'), [v.NumberRange(3, 250, 'Should be between 3 and 250')], default=50)
+    batchSize = f5.IntegerField(popup.render(id='batchSize', label='Size of RNN batches (amount of sequences to train on in parallel)', popupText='The training data is split up into batches to be processed by Joe individually. This is the amount of characters in each batch.'), [v.NumberRange(10, 500, 'Batch size should be between 10 and 500 but really no bigger than 100')], default=50)
+    maxEpochs = f5.IntegerField(popup.render(id='maxEpochs', label='Maximum amount of epochs', popupText='An epoch is when Joe goes through the entire datasets forwards and backwards. This is the amount of epochs before this model stops training.'), [v.NumberRange(3, 300, 'You gotta have between 3 and 300 epochs (they take a hella long time)')], default=50)
+    seed = f5.IntegerField(popup.render(id='seed', label='Seed for making random numbers', popupText='This is the number that is used to create other random numbers. Keeping a consistent seed will mean consistent results.'), [v.NumberRange(1, 250, 'Set your seed between 1 and 250, it really doesn\'t matter')], default=123)
 
 
 class sampleForm(FlaskForm):

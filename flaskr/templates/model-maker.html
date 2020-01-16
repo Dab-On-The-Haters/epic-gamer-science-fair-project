@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <title>Joe's Model-Maker</title>
         <link rel="stylesheet" href="/static/w3.css">
+        <link rel="stylesheet" href="/static/popups.css">
         <link rel="stylesheet" href="/static/w3-colors-2019.css">
         <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,7 +41,7 @@
                     {% else %}
                         <div class="w3-margin-top">
                             <div>
-                                <b>{{ field.label }}</b>
+                                <b>{{ field.label|safe }}</b>
                             </div>
                             {{ field }}
                         </div>
