@@ -10,7 +10,7 @@ However, I'm not sure how well the constraints will hold up to my nonsense
 make sure to use "-a SCIENCE_FAIR" or "USE SCIENCE_FAIR"
 
 ready to execute
-
+*/
 
 
 -- table of the site's users contains info like email, username, whether they've verified their email, etc..
@@ -196,7 +196,7 @@ CREATE OR REPLACE TABLE votes
 (
     ID BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
     time_submitted TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    postivity BOOLEAN,
+    positivity BOOLEAN,
     negativity BOOLEAN,
     modelID MEDIUMINT UNSIGNED,
     datasetID MEDIUMINT UNSIGNED,
@@ -216,7 +216,7 @@ CREATE OR REPLACE TABLE votes
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
-/*
+
 
 CREATE OR REPLACE TABLE survey
 (
@@ -246,4 +246,3 @@ CREATE OR REPLACE TABLE survey
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 SHOW WARNINGS;
-*/
