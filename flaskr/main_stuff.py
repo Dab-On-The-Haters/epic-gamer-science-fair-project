@@ -166,7 +166,7 @@ class Votes():
 
 @app.route('/votes', methods=['GET', 'POST'])
 @login_required
-def votePage(votes):
+def votePage():
     votes = Votes(current_user.ID, request.args.get('datasetID'), request.args.get('modelID'))
     if request.method == 'POST':
         if request.form['upvote']: votes.upvote()
