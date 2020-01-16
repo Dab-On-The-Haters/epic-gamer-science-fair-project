@@ -369,7 +369,8 @@ generatorCommands = 'python3 /var/www/epic-gamer-science-fair-project/flaskr/gen
 @app.route('/generate/<int:ID>', methods=['GET', 'POST'])
 @login_required
 def generateText(ID):
-    SF = f.sampleForm()    
+    SF = f.sampleForm()
+    SF.modelID = ID
 
     if SF.validate_on_submit():
         db.cur.execute('SELECT modelID FROM checkpoints WHERE ID = %s;', (SF.checkpointID.data,))

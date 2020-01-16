@@ -5,6 +5,7 @@ import wtforms.fields.html5 as f5
 import wtforms.validators as v
 
 import db
+from pickle import loads
 
 import string
 urlValidChars = string.ascii_letters + string.digits + '._-+'
@@ -31,7 +32,7 @@ class registerForm(FlaskForm):
         db.cur.execute('SELECT verified FROM users WHERE username=%s;', (field.data,))
         for verification in db.cur.fetchall():
             if verification['verified']:
-                raise ValidationError('The username "'+field.data+'" is taken.')
+                raise ValidationError('The username "{}" is taken.'.format(field.data))
 
         for char in field.data:
             if char not in urlValidChars:
@@ -110,15 +111,23 @@ class modelMakerForm(FlaskForm):
 
 
 class sampleForm(FlaskForm):
+    modelID = int()
+    def primeCharCheck(form, field):
+        db.cur.execute('SELECT char_file FROM models WHERE ID=%s;', (form.modelID,))
+        availableChars = loads(db.cur.fetchone()['char_file'], encoding='utf-8')
+        for char in field.data:
+            if char not in availableChars:
+                raise ValidationError('The model is currently unaware that the character "{}" exists, meaning that you can\'t use it in the priming string.'.format(char))
+
     checkpointID = f5.IntegerField('ID of checkpoint to sample', [v.DataRequired()])
-    seed = f.TextAreaField('Text to start the generation with', [v.Length(1, 5000, 'The prompt should be at least one letter and not over 5,000.')], default='a')
+    seed = f.TextAreaField('Text to start the generation with', [v.Length(1, 5000, 'The prompt should be at least one letter and not over 5,000.'), primeCharCheck], default='a')
     temperature = f5.DecimalRangeField('Temperature for text generation. Higher = more creative / risk taking', [v.NumberRange(0.01, 1, 'Temperature is on a scale of 0 to 1')], default=0.8, render_kw={'min':'0.01','max':'1','step':'0.01'})
     sampleLength = f5.IntegerField('Amount of characters to generate', [v.NumberRange(5, 100000, 'Between 5 and 100,000 characters should be generated.')], default=5000)
     
 
 class survey(FlaskForm):
     fe = lambda s : f.TextAreaField(s if len(s) else 'How should we improve this?', [v.Length(max=50000, message='Feedback cannot be longer than 50,000 characters.')], render_kw={'class':'w3-margin-bottom'})
-    q = lambda s : f5.IntegerRangeField('On a scale of 1 to 10, '+s+'?', [v.NumberRange(1, 10, 'Must be between 1 and 10')], render_kw={'min':'1', 'max':'10'}, default=5)
+    q = lambda s : f5.IntegerRangeField('On a scale of 1 to 10, {}?'.format(s), [v.NumberRange(1, 10, 'Must be between 1 and 10')], render_kw={'min':'1', 'max':'10'}, default=5)
 
     techComfort = q('how comfortable are you with computers and technology in general')
     navigation = q('how hard/confusing did you find navigating the website')
@@ -133,5 +142,3 @@ class survey(FlaskForm):
     descriptionsF = fe('')
 
     generalFeedback = fe('What are some overall suggestions?')
-
-
