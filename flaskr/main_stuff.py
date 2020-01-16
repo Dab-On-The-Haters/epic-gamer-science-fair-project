@@ -515,7 +515,7 @@ def survey():
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''', (current_user.ID, SF.generalFeedback.data, SF.techComfort.data,
         SF.navigation.data, SF.navigationF.data, SF.datasets.data, SF.datasetsF.data, SF.models.data, SF.modelsF.data, SF.samples.data, SF.samplesF.data, SF.descriptions.data, SF.descriptionsF.data))
         db.conn.commit()
-        return 'Thank you for your feedback!'
+        return render_template('thank-you.html')
     
     return render_template('survey.html', form=SF)
 
