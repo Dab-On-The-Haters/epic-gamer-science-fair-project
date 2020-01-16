@@ -175,7 +175,7 @@ def votePage():
     votes = Votes(current_user.ID, request.args.get('datasetID'), request.args.get('modelID'))
     if request.method == 'POST':
         if request.form.get('upvote', False): votes.upvote()
-        elif request.form['downvote', False): votes.downvote()
+        elif request.form.get('downvote', False): votes.downvote()
     
     votes.countVotes()
     return render_template('votes.html', upvotes=votes.upvotes, downvotes=votes.downvotes, upvoted=(votes.userVote==1), downvoted=(votes.userVote==-1), positivity=votes.positivity)
