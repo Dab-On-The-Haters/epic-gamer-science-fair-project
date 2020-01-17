@@ -35,20 +35,21 @@
         <div class="w3-container w3-margin">
             <form method="POST" target="_self">
                 <p><a href="/explore-datasets">Browse datasets</a></p>
+                <p><b>Hover over any field's label for a more detailed explanation</b></p>
                 {% for field in form %}
                     {% if field in [form.csrf_token] %}
                         {{ field }}
                     {% else %}
                         <div class="w3-margin-top">
                             <div>
-                                <b>{{ field.label|safe }}</b>
+                                {{ field.label|safe }}
                             </div>
                             {{ field }}
                         </div>
                     {% endif %}
                     <ul class="w3-ul w3-text-red">
                         {% for error in field.errors %}
-                            <li>{{ error }}</li>
+                            <li>{{ error|escape }}</li>
                         {% endfor %}
                      </ul>
                 {% endfor %}
