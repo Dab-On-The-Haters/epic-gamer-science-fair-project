@@ -19,7 +19,7 @@
                 </div>
                 <ul class="w3-ul w3-text-red">
                     {% for error in form.verificationCode.errors %}
-                        <li>{{ error|escape }}</li>
+                        <li>{{ error|safe }}</li>
                     {% endfor %}
                 </ul>
                 <br>

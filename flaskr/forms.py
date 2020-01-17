@@ -63,7 +63,7 @@ class verifyForm(FlaskForm):
             if db.cur.fetchone()['codeNumber'] != int(field.data):
                 raise ValidationError('Incorrect verification code. Try redoing the register form if you think you might have made a typo over there.')
         except TypeError:
-            raise ValidationError('This account is already verified! Go ahead and log in.')
+            raise ValidationError('This account is already verified! Go ahead and <a class="w3-button w3-2019-galaxy-blue w3-padding-large w3-hover-indigo" href="/login">log in</a>.')
 
     verificationCode = f.IntegerField('Verification code', [v.InputRequired(message=r('4-digit verification code. You should have received it via email. If it\'s been a while and you still haven\'t gotten it, please fill out the register form again in case you mistyped it.')), verificationCodeCheck]) 
 
