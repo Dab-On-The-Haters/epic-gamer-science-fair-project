@@ -46,7 +46,7 @@
                     {% endif %}
                     <ul class="w3-ul w3-text-red">
                         {% for error in field.errors %}
-                            <li>{{ error }}</li>
+                            <li>{{ error|escape }}</li>
                         {% endfor %}
                     </ul>
                 {% endfor %}

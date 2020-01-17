@@ -50,7 +50,7 @@
                             {{ selection.select.label }}: {{ selection.select}}
                             <ul class="w3-ul w3-text-red">
                                 {% for error in selection.errors %}
-                                    <li>{{ error }}</li>
+                                    <li>{{ error|escape }}</li>
                                 {% endfor %}
                             </ul>
                             <br>
@@ -63,7 +63,7 @@
                 </div>
                 <ul class="w3-ul w3-text-red">
                     {% for error in form.finalText.errors %}
-                        <li>{{ error }}</li>
+                        <li>{{ error|escape }}</li>
                     {% endfor %}
                 </ul>
                 <br>
