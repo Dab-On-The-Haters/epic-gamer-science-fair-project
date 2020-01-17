@@ -34,8 +34,8 @@
 
         <div class="w3-container w3-margin">
             <form method="POST" target="_self">
-                <p><a href="/explore-datasets">Browse datasets</a></p>
                 <p><b>Hover over any field's label for a more detailed explanation</b></p>
+                <p><a href="/explore-datasets">Browse datasets</a></p>
                 {% for field in form %}
                     {% if field in [form.csrf_token] %}
                         {{ field }}
