@@ -26,6 +26,8 @@
         {
             responseArr = JSON.parse(this.responseText)
             progressBar.value = responseArr[0];
+            clearTimeout(newRequest);
+            
             if (responseArr[1]) {
                 setTimeout(generatePage, 1000);
             }
