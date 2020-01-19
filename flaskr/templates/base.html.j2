@@ -18,18 +18,21 @@
 {% endmacro %}
 
 
-{% macro head(title, poppins=True, popups=False, important=False) %}
+{% macro head(title, poppins=True, popups=False, important=False, poppinsPage=True) %}
     <meta charset="UTF-8">
     <title>{% if 'Joe' in title %}{{ title }}{% else %}{{ title~' | Joe'}}{% endif %}</title>
     <link rel="stylesheet" href="/static/w3.css">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     {% if popups %}<link rel="stylesheet" href="/static/popups.css">{% endif %}
     <link rel="stylesheet" href="/static/w3-colors-2019.css">
-    {% if poppins %}<link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">{% endif %}
+    {% if poppins %}<link href="https://fonts.googleapis.com/css?family=Poppins|Poppins:i|Poppins:b&display=swap" rel="stylesheet">{% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             background-color:#191970;
+            {% if poppinsPage and poppins %}
+            font-family: 'Poppins', sans-serif;
+            {% endif %}
         }
         iframe {
             border-style: hidden; 
