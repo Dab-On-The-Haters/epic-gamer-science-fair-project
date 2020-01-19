@@ -2,9 +2,9 @@
     <div class="w3-top">
         <div class="w3-bar w3-2019-galaxy-blue w3-card">
             <a href="/" class="w3-bar-item w3-button w3-padding-large {% if c='/' %} w3-indigo {% else %} w3-hover-indigo {% endif %}">Joe</a>
-            <a href="/about" class="w3-bar-item w3-button w3-padding-large w3-hide-small {% if c='/' %} w3-indigo {% else %} w3-hover-indigo {% endif %}">Learn more about Joe</a>
-            <a href="/teach" class="w3-bar-item w3-button w3-padding-large w3-hide-small {% if c='/' %} w3-indigo {% else %} w3-hover-indigo {% endif %}">Teach with Joe</a>
-            <a href="/explore-models" class="w3-bar-item w3-button w3-padding-large w3-hide-small {% if c='/' %} w3-indigo {% else %} w3-hover-indigo {% endif %}">Talk to our neural networks with Joe</a>
+            <a href="/about" class="w3-bar-item w3-button w3-padding-large w3-hide-small {% if c='about' %} w3-indigo {% else %} w3-hover-indigo {% endif %}">Learn more about Joe</a>
+            <a href="/teach" class="w3-bar-item w3-button w3-padding-large w3-hide-small {% if c='teach' %} w3-indigo {% else %} w3-hover-indigo {% endif %}">Teach with Joe</a>
+            <a href="/explore-models" class="w3-bar-item w3-button w3-padding-large w3-hide-small {% if c='explore' %} w3-indigo {% else %} w3-hover-indigo {% endif %}">Talk to our neural networks with Joe</a>
             {% if (not user) or user.is_anonymous %}
                 <a href="/login" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">Log In</a>
                 <a href="/register" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">Sign Up</a>
@@ -22,6 +22,7 @@
     <meta charset="UTF-8">
     <title>{{ title }}</title>
     <link rel="stylesheet" href="/static/w3.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     {% if popups %}<link rel="stylesheet" href="/static/popups.css">{% endif %}
     <link rel="stylesheet" href="/static/w3-colors-2019.css">
     {% if poppins %}<link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">{% endif %}
@@ -29,6 +30,9 @@
     <style>
         body {
             background-color:#191970;
+        }
+        iframe {
+            border-style: hidden; 
         }
         {% if poppins %}
         .w3-poppins {
