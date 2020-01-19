@@ -8,8 +8,7 @@
         <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
-            body
-            {
+            body {
                background-color:#191970;
             }
             .w3-poppins {
@@ -22,12 +21,11 @@
         progBarReq = new XMLHttpRequest();
         progBarReq.addEventListener("load", setProgBar);
 
-        function setProgBar()
-        {
+        function setProgBar()  {
             responseArr = JSON.parse(this.responseText)
             progressBar.value = responseArr[0];
             clearTimeout(newRequest);
-            
+
             if (responseArr[1]) {
                 setTimeout(generatePage, 1000);
             }
@@ -37,19 +35,16 @@
             }
         }
 
-        function generatePage()
-        {
+        function generatePage() {
             window.location.href = "/generate/" + curID
         }
 
-        function newRequest()
-        {
+        function newRequest() {
             progBarReq.open('GET', '/epoch-progress/'+curID);
             progBarReq.send();
         }
 
-        window.onload = function()
-        {
+        window.onload = function() {
             curID = parseInt(document.getElementById("currentID").innerHTML);
             progressBar = document.getElementById("epochProgress");
             newRequest();
