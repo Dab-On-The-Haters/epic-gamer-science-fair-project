@@ -484,14 +484,7 @@ def showDataset(ID):
     d=db.cur.fetchone()
     if not db.cur.rowcount: return render_template('404.html', missing='dataset'), 404
     return render_template('dataset.html', d=d, user=current_user, ID=ID)
-"""
-@app.route('explore-models')
-@login_required
-def showDataset(ID):
-    db.cur.execute('''SELECT samples.ID, LENGTH(samples.results), samples, LENGTH(datasets.final_text), users.username
-        FROM datasets LEFT JOIN (users, models) ON users.ID=datasets.posterID WHERE datasets.ID = %s;''', (ID,))
-    return render_template('dataset.html', samples=db.cur.fetchall(), user=current_user)
-"""
+
 @app.route('/about')
 def aboutPage():
     return render_template('about-index.html', user=current_user)
@@ -590,7 +583,7 @@ def survey():
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''', (current_user.ID, SF.generalFeedback.data, SF.techComfort.data,
         SF.navigation.data, SF.navigationF.data, SF.datasets.data, SF.datasetsF.data, SF.models.data, SF.modelsF.data, SF.samples.data, SF.samplesF.data, SF.descriptions.data, SF.descriptionsF.data))
         db.conn.commit()
-        return render_template('thank-you.html')
+        return render_template('thank-you.html', user=current_user)
     
     return render_template('survey.html', form=SF)
 

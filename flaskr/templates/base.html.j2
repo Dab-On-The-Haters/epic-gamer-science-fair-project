@@ -6,8 +6,8 @@
             <a href="/teach" class="w3-bar-item w3-button w3-padding-large w3-hide-small {% if c=='teach' %} w3-indigo {% else %} w3-hover-indigo {% endif %}">Teach with Joe</a>
             <a href="/explore-models" class="w3-bar-item w3-button w3-padding-large w3-hide-small {% if c=='explore' %} w3-indigo {% else %} w3-hover-indigo {% endif %}">Talk to our neural networks with Joe</a>
             {% if (not user) or user.is_anonymous %}
-                <a href="/login" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">Log In</a>
-                <a href="/register" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">Sign Up</a>
+                <a href="/login" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small {% if c=='login' %} w3-indigo {% else %} w3-hover-indigo {% endif %}">Log In</a>
+                <a href="/register" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small {% if c=='register' %} w3-indigo {% else %} w3-hover-indigo {% endif %}">Sign Up</a>
             {% else %}
                 <span class="w3-bar-item w3-right w3-padding-large"><b>{{ user.name|escape }}</b></span>
                 <a href="/logout" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">My Account</a>
@@ -18,9 +18,9 @@
 {% endmacro %}
 
 
-{% macro head(title, poppins=True, popups=False) %}
+{% macro head(title, poppins=True, popups=False, important=False) %}
     <meta charset="UTF-8">
-    <title>{{ title }}</title>
+    <title>{% if 'Joe' in title %}{{ title }}{% else %}{{ title~' | Joe'}}{% endif %}</title>
     <link rel="stylesheet" href="/static/w3.css">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     {% if popups %}<link rel="stylesheet" href="/static/popups.css">{% endif %}
@@ -40,4 +40,7 @@
         }
         {% endif %}
     </style>
+    {% if important %}
+    <base target="_blank">
+    {% endif %}
 {% endmacro %}

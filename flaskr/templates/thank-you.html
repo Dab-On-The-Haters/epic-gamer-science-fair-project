@@ -1,3 +1,4 @@
+{% import 'base.html.j2' as base %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -16,15 +17,7 @@
     </head>
 
     <body class="w3-text-white">
-        <div class="w3-top">
-            <div class="w3-bar w3-2019-galaxy-blue w3-card">
-                <a href="/" class="w3-bar-item w3-button w3-padding-large w3-hover-indigo">Joe</a>
-                <a href="/about" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Learn more about Joe</a>
-                <a href="/teach" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Teach with Joe</a>
-                <a href="/explore-models" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Talk to our neural networks with Joe</a>
-            </div>
-        </div>
-        <div><br><br></div>
+        {{ base.navbar(user, c='/') }}
         <div class="w3-center">
             <p class="w3-jumbo"><b>Thank You for your feedback!</b></p>
             <p class="w3-xxlarge">Your suggestions and ideas are absolutely invaluable to optimizing our website and making it more user friendly.</p>

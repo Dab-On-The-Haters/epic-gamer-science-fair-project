@@ -1,31 +1,11 @@
+{% import 'base.html.j2' as base %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <title>Log in | Joe</title>
-        <link rel="stylesheet" href="/static/w3.css">
-        <link rel="stylesheet" href="/static/w3-colors-2019.css">
-        <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            body {
-               background-color:#191970;
-            }
-            .w3-poppins {
-                font-family: 'Poppins', sans-serif;
-            }
-        </style>
+        {{ base.head('Log in') }}
     </head>
     <body class="w3-text-white">
-        <div class="w3-bar w3-2019-galaxy-blue w3-card">
-            <a href="/" class="w3-bar-item w3-button w3-padding-large w3-hover-indigo">Joe</a>
-            <a href="/about" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Learn more about Joe</a>
-            <a href="/teach" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Teach with Joe</a>
-            <a href="/explore-models" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Talk to our neural networks with Joe</a>
-            <a href="/login" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-indigo">Log In</a>
-            <a href="/register" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">Sign Up</a>
-        </div>
-
+        {{ base.navbar(False, c='login') }}
         <div class="w3-container w3-poppins">
             <div class="w3-container w3-jumbo w3-center">
                 <b>Log in to your account</b>

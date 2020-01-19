@@ -1,31 +1,11 @@
+{% import 'base.html.j2' as base %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <title>Register to meet Joe</title>
-        <link rel="stylesheet" href="/static/w3.css">
-        <link rel="stylesheet" href="/static/w3-colors-2019.css">
-        <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            body {
-               background-color:#191970;
-               font-family: 'Poppins', sans-serif;
-            }
-        </style>
+        {{ base.head('Register to meet Joe', important=True) }}        
     </head>
     <body>
-        <div class="w3-top">
-            <div class="w3-bar w3-2019-galaxy-blue w3-card">
-                <a href="/" class="w3-bar-item w3-button w3-padding-large w3-hover-indigo">Joe</a>
-                <a href="/about" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Learn more about Joe</a>
-                <a href="/teach" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Teach with Joe</a>
-                <a href="/explore-models" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Talk to our neural networks with Joe</a>
-                <a href="/login" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">Log In</a>
-                <a href="/register" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-indigo">Sign Up</a>
-            </div>
-        </div>
-        <div><br><br></div>
+        {{ base.navbar(False, c='register') }}
 
         <div class="w3-container">
             <div class="w3-container w3-jumbo w3-center">
@@ -34,7 +14,7 @@
         </div>
 
         <div class="w3-container w3-card w3-margin w3-2019-galaxy-blue">
-            <form method="POST">
+            <form method="POST", target="_self">
                 {% for field in form %}
                     {% if field in [form.csrf_token] %}
                         {{ field }}
