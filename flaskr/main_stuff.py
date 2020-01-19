@@ -433,6 +433,7 @@ def exploreDatasets():
         FROM datasets LEFT JOIN users
         ON users.ID = datasets.posterID
         LEFT JOIN votes ON votes.datasetID = datasets.ID
+        GROUP BY datasets.ID
         ORDER BY COUNT(votes.positivity) - COUNT(votes.negativity) DESC;''')
     return render_template('explore-datasets.html', datasets=db.cur.fetchall(), user=current_user)
 
