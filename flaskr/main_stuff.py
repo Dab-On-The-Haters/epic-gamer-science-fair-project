@@ -417,14 +417,23 @@ def generatedText(ID):
 
 @app.route('/explore-models', methods=['GET', 'POST'])
 def exploreModels():
-    db.cur.execute('''SELECT models.ID, models.model_description, models.datasetID, users.username, datasets.title
-        FROM models LEFT JOIN (users, datasets) ON (users.ID=models.trainerID AND datasets.ID=models.datasetID) ORDER BY models.time_finished DESC;''')
+    db.cur.execute('''SELECT models.model_description, users.username,
+    datasets.title, datasets.user_description, LENGTH(datasets.final_text), datasets.time_posted AS dataset_time_posted,
+    COUNT(votes.positivity), COUNT(votes.negativity)
+    FROM models LEFT JOIN (users, datasets)
+    ON (users.ID = models.trainerID AND datasets.ID = models.datasetID)
+    LEFT JOIN votes ON votes.modelID = models.ID
+    GROUP BY models.ID
+    ORDER BY COUNT(votes.positivity) - COUNT(votes.negativity) DESC;''')
     return render_template('explore-models.html', models=db.cur.fetchall(), user=current_user)
 
 @app.route('/explore-datasets', methods=['GET', 'POST'])
 def exploreDatasets():
     db.cur.execute('''SELECT datasets.ID, datasets.title, datasets.user_description, LENGTH(datasets.final_text), users.username
-        FROM datasets LEFT JOIN users ON users.ID=datasets.posterID ORDER BY datasets.time_posted DESC;''')
+        FROM datasets LEFT JOIN users
+        ON users.ID = datasets.posterID
+        LEFT JOIN votes ON votes.datasetID = datasets.ID
+        ORDER BY COUNT(votes.positivity) - COUNT(votes.negativity) DESC;''')
     return render_template('explore-datasets.html', datasets=db.cur.fetchall(), user=current_user)
 
 
@@ -484,6 +493,7 @@ def showDataset(ID):
     d=db.cur.fetchone()
     if not db.cur.rowcount: return render_template('404.html', missing='dataset'), 404
     return render_template('dataset.html', d=d, user=current_user, ID=ID)
+
 
 @app.route('/about')
 def aboutPage():
