@@ -54,7 +54,7 @@ loginManager.init_app(app)
 loginManager.login_view = '/login'
 
 # dumb classes just for flask-login
-class User():
+class User:
 
     """
     username = str()
@@ -108,7 +108,7 @@ import urllib3
 http = urllib3.PoolManager()
 
 
-class Votes():
+class Votes:
     def __init__(self, userID, datasetID=None, modelID=None):
         db.conn.commit()
         tableID = 'modelID' 
