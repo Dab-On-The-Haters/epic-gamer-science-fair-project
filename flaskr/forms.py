@@ -23,7 +23,7 @@ popup = Template('''
 </span>''')
 link = Template('''
 <span>
-    <p>{{ label <a href= link> Haven't done this yet? Here's the link</a>}} </p?
+    <p>{{ label }}{% if link %} <a href= {{ link|escape }}>Haven't done this yet? Here's the link</a>{% endif %} </p>
 </span>
 ''')
 
@@ -142,18 +142,19 @@ class sampleForm(FlaskForm):
 
 class survey(FlaskForm):
     fe = lambda s : f.TextAreaField(s if len(s) else 'How should we improve this?', [v.Length(max=50000, message='Feedback cannot be longer than 50,000 characters.')], render_kw={'class':'w3-margin-bottom'})
-    q = lambda s : f5.IntegerRangeField('On a scale of 1 to 10, {}?'.format(s), [v.NumberRange(1, 10, 'Must be between 1 and 10')], render_kw={'min':'1', 'max':'10'}, default=5)
+    def q(label, link):
+        f5.IntegerRangeField(link.render(label=label, link=link), [v.NumberRange(1, 10, 'Must be between 1 and 10')], render_kw={'min':'1', 'max':'10'}, default=5)
 
-    techComfort = q('how comfortable are you with computers and technology in general')
-    navigation = q('how hard/confusing did you find navigating the website')
+    techComfort = q('how comfortable are you with computers and technology in general', False)
+    navigation = q('how hard/confusing did you find navigating the website', False)
     navigationF = fe('')
-    datasets = q('how hard/confusing was uploading a dataset')
+    datasets = q('how hard/confusing was uploading a dataset', '/upload-dataset')
     datasetsF = fe('')
-    models = q('how hard/confusing was creating a model')
+    models = q('how hard/confusing was creating a model', '/new-model')
     modelsF = fe('')
-    samples = q('how hard/confusing was generating text from the models')
+    samples = q('how hard/confusing was generating text from the models', '/generate/4')
     samplesF = fe('')
-    descriptions = q('how clear were the descriptions and explanations on the website')
+    descriptions = q('how clear were the descriptions and explanations on the website', False)
     descriptionsF = fe('')
 
     generalFeedback = fe('What are some overall suggestions?')
