@@ -23,7 +23,7 @@ popup = Template('''
 </span>''')
 link = Template('''
 <span>
-    <p>{{ label }}{% if link %} <a href= {{ link|escape }}>Haven't done this yet? Here's the link</a>{% endif %} </p>
+    <p>{{ label }}{% if kink %} <a href= {{ kink|escape }}>Haven't done this yet? Here's the link</a>{% endif %} </p>
 </span>
 ''')
 
@@ -142,8 +142,8 @@ class sampleForm(FlaskForm):
 
 class survey(FlaskForm):
     fe = lambda s : f.TextAreaField(s if len(s) else 'How should we improve this?', [v.Length(max=50000, message='Feedback cannot be longer than 50,000 characters.')], render_kw={'class':'w3-margin-bottom'})
-    def q(label, link):
-        f5.IntegerRangeField(link.render(label=label, link=link), [v.NumberRange(1, 10, 'Must be between 1 and 10')], render_kw={'min':'1', 'max':'10'}, default=5)
+    def q(label, kink):
+        f5.IntegerRangeField(link.render(label=label, kink=kink), [v.NumberRange(1, 10, 'Must be between 1 and 10')], render_kw={'min':'1', 'max':'10'}, default=5)
 
     techComfort = q('how comfortable are you with computers and technology in general', False)
     navigation = q('how hard/confusing did you find navigating the website', False)
