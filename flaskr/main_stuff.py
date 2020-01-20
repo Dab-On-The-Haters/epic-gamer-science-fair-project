@@ -110,6 +110,7 @@ http = urllib3.PoolManager()
 
 class Votes():
     def __init__(self, userID, datasetID=None, modelID=None):
+        db.conn.commit()
         tableID = 'modelID' 
         if datasetID:
             self.tableIDF = "datasetID"
@@ -124,6 +125,7 @@ class Votes():
         self.modelID = modelID
 
         self.voterStatus()
+
     
     def voterStatus(self):
         db.cur.execute('SELECT positivity, negativity FROM votes WHERE {}=%s AND userID=%s;'.format(self.tableIDF), (self.tableID, self.userID))
