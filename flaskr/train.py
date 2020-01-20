@@ -69,7 +69,8 @@ def index_to_tensor(index):
     tensor[0,0] = index
     return Variable(tensor)
 
-
+# saves to log and resets every 5 iters
+iTracker = 0
 def train():
     # convert all characters to indices
     batches = [char_to_index[char] for char in text]
@@ -124,8 +125,11 @@ def train():
                 best_tl_loss = min(best_tl_loss, loss)
                 all_losses.append(loss)
 
-                db.cur.execute('INSERT INTO logs (modelID, loss, iteration, epoch) VALUES (%s, %s, %s, %s);', (modelID, loss, batch, epoch))
-                db.conn.commit()
+                if iTracker == 5:
+                    db.cur.execute('INSERT INTO logs (modelID, loss, iteration, epoch) VALUES (%s, %s, %s, %s);', (modelID, loss, batch, epoch))
+                    db.conn.commit()
+                    iTracker = 0
+                else: iTracker += 1
 
                 #batches_progress.set_postfix(loss='{:.03f}'.format(loss))
                 if loss < 1.3 and loss == best_tl_loss:
