@@ -23,7 +23,7 @@ popup = Template('''
 </span>''')
 link = Template('''
 <span>
-    <p>{{ label }}{% if kink %} <a href= {{ kink|escape }}>Haven't done this yet? Here's the link</a>{% endif %} </p>
+    <p>On a scale of 1 to 10, {{ label }}?{% if kink %} <a href= {{ kink|escape }}> Haven't done this yet? Here's the link</a>{% endif %} </p>
 </span>
 ''')
 
