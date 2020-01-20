@@ -426,7 +426,7 @@ def generatedText(ID):
 @app.route('/explore-models', methods=['GET', 'POST'])
 def exploreModels():
     db.cur.execute('''SELECT models.ID, models.model_description, users.username, models.datasetID,
-    datasets.title, datasets.user_description, LENGTH(datasets.final_text), datasets.time_posted AS dataset_time_posted,
+    datasets.title, datasets.user_description, LENGTH(datasets.final_text), datasets.time_posted AS dataset_time_posted
     FROM models LEFT JOIN (users, datasets)
     ON (users.ID = models.trainerID AND datasets.ID = models.datasetID)
     LEFT JOIN votes ON votes.modelID = models.ID
