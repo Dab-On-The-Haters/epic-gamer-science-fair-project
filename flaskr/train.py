@@ -43,7 +43,7 @@ lr = args['learning_rate']
 dropout = args['dropout']
 datasetID = args['datasetID']
 modelID = args['ID']
-
+logEvery = 19
 
 db.cur.execute('SELECT final_text FROM datasets WHERE ID = %s;', (datasetID,))
 text = db.cur.fetchone()['final_text']
@@ -126,7 +126,7 @@ def train():
                 best_tl_loss = min(best_tl_loss, loss)
                 all_losses.append(loss)
 
-                if iTracker == 5:
+                if iTracker == logEvery:
                     db.cur.execute('INSERT INTO logs (modelID, loss, iteration, epoch) VALUES (%s, %s, %s, %s);', (modelID, loss, batch, epoch))
                     db.conn.commit()
                     iTracker = 0
