@@ -5,23 +5,24 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/static/w3.css">
         <link rel="stylesheet" href="/static/w3-colors-2019.css">
+        
         <style>
-            body {
-                background-color: #191970;
-            }
+        .w3-bruh-blue {
+             background-color: #191970;
+        }
         </style>
     </head>
 
-    <body class="w3-text-white">
+    <body class="w3-text-white {{ bgC }}">
         <div class="w3-large">
             <form method="POST">
                 <div class="w3-center">
-                    {% if upvoted %}<button type="submit" name="upvote" class="w3-button w3-padding-large w3-indigo">Upvoted 😃</button>
-                    {% else %}<button type="submit" name="upvote" class="w3-button w3-2019-galaxy-blue w3-padding-large w3-hover-indigo">Upvote 😃</button>
+                    {% if upvoted %}<button type="submit" name="upvote" class="w3-button {{ selectedBC }} w3-padding-large">Upvoted 😃</button>
+                    {% else %}<button type="submit" name="upvote" class="w3-button {{ unselectedBC }} w3-padding-large {{ hoverBC }}">Upvote 😃</button>
                     {% endif %} {{ upvotes }}
                     <div><br></div>
-                    {% if downvoted %}<button type="submit" name="downvote" class="w3-button w3-padding w3-indigo">Downvoted 😕</button>
-                    {% else %}<button type="submit" name="downvote" class="w3-button w3-2019-galaxy-blue w3-padding w3-hover-indigo">Downvote 😕</button>
+                    {% if downvoted %}<button type="submit" name="downvote" class="w3-button {{ selectedBC }} w3-padding">Downvoted 😕</button>
+                    {% else %}<button type="submit" name="downvote" class="w3-button {{ unselectedBC }} w3-padding {{ hoverBC }}">Downvote 😕</button>
                     {% endif %} {{ downvotes }}
                 </div>
                 <div class="w3-center">

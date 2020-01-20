@@ -178,7 +178,15 @@ def votePage():
         elif request.form.get('downvote', -1) != -1: votes.downvote()
     
     votes.countVotes()
-    return render_template('votes.html', upvotes=votes.upvotes, downvotes=votes.downvotes, upvoted=(votes.userVote==1), downvoted=(votes.userVote==-1), positivity=votes.positivity)
+    bgColour = request.args.get('bg-colour', 'w3-bruh-blue')
+    if bgColour not in ['w3-bruh-blue', 'w3-indigo', 'w3-2019-galaxy-blue']: bgColour = 'w3-bruh-blue'
+
+    selectedBCs =     {'w3-indigo': 'w3-blue',         'w3-2019-galaxy-blue': 'w3-indigo',          'w3-bruh-blue': 'w3-indigo'}
+    unselectedBCs =   {'w3-indigo': 'w3-bruh-blue',    'w3-2019-galaxy-blue': 'w3-bruh-blue',       'w3-bruh-blue': 'w3-2019-galaxy-blue'}
+    hoverBCs =        {'w3-indigo': 'w3-hover-blue',   'w3-2019-galaxy-blue': 'w3-hover-indigo',    'w3-bruh-blue': 'w3-hover-indigo'}
+
+    return render_template('votes.html', bgC=bgColour, selectedBC=selectedBCs[bgColour], unselectedBC=unselectedBCs[bgColour], hoverBC=hoverBCs[bgColour],
+        upvotes=votes.upvotes, downvotes=votes.downvotes, upvoted=(votes.userVote==1), downvoted=(votes.userVote==-1), positivity=votes.positivity)
 
 
 @app.template_filter('datetime')
