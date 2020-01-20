@@ -1,37 +1,11 @@
+{% import 'base.html.j2' as base %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <title>Edit your dataset</title>
-        <link rel="stylesheet" href="/static/w3.css">
-        <link rel="stylesheet" href="/static/w3-colors-2019.css">
-        <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            body
-            {
-               background-color:#191970;
-            }
-            .w3-poppins {
-                font-family: 'Poppins', sans-serif;
-
-            }
-        </style>
-        <base target="_blank">
+        {{ base.head('Edit your dataset', important=True) }}
     </head>
     <body class="w3-text-white">
-        <div class="w3-top">
-            <div class="w3-bar w3-2019-galaxy-blue w3-card">
-                <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
-                <a href="/" class="w3-bar-item w3-button w3-padding-large w3-hover-indigo">Joe</a>
-                <a href="/about" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Learn more about Joe</a>
-                <a href="/teach" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Teach with Joe</a>
-                <a href="/explore-models" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Talk to our neural networks with Joe</a>
-                <span class="w3-bar-item w3-right w3-padding-large"><b>{{ user.name|escape }}</b></span>
-                <a href="/logout" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">My Account</a>
-            </div>
-        </div>
-        <div><br><br></div>
+        {{ base.navbar(user, c='teach') }}
         <div class="w3-container w3-poppins">
             <div class="w3-container w3-xlarge w3-center">
                 <b>Data cleaning for {{ datasetName|escape }}</b>
@@ -49,7 +23,7 @@
                             {{ selection.select.label }}: {{ selection.select}}
                             <ul class="w3-ul w3-text-red">
                                 {% for error in selection.errors %}
-                                    <li>{{ error }}</li>
+                                    <li>{{ error|escape }}</li>
                                 {% endfor %}
                             </ul>
                             <br>
@@ -62,7 +36,7 @@
                 </div>
                 <ul class="w3-ul w3-text-red">
                     {% for error in form.finalText.errors %}
-                        <li>{{ error }}</li>
+                        <li>{{ error|escape }}</li>
                     {% endfor %}
                 </ul>
                 <br>

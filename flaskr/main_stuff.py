@@ -67,7 +67,7 @@ class User():
     """
 
     def __init__ (self, fieldName, fieldRequest, authenticated):
-        db.cur.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE '+fieldName+'=%s;', (fieldRequest,))
+        db.cur.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE {}=%s;'.format(fieldName), (fieldRequest,))
         if db.cur.rowcount:
             self.is_anonymous = False
             
@@ -106,6 +106,88 @@ import csv
 # for downloading dataset files
 import urllib3
 http = urllib3.PoolManager()
+
+
+class Votes():
+    def __init__(self, userID, datasetID=None, modelID=None):
+        tableID = 'modelID' 
+        if datasetID:
+            self.tableIDF = "datasetID"
+            self.tableID = datasetID
+        elif modelID:
+            self.tableIDF = "modelID"
+            self.tableID = modelID
+        else: return
+
+        self.userID = userID
+        self.datasetID = datasetID
+        self.modelID = modelID
+
+        self.voterStatus()
+    
+    def voterStatus(self):
+        db.cur.execute('SELECT positivity, negativity FROM votes WHERE {}=%s AND userID=%s;'.format(self.tableIDF), (self.tableID, self.userID))
+        UV = db.cur.fetchone()
+        
+        if not db.cur.rowcount: self.userVote = 0
+        elif UV['positivity']: self.userVote = 1
+        elif UV['negativity']: self.userVote = -1
+        
+    
+    def countVotes(self):
+        db.cur.execute('SELECT COUNT(positivity), COUNT(negativity) FROM votes WHERE {}=%s;'.format(self.tableIDF), (self.tableID,))
+        votes = db.cur.fetchone()
+        self.upvotes = votes['COUNT(positivity)']
+        self.downvotes = votes['COUNT(negativity)']
+        try:
+            self.positivity = (self.upvotes / (self.upvotes + self.downvotes)) * 100
+        except ZeroDivisionError:
+            self.positivity = 0
+
+
+    def upvote(self):
+        self.voterStatus()
+
+        if not self.userVote:
+            db.cur.execute('INSERT INTO votes (userID, positivity, {}) VALUES (%s, 1, %s);'.format(self.tableIDF),
+            (self.userID, self.tableID))
+        else:
+            db.cur.execute('UPDATE votes SET negativity=NULL, positivity=1 WHERE userID = %s AND {} = %s;'.format(self.tableIDF),
+            (self.userID, self.tableID))
+        db.conn.commit()
+        self.userVote = 1
+    
+    def downvote(self):
+        self.voterStatus()
+
+        if not self.userVote:
+            db.cur.execute('INSERT INTO votes (userID, negativity, {}) VALUES (%s, 1, %s);'.format(self.tableIDF),
+            (self.userID, self.tableID))
+        else:
+            db.cur.execute('UPDATE votes SET positivity=NULL, negativity=1 WHERE userID = %s AND {} = %s;'.format(self.tableIDF),
+            (self.userID, self.tableID))
+        db.conn.commit()
+        self.userVote = -1
+
+@app.route('/votes', methods=['GET', 'POST'])
+@login_required
+def votePage():
+    votes = Votes(current_user.ID, request.args.get('datasetID'), request.args.get('modelID'))
+    if request.method == 'POST':
+        if request.form.get('upvote', -1) != -1: votes.upvote()
+        elif request.form.get('downvote', -1) != -1: votes.downvote()
+    
+    votes.countVotes()
+    bgColour = request.args.get('bg-colour', 'w3-bruh-blue')
+    if bgColour not in ['w3-bruh-blue', 'w3-indigo', 'w3-2019-galaxy-blue']: bgColour = 'w3-bruh-blue'
+
+    selectedBCs =     {'w3-indigo': 'w3-blue',         'w3-2019-galaxy-blue': 'w3-indigo',          'w3-bruh-blue': 'w3-indigo'}
+    unselectedBCs =   {'w3-indigo': 'w3-bruh-blue',    'w3-2019-galaxy-blue': 'w3-bruh-blue',       'w3-bruh-blue': 'w3-2019-galaxy-blue'}
+    hoverBCs =        {'w3-indigo': 'w3-hover-blue',   'w3-2019-galaxy-blue': 'w3-hover-indigo',    'w3-bruh-blue': 'w3-hover-indigo'}
+
+    return render_template('votes.html', bgC=bgColour, selectedBC=selectedBCs[bgColour], unselectedBC=unselectedBCs[bgColour], hoverBC=hoverBCs[bgColour],
+        upvotes=votes.upvotes, downvotes=votes.downvotes, upvoted=(votes.userVote==1), downvoted=(votes.userVote==-1), positivity=votes.positivity)
+
 
 @app.template_filter('datetime')
 def friendlyTime(dateAndTime):
@@ -153,7 +235,7 @@ def newDataset():
             
             columnLists = dict()
             for FN in files:
-                if FN.endswith('.zip'): return 'UNZIP YOUR DATASETS U DUMB B'
+                if FN.endswith('.zip'): return 'Make sure you unzip your datasets first.'
                 db.cur.execute('INSERT INTO datafiles (file_name, file_data, datasetID) VALUES (%s, %s, %s);', (FN, files[FN], datasetID))
                 
                 # if it's a csv add it to column selections
@@ -295,7 +377,8 @@ generatorCommands = 'python3 /var/www/epic-gamer-science-fair-project/flaskr/gen
 @app.route('/generate/<int:ID>', methods=['GET', 'POST'])
 @login_required
 def generateText(ID):
-    SF = f.sampleForm()    
+    SF = f.sampleForm()
+    SF.modelID = ID
 
     if SF.validate_on_submit():
         db.cur.execute('SELECT modelID FROM checkpoints WHERE ID = %s;', (SF.checkpointID.data,))
@@ -342,14 +425,24 @@ def generatedText(ID):
 
 @app.route('/explore-models', methods=['GET', 'POST'])
 def exploreModels():
-    db.cur.execute('''SELECT models.ID, models.model_description, models.datasetID, users.username, datasets.title
-        FROM models LEFT JOIN (users, datasets) ON (users.ID=models.trainerID AND datasets.ID=models.datasetID) ORDER BY models.time_finished DESC;''')
+    db.cur.execute('''SELECT models.ID, models.model_description, users.username, models.datasetID,
+    datasets.title, datasets.user_description, LENGTH(datasets.final_text), datasets.time_posted AS dataset_time_posted,
+    COUNT(votes.positivity), COUNT(votes.negativity)
+    FROM models LEFT JOIN (users, datasets)
+    ON (users.ID = models.trainerID AND datasets.ID = models.datasetID)
+    LEFT JOIN votes ON votes.modelID = models.ID
+    GROUP BY models.ID
+    ORDER BY COUNT(votes.positivity) - COUNT(votes.negativity) DESC;''')
     return render_template('explore-models.html', models=db.cur.fetchall(), user=current_user)
 
 @app.route('/explore-datasets', methods=['GET', 'POST'])
 def exploreDatasets():
     db.cur.execute('''SELECT datasets.ID, datasets.title, datasets.user_description, LENGTH(datasets.final_text), users.username
-        FROM datasets LEFT JOIN users ON users.ID=datasets.posterID ORDER BY datasets.time_posted DESC;''')
+        FROM datasets LEFT JOIN users
+        ON users.ID = datasets.posterID
+        LEFT JOIN votes ON votes.datasetID = datasets.ID
+        GROUP BY datasets.ID
+        ORDER BY COUNT(votes.positivity) - COUNT(votes.negativity) DESC;''')
     return render_template('explore-datasets.html', datasets=db.cur.fetchall(), user=current_user)
 
 
@@ -409,14 +502,8 @@ def showDataset(ID):
     d=db.cur.fetchone()
     if not db.cur.rowcount: return render_template('404.html', missing='dataset'), 404
     return render_template('dataset.html', d=d, user=current_user, ID=ID)
-"""
-@app.route('explore-models')
-@login_required
-def showDataset(ID):
-    db.cur.execute('''SELECT samples.ID, LENGTH(samples.results), samples, LENGTH(datasets.final_text), users.username
-        FROM datasets LEFT JOIN (users, models) ON users.ID=datasets.posterID WHERE datasets.ID = %s;''', (ID,))
-    return render_template('dataset.html', samples=db.cur.fetchall(), user=current_user)
-"""
+
+
 @app.route('/about')
 def aboutPage():
     return render_template('about-index.html', user=current_user)
@@ -460,7 +547,7 @@ def verifyUser(ID):
 
         login_user(User('ID', ID, True), remember=True)
 
-        return redirect('/')
+        return render_template('noobs.html', user=current_user)
     
     return render_template('verify-email.html', form=VF)
 
@@ -518,7 +605,11 @@ def survey():
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''', (current_user.ID, SF.generalFeedback.data, SF.techComfort.data,
         SF.navigation.data, SF.navigationF.data, SF.datasets.data, SF.datasetsF.data, SF.models.data, SF.modelsF.data, SF.samples.data, SF.samplesF.data, SF.descriptions.data, SF.descriptionsF.data))
         db.conn.commit()
+<<<<<<< HEAD
         return redirect('thank-you')
+=======
+        return render_template('thank-you.html', user=current_user)
+>>>>>>> c60ba26003ed3f71f81240379c4f94cf9755ea42
     
     return render_template('survey.html', form=SF)
 

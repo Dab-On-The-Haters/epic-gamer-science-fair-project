@@ -1,30 +1,50 @@
 Apparently we're supposed to cite the sources we used for our science fair, soo....
 I (Thomas) am currently listing down every site I can think of. Add yours.
 
-https://wtforms.readthedocs.io/en/stable
-https://www.w3schools.com/
-https://github.com/karpathy/char-rnn
-https://palletsprojects.com/p/flask/
-https://flask.palletsprojects.com/en/1.1.x/deploying/mod_wsgi/
-https://tecadmin.net/install-apache-mod-wsgi-on-ubuntu-16-04-xenial/
-https://pymysql.readthedocs.io/en/latest/
-https://www.techonthenet.com/mariadb/index.php
-https://flask-wtf.readthedocs.io/en/stable/
-https://realpython.com/
-https://www.pythoncentral.io/
-https://flask-login.readthedocs.io/en/latest/
-https://www.tutorialspoint.com/flask/index.htm
-https://urllib3.readthedocs.io/en/latest/
-https://www.twilio.com/blog/2018/03/send-email-programmatically-with-gmail-python-and-flask.html
-https://hackersandslackers.com/authenticating-users-with-flask-login/
-https://certbot.eff.org/
-https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins
 http://www.daniloaz.com/en/how-to-create-a-user-in-mysql-mariadb-and-grant-permissions-on-a-specific-database/
-https://pythonhosted.org/Flask-Mail/
-https://stackoverflow.com/questions/24296834/wtform-fieldlist-with-selectfield-how-do-i-render/57548509#57548509
+https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-v-user-logins
+https://certbot.eff.org/
+https://dev.mysql.com/doc/connector-python/en/
+https://docs.python.org/3.7/library/csv.html1
+https://docs.python.org/3.7/library/subprocess.html
+https://flask-login.readthedocs.io/en/latest/
+https://flask-wtf.readthedocs.io/en/stable/
+https://flask.palletsprojects.com/en/1.1.x/deploying/mod_wsgi/
+https://github.com/karpathy/char-rnn
+https://hackersandslackers.com/authenticating-users-with-flask-login/
+https://jinja.palletsprojects.com/en/2.10.x/
 https://mariadb.com/kb/en/library/documentation/
+https://palletsprojects.com/p/flask/
+https://pymysql.readthedocs.io/en/latest/
+https://pythonhosted.org/Flask-Mail/
+https://pythonspot.com/python-subprocess/
 https://pytorch.org/
 https://pytorch.org/text/
+https://realpython.com/
+https://stackoverflow.com/a/13089975
+https://stackoverflow.com/a/1990361
+https://stackoverflow.com/a/26380651
+https://stackoverflow.com/a/34818476
+https://stackoverflow.com/a/36103581
+https://stackoverflow.com/questions/24296834/wtform-fieldlist-with-selectfield-how-do-i-render/57548509#57548509
+https://tecadmin.net/install-apache-mod-wsgi-on-ubuntu-16-04-xenial/
+https://towardsdatascience.com/epoch-vs-iterations-vs-batch-size-4dfb9c7ce9c9
+https://towardsdatascience.com/illustrated-guide-to-lstms-and-gru-s-a-step-by-step-explanation-44e9eb85bf21
+https://urllib3.readthedocs.io/en/latest/
+https://wtforms.readthedocs.io/en/stable
+https://www.pythoncentral.io/
+https://www.pythonforbeginners.com/system/python-sys-argv
+https://www.techonthenet.com/mariadb/index.php
+https://www.tutorialspoint.com/flask/index.htm
+https://www.twilio.com/blog/2018/03/send-email-programmatically-with-gmail-python-and-flask.html
+https://www.w3schools.com/html/
+https://www.w3schools.com/js/
+https://www.w3schools.com/python/
+https://www.w3schools.com/sql/
+https://www.w3schools.com/w3css/
+https://www.youtube.com/watch?v=IHZwWFHWa-w&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&index=3
+https://www.youtube.com/watch?v=Ilg3gGewQ5U&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&index=4
+https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&index=2
 
 
 Github repositories:

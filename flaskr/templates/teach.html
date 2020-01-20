@@ -1,42 +1,17 @@
+{% import 'base.html.j2' as base %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <title>How to teach Joe</title>
-        <link rel="stylesheet" href="/static/w3.css">
-        <link rel="stylesheet" href="/static/w3-colors-2019.css">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            body
-            {
-               background-color:#191970;
-            }
-            .w3-poppins
-            {
-                font-family: 'Poppins', sans-serif;
-            }
-        </style>
+        {{ base.head('How to teach Joe') }}
     </head>
     <body class="w3-text-white">
-        <div class="w3-top">
-            <div class="w3-bar w3-2019-galaxy-blue w3-card">
-                <a href="/" class="w3-bar-item w3-button w3-padding-large w3-hover-indigo">Joe</a>
-                <a href="/about" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Learn more about Joe</a>
-                <a href="/teach" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-indigo">Teach with Joe</a>
-                <a href="/explore-models" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Talk to our neural networks with Joe</a>
-                <span class="w3-bar-item w3-right w3-padding-large"><b>{{ user.name|escape }}</b></span>
-                <a href="/logout" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">My Account</a>
-            </div>
-        </div>
-        <div><br><br></div>
-        <div class="w3-container w3-poppins">
-            <div class="w3-container w3-xxlarge w3-center">
-                <h1>Teaching with Joe</h1>
-            </div>
+        {{ base.navbar(user, c='teach') }}
+        <div class="w3-container w3-jumbo w3-center">
+            <p><b>Teaching with Joe</b></p>
         </div>
         <div><br><br></div>
         <div class="w3-container w3-margin-top">
-            <div class="w3-container w3-card w3-2019-galaxy-blue w3-margin-top">
+            <div class="w3-container w3-card w3-2019-galaxy-blue">
                 <p class="w3-xxlarge">
                     Datasets
                 </p>To teach the neural networks English, Joe requires a large amount of text files. These textfiles are compiled into a dataset
@@ -53,8 +28,8 @@
                     book series', tweets, and scripts.
                 </p>
             </div>
-
-            <div class="w3-container w3-card w3-2019-galaxy-blue w3-margin-top">
+            <br><br>
+            <div class="w3-container w3-card w3-2019-galaxy-blue">
                 <p class="w3-xxlarge">
                     Models
                 </p>

@@ -1,45 +1,17 @@
+{% import 'base.html.j2' as base %}
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Science fair</title>
-    <link rel="stylesheet" href="/static/w3.css">
-    <link rel="stylesheet" href="/static/w3-colors-2019.css">
-    <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background-color: #191970;
-            font-family: Poppins, sans-serif;
-        }
-    </style>
-</head>
-
-<body class="w3-text-white">
-    <div class="w3-top">
-        <div class="w3-bar w3-2019-galaxy-blue w3-card">
-            <a href="/" class="w3-bar-item w3-button w3-padding-large w3-hover-indigo">Joe</a>
-            <a href="/about" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-indigo">Learn more about Joe</a>
-            <a href="/teach" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Teach with Joe</a>
-            <a href="/explore-models" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Talk to our neural networks with Joe</a>
-            {% if user.is_authenticated %}
-                <span class="w3-bar-item w3-right w3-padding-large"><b>{{ user.name|escape }}</b></span>
-                <a href="/logout" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">My Account</a>
-            {% else %}
-                <a href="/login" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">Log In</a>
-                <a href="/register" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">Sign Up</a>
-            {% endif %}
+    <head>
+        {{ base.head('About our science fair') }}
+    </head>
+    <body class="w3-text-white">
+    {{ base.navbar(user, c='about') }}
+        <div class="w3-center">
+            <b class="w3-xxlarge w3-poppins">About Joe</b>
         </div>
-    </div>
-    <div><br><br></div>
-    <div class="w3-center">
-        <b class="w3-xxlarge">About Joe</b>
-    </div>
-    <div class="w3-container w3-center">
-        <iframe width="80%" height="1000px"
-            src="https://docs.google.com/document/d/e/2PACX-1vRDCc6CJvEkSbngI3Oj0z0lvI9Mf9kItl8nePiwaOEWimt5ETUAvxLX5aIs2T-2TnM-t3SNpD8ENKZD/pub?embedded=true"></iframe>
-    </div>
-</body>
-
+        <div class="w3-container w3-center">
+            <iframe width="80%" height="1000px"
+                src="https://docs.google.com/document/d/e/2PACX-1vRDCc6CJvEkSbngI3Oj0z0lvI9Mf9kItl8nePiwaOEWimt5ETUAvxLX5aIs2T-2TnM-t3SNpD8ENKZD/pub?embedded=true"></iframe>
+        </div>
+    </body>
 </html>

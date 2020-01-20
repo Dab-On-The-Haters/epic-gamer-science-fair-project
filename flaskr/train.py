@@ -168,9 +168,14 @@ def train():
     return 1
 
 model = RNN(chars_len, hidden_size, chars_len, n_layers, dropout)
+try:
+    finishStatus = train()
+    
+except RuntimeError:
+    finishStatus = 0
 
-finishStatus = train()
 db.cur.execute('UPDATE models SET finished_naturally = %s, time_finished = CURRENT_TIMESTAMP WHERE ID = %s;', (finishStatus, modelID))
+
 db.conn.commit()
 db.cur.close()
 db.conn.close()

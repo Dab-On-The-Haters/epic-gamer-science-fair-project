@@ -184,8 +184,34 @@ CREATE OR REPLACE TABLE samples
         FOREIGN KEY (modelID) REFERENCES models (ID)
         ON DELETE CASCADE
         ON UPDATE CASCADE,
-    CONSTRAINT `ckecpoint_sample_fk`
+    CONSTRAINT `checkpoint_sample_fk`
         FOREIGN KEY (checkpointID) REFERENCES checkpoints (ID)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ENGINE=InnoDB;
+SHOW WARNINGS;
+*/
+
+CREATE OR REPLACE TABLE votes
+(
+    ID BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+    time_submitted TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    positivity BOOLEAN,
+    negativity BOOLEAN,
+    modelID MEDIUMINT UNSIGNED,
+    datasetID MEDIUMINT UNSIGNED,
+    userID MEDIUMINT UNSIGNED,
+    CONSTRAINT `samples_pk` PRIMARY KEY (ID),
+    CONSTRAINT `user_vote_fk`
+        FOREIGN KEY (userID) REFERENCES users (ID)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT `model_vote_fk`
+        FOREIGN KEY (modelID) REFERENCES models (ID)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT `checkpoint_sample_fk`
+        FOREIGN KEY (datasetID) REFERENCES datasets (ID)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;

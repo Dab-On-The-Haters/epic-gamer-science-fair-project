@@ -1,30 +1,15 @@
+{% import 'base.html.j2' as base %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <title>Model #{{ m['ID'] }} | Joe</title>
-        <link rel="stylesheet" href="/static/w3.css">
-        <link rel="stylesheet" href="/static/w3-colors-2019.css">
-        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-        <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            body
-            {
-               background-color:#191970;
-            }
-            .w3-poppins {
-                font-family: 'Poppins', sans-serif;
-            }
-        </style>
+        {{ base.head('Model #'~m['ID']|string) }}        
         <script>
             var chartRows = '{{ chartRows|safe }}';
 
             google.charts.load('current', {'packages': ['corechart']});
             google.charts.setOnLoadCallback(drawChart);
 
-            function drawChart()
-            {
+            function drawChart() {
                 var data = new google.visualization.DataTable();
                 data.addColumn("number", "Checkpoint");
                 data.addColumn("number", "Loss");
@@ -36,7 +21,11 @@
                 var options = {
                     title: 'Loss test',
                     legend: {position: 'top'},
-                    chartArea:{left:10,top:20,width:"100%",height:"100%"}
+                    chartArea: {
+                        left:10,
+                        top:20,
+                        width:"100%",
+                        height:"100%"}
                 };
                 var chart = new google.visualization.LineChart(document.getElementById("chart"));
                 chart.draw(data, options);
@@ -44,22 +33,13 @@
         </script>
     </head>
     <body class="w3-text-white">
-        <div class="w3-top">
-            <div class="w3-bar w3-2019-galaxy-blue w3-card">
-                <a href="/" class="w3-bar-item w3-button w3-padding-large w3-hover-indigo">Joe</a>
-                <a href="/about" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Learn more about Joe</a>
-                <a href="/teach" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Teach with Joe</a>
-                <a href="/explore-models" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-indigo">Talk to our neural networks with Joe</a>
-                <span class="w3-bar-item w3-right w3-padding-large"><b>{{ user.name|escape }}</b></span>
-                <a href="/logout" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">My Account</a>
-            </div>
-        </div>
-        <div><br><br></div>
+        {{ base.navbar(user, c='explore') }}
         <div class="w3-center">
-            <p class="w3-xlarge"><b>Model #{{ m['ID'] }} by <a href="/u/{{ d['username'] }}">{{ m['username'] }}</a></b></p>
+            <p class="w3-xlarge w3-center"><b>Model #{{ m['ID'] }} by <a href="/u/{{ d['username'] }}">{{ m['username'] }}</a></b></p>
         </div>
         <div class="w3-container w3-margin">
             <p class=" w3-container w3-large w3-card w3-padding w3-2019-galaxy-blue"><b>{{ m['model_description']|escape }}</b></p>
+            <div><iframe src="/votes?modelID={{ m['ID'] }}"></iframe></div>
             <br>
             <p>
                 Began training on {{ m['began_training']|datetime }}<br>

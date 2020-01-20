@@ -1,13 +1,10 @@
+{% import 'base.html.j2' as base %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <title>Register to meet Joe</title>
-        <link rel="stylesheet" href="/static/w3.css">
-        <link rel="stylesheet" href="/static/w3-colors-2019.css">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {{ base.head('Verify your email') }}
     </head>
-    <body>
+    <body class="w3-text-white">
         <div class="w3-container w3-card w3-margin">
             <p class="w3-large">Verify your email.</p>
             <p class="w3-text-grey">Please check your inbox for an email containing a 4-digit verification code for Joe and enter it below.</p>
@@ -19,7 +16,7 @@
                 </div>
                 <ul class="w3-ul w3-text-red">
                     {% for error in form.verificationCode.errors %}
-                        <li>{{ error }}</li>
+                        <li>{{ error|safe }}</li>
                     {% endfor %}
                 </ul>
                 <br>

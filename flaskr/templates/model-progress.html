@@ -1,31 +1,19 @@
+{% import 'base.html.j2' as base %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <title>Model #{{ ID }} Progress | Joe</title>
-        <link rel="stylesheet" href="/static/w3.css">
-        <link rel="stylesheet" href="/static/w3-colors-2019.css">
-        <link href="https://fonts.googleapis.com/css?family=Poppins&display=swap" rel="stylesheet">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            body
-            {
-               background-color:#191970;
-            }
-            .w3-poppins {
-                font-family: 'Poppins', sans-serif;
-            }
-        </style>
+        {{ base.head('Progress on model #'~m['ID']|string, important=True) }}
         <script>
         var progressBar;
         var curID;
         progBarReq = new XMLHttpRequest();
         progBarReq.addEventListener("load", setProgBar);
 
-        function setProgBar()
-        {
+        function setProgBar()  {
             responseArr = JSON.parse(this.responseText)
             progressBar.value = responseArr[0];
+            clearTimeout(newRequest);
+
             if (responseArr[1]) {
                 setTimeout(generatePage, 1000);
             }
@@ -35,39 +23,25 @@
             }
         }
 
-        function generatePage()
-        {
+        function generatePage() {
             window.location.href = "/generate/" + curID
         }
 
-        function newRequest()
-        {
+        function newRequest() {
             progBarReq.open('GET', '/epoch-progress/'+curID);
             progBarReq.send();
         }
 
-        window.onload = function()
-        {
+        window.onload = function() {
             curID = parseInt(document.getElementById("currentID").innerHTML);
             progressBar = document.getElementById("epochProgress");
             newRequest();
         }
         
         </script>
-        <base target="_blank">
     </head>
     <body class="w3-text-white">
-        <div class="w3-top">
-            <div class="w3-bar w3-2019-galaxy-blue w3-card">
-                <a href="/" class="w3-bar-item w3-button w3-padding-large w3-hover-indigo">Joe</a>
-                <a href="/about" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Learn more about Joe</a>
-                <a href="/teach" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-indigo">Teach with Joe</a>
-                <a href="/explore-models" class="w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo">Talk to our neural networks with Joe</a>
-                <span class="w3-bar-item w3-right w3-padding-large"><b>{{ user.name|escape }}</b></span>
-                <a href="/logout" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">My Account</a>
-            </div>
-        </div>
-        <div<br><br></div>
+        {{ base.navbar(user, c='teach') }}
         
         <div class="w3-center">
             <h1 class="w3-xxlarge">Progress on model #{{ ID }}</h1>
