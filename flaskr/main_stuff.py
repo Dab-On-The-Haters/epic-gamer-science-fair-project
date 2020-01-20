@@ -592,9 +592,6 @@ def registerUser():
 
     return render_template('register.html', form=RF)
 
-@app.route('/thank-you')
-def thank-you():
-    return render_template('thank-you.html')
 
 @app.route('/survey', methods=['GET', 'POST'])
 @login_required
