@@ -553,7 +553,7 @@ def verifyUser(ID):
     return render_template('verify-email.html', form=VF)
 
 
-
+#test
 # for generating verification codes
 from random import randint
 
