@@ -21,7 +21,11 @@ popup = Template('''
     <b>{{ label }}</b>
     <span class="popuptext" id="{{ id|escape }}-popuptext">{{ popupText|escape }}</span>
 </span>''')
-
+link = Template('''
+<span>
+    <p>{{ label <a href= link> Haven't done this yet? Here's the link</a>}} </p?
+</span>
+''')
 
 
 
