@@ -2,8 +2,9 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        {{ base.head('Model #'~m['ID']|string) }}        
-        <script>
+        {{ base.head('Model #'~m['ID']|string) }}
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script type="text/javascript">
             var chartRows = '{{ chartRows|safe }}';
 
             google.charts.load('current', {'packages': ['corechart']});

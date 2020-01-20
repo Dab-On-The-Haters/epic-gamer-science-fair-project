@@ -173,7 +173,7 @@ class Votes:
 
 @app.route('/votes/<int:ID>', methods=['GET', 'POST'])
 def votePage(ID):
-    return 'peepeepoopoo'
+    return 'work in progress'
     votes = Votes(ID, request.args.get('datasetID'), request.args.get('modelID'))
     if request.method == 'POST':
         if request.form.get('upvote', -1) != -1: votes.upvote()
@@ -199,6 +199,7 @@ def friendlyTime(dateAndTime):
 def pageNotFound(e):
     return render_template('404.html', missing='page'), 404
 
+@app.errorhandler(500)
 @app.route('/')
 def welcome():
     return render_template('homepage.html', user=current_user)
@@ -479,7 +480,7 @@ def showModel(ID):
     d=db.cur.fetchone()
 
     # get log
-    db.cur.execute('SELECT time_saved, loss, iteration, epoch FROM logs WHERE modelID = %s ORDER BY time_saved ASC;', (ID,))
+    db.cur.execute('SELECT loss, iteration, epoch FROM logs WHERE modelID = %s ORDER BY time_saved ASC;', (ID,))
     logEntries = db.cur.fetchall()
     
     lossChartRows = []
