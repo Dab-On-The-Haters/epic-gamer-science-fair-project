@@ -173,6 +173,7 @@ class Votes:
 
 @app.route('/votes/<int:ID>', methods=['GET', 'POST'])
 def votePage(ID):
+    return 'peepeepoopoo'
     votes = Votes(ID, request.args.get('datasetID'), request.args.get('modelID'))
     if request.method == 'POST':
         if request.form.get('upvote', -1) != -1: votes.upvote()
