@@ -69,9 +69,10 @@ def index_to_tensor(index):
     tensor[0,0] = index
     return Variable(tensor)
 
-# saves to log and resets every 5 iters
-iTracker = 0
 def train():
+    # saves to log and resets every 5 iters
+    iTracker = 0
+
     # convert all characters to indices
     batches = [char_to_index[char] for char in text]
 
