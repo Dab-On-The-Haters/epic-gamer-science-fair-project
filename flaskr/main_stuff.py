@@ -199,6 +199,7 @@ def friendlyTime(dateAndTime):
 def pageNotFound(e):
     return render_template('404.html', missing='page'), 404
 
+@app.errorhandler(500)
 @app.route('/')
 def welcome():
     return render_template('homepage.html', user=current_user)
