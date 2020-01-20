@@ -145,16 +145,16 @@ class survey(FlaskForm):
     def q(form, label, kink):
         f5.IntegerRangeField(link.render(label=label, kink=kink), [v.NumberRange(1, 10, 'Must be between 1 and 10')], render_kw={'min':'1', 'max':'10'}, default=5)
 
-    techComfort = form.q('how comfortable are you with computers and technology in general', False)
-    navigation = form.q('how hard/confusing did you find navigating the website', False)
+    techComfort = q('how comfortable are you with computers and technology in general', False)
+    navigation = q('how hard/confusing did you find navigating the website', False)
     navigationF = fe('')
-    datasets = form.q('how hard/confusing was uploading a dataset', '/upload-dataset')
+    datasets = q('how hard/confusing was uploading a dataset', '/upload-dataset')
     datasetsF = fe('')
-    models = form.q('how hard/confusing was creating a model', '/new-model')
+    models = q('how hard/confusing was creating a model', '/new-model')
     modelsF = fe('')
-    samples = form.q('how hard/confusing was generating text from the models', '/generate/4')
+    samples = q('how hard/confusing was generating text from the models', '/generate/4')
     samplesF = fe('')
-    descriptions = form.q('how clear were the descriptions and explanations on the website', False)
+    descriptions = q('how clear were the descriptions and explanations on the website', False)
     descriptionsF = fe('')
 
     generalFeedback = fe('What are some overall suggestions?')
