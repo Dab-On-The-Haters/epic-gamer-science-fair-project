@@ -606,11 +606,7 @@ def survey():
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''', (current_user.ID, SF.generalFeedback.data, SF.techComfort.data,
         SF.navigation.data, SF.navigationF.data, SF.datasets.data, SF.datasetsF.data, SF.models.data, SF.modelsF.data, SF.samples.data, SF.samplesF.data, SF.descriptions.data, SF.descriptionsF.data))
         db.conn.commit()
-<<<<<<< HEAD
-        return redirect('thank-you')
-=======
         return render_template('thank-you.html', user=current_user)
->>>>>>> c60ba26003ed3f71f81240379c4f94cf9755ea42
     
     return render_template('survey.html', form=SF)
 
