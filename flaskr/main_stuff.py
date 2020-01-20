@@ -68,10 +68,10 @@ class User():
 
     def __init__ (self, fieldName, fieldRequest, authenticated):
         db.cur.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE {}=%s;'.format(fieldName), (fieldRequest,))
+        QA = db.cur.fetchone()
         if db.cur.rowcount:
             self.is_anonymous = False
             
-            QA = db.cur.fetchone()
             self.is_active = QA['verified']
             self.is_authenticated = authenticated
             self.ID = QA['ID']
@@ -427,7 +427,6 @@ def generatedText(ID):
 def exploreModels():
     db.cur.execute('''SELECT models.ID, models.model_description, users.username, models.datasetID,
     datasets.title, datasets.user_description, LENGTH(datasets.final_text), datasets.time_posted AS dataset_time_posted,
-    COUNT(votes.positivity), COUNT(votes.negativity)
     FROM models LEFT JOIN (users, datasets)
     ON (users.ID = models.trainerID AND datasets.ID = models.datasetID)
     LEFT JOIN votes ON votes.modelID = models.ID
