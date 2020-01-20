@@ -94,8 +94,8 @@ class User:
 
 @loginManager.user_loader
 def load_user(ID):
-    #if type(ID)==str and ID.startswith('b'):
-    #    ID = ID.split("'")[1]
+    if type(ID)==str and ID.startswith('b'):
+        ID = ID.split("'")[1]
     return User('ID', int(ID))
 
 import subprocess as subp
