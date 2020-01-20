@@ -142,19 +142,19 @@ class sampleForm(FlaskForm):
 
 class survey(FlaskForm):
     fe = lambda s : f.TextAreaField(s if len(s) else 'How should we improve this?', [v.Length(max=50000, message='Feedback cannot be longer than 50,000 characters.')], render_kw={'class':'w3-margin-bottom'})
-    def q(label, kink):
+    def q(self, label, kink):
         f5.IntegerRangeField(link.render(label=label, kink=kink), [v.NumberRange(1, 10, 'Must be between 1 and 10')], render_kw={'min':'1', 'max':'10'}, default=5)
 
-    techComfort = q('how comfortable are you with computers and technology in general', False)
-    navigation = q('how hard/confusing did you find navigating the website', False)
+    techComfort = self.q('how comfortable are you with computers and technology in general', False)
+    navigation = self.q('how hard/confusing did you find navigating the website', False)
     navigationF = fe('')
-    datasets = q('how hard/confusing was uploading a dataset', '/upload-dataset')
+    datasets = self.q('how hard/confusing was uploading a dataset', '/upload-dataset')
     datasetsF = fe('')
-    models = q('how hard/confusing was creating a model', '/new-model')
+    models = self.q('how hard/confusing was creating a model', '/new-model')
     modelsF = fe('')
-    samples = q('how hard/confusing was generating text from the models', '/generate/4')
+    samples = self.q('how hard/confusing was generating text from the models', '/generate/4')
     samplesF = fe('')
-    descriptions = q('how clear were the descriptions and explanations on the website', False)
+    descriptions = self.q('how clear were the descriptions and explanations on the website', False)
     descriptionsF = fe('')
 
     generalFeedback = fe('What are some overall suggestions?')
