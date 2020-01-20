@@ -66,7 +66,7 @@ class User:
     is_active = False
     """
 
-    def __init__ (self, fieldName, fieldRequest, authenticated):
+    def __init__ (self, fieldName, fieldRequest, authenticated=True):
         db.cur.execute('SELECT verified, ID, username, email_addr, real_name, self_description FROM users WHERE {}=%s;'.format(fieldName), (fieldRequest,))
         QA = db.cur.fetchone()
         if db.cur.rowcount:
@@ -96,7 +96,7 @@ class User:
 def load_user(ID):
     #if type(ID)==str and ID.startswith('b'):
     #    ID = ID.split("'")[1]
-    return User('ID', int(ID), True)
+    return User('ID', int(ID))
 
 import subprocess as subp
 
@@ -171,10 +171,9 @@ class Votes:
         db.conn.commit()
         self.userVote = -1
 
-@app.route('/votes', methods=['GET', 'POST'])
-@login_required
-def votePage():
-    votes = Votes(current_user.ID, request.args.get('datasetID'), request.args.get('modelID'))
+@app.route('/votes/<int:ID>', methods=['GET', 'POST'])
+def votePage(ID):
+    votes = Votes(User('ID', ID), request.args.get('datasetID'), request.args.get('modelID'))
     if request.method == 'POST':
         if request.form.get('upvote', -1) != -1: votes.upvote()
         elif request.form.get('downvote', -1) != -1: votes.downvote()
@@ -517,7 +516,7 @@ def login():
     LF = f.loginForm()
 
     if LF.validate_on_submit():
-        login_user(User('username', LF.username.data, True), remember=True)
+        login_user(User('username', LF.username.data), remember=True)
         
         return redirect(request.args.get('next', '/'))
     
@@ -541,12 +540,12 @@ def verifyUser(ID):
 
     if VF.validate_on_submit():
         # verify the user in the DB
-        db.cur.execute('UPDATE users SET verified=1 WHERE ID=%s;', (ID,))
+        db.cur.execute('UPDATE users SET verified=1 WHERE ID = %s;', (ID,))
         # delete the verification code, we don't need it anymore
-        db.cur.execute('DELETE FROM verification_codes WHERE accountID=%s;', (ID,))
+        db.cur.execute('DELETE FROM verification_codes WHERE accountID = %s;', (ID,))
         db.conn.commit()
 
-        login_user(User('ID', ID, True), remember=True)
+        login_user(User('ID', ID), remember=True)
 
         return render_template('noobs.html', user=current_user)
     

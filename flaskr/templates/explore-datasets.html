@@ -16,7 +16,7 @@
                     <br>
                     <b><a href="/new-model?datasetID={{ d['ID'] }}" class="w3-button w3-2019-galaxy-blue w3-padding-large w3-margin" style="background-color : #191970">Train from this dataset</a></b>
                     <div class="w3-container w3-display-right">
-                        <iframe src="/votes?datasetID=d['ID']&bg-colour=w3-indigo"></iframe>
+                        <iframe src="/votes/{{ user.ID }}?datasetID=d['ID']&bg-colour=w3-indigo"></iframe>
                     </div>
                 </div>
             {% endfor %}
