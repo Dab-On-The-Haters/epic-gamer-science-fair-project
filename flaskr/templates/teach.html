@@ -7,14 +7,17 @@
     <body class="w3-text-white">
         {{ base.navbar(user, c='teach') }}
         <div class="w3-container w3-jumbo w3-center">
-            <p><b>Teaching with Joe</b></p>
+            <b>Teaching with Joe</b>
         </div>
-        <div><br><br></div>
         <div class="w3-container w3-margin-top">
             <div class="w3-container w3-card w3-2019-galaxy-blue">
                 <p class="w3-xxlarge">
                     Datasets
-                </p>To teach the neural networks English, Joe requires a large amount of text files. These textfiles are compiled into a dataset
+                </p>
+                <p>
+                    To teach the neural networks English, Joe requires a large amount of text files. These textfiles are compiled into a dataset, which are used to teach models.
+                    Since models start with no understanding of words, grammar, or even letters, it's important this the dataset is extremely large so that it can have enough data to learn.
+                </p>
                 <p class="w3-large">
                     You can upload your own datasets <b><a href="/upload-dataset">at this page</a></b>.
                 </p>
@@ -33,8 +36,11 @@
                 <p class="w3-xxlarge">
                     Models
                 </p>
-                AI data is stored and generated in instances called &quot;models&quot;.
-                These models are essentially what Joe is.
+                <p>
+                    AI data is stored and generated in instances called &quot;models&quot;.
+                    These models are essentially the AI behind Joe. They are trained (developed) on our server, and text can be generated from these later.
+                    Usually, the text generated from the model is quite similar to the sort of stuff provided in the dataset it's trained on.
+                </p>
                 <p class="w3-large">
                     You can customize and train your own models using your site <b><a href="/new-model">at this page</a></b>.
                 </p>
