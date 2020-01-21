@@ -240,6 +240,7 @@ def newDataset():
             for FN in files:
                 if FN.endswith('.zip'): return 'Make sure you unzip your datasets first.'
                 db.cur.execute('INSERT INTO datafiles (file_name, file_data, datasetID) VALUES (%s, %s, %s);', (FN, files[FN], datasetID))
+                db.conn.commit()
                 
                 # if it's a csv add it to column selections
                 splitFN = FN.split('.')
@@ -249,7 +250,6 @@ def newDataset():
                     else: continue
                 else: continue
                 
-            db.conn.commit()
 
             session['columnLists'] = json.dumps(columnLists)
             return redirect('/edit-dataset')
