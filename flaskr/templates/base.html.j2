@@ -1,4 +1,4 @@
-{% macro navbar(user, c='/') %}
+{% macro navbar(user, c='/', spacing=2) %}
     <div class="w3-top">
         <div class="w3-bar w3-2019-galaxy-blue w3-card">
             <a href="/" class="w3-bar-item w3-button w3-padding-large {% if c=='/' %} w3-indigo {% else %} w3-hover-indigo {% endif %}">Joe</a>
@@ -14,34 +14,33 @@
             {% endif %}
         </div>
     </div>
-    <div><br><br></div>
+    {% if spacing %}
+        <div>{% for br in range(spacing) %}<br>{% endfor %}</div>
+    {% endif %}
 {% endmacro %}
 
 
-{% macro head(title, poppins=True, popups=False, important=False, poppinsPage=True) %}
+{% macro head(title, popups=False, important=False) %}
     <meta charset="UTF-8">
     <title>{% if 'Joe' in title %}{{ title }}{% else %}{{ title~' | Joe'}}{% endif %}</title>
     <link rel="stylesheet" href="/static/w3.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     {% if popups %}<link rel="stylesheet" href="/static/popups.css">{% endif %}
     <link rel="stylesheet" href="/static/w3-colors-2019.css">
-    {% if poppins %}<link href="https://fonts.googleapis.com/css?family=Poppins|Poppins:i|Poppins:b&display=swap" rel="stylesheet">{% endif %}
+    <link href="https://fonts.googleapis.com/css?family=Poppins|Poppins:i|Poppins:b&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             background-color:#191970;
-            {% if poppinsPage and poppins %}
             font-family: 'Poppins', sans-serif;
-            {% endif %}
         }
         iframe {
             border-style: hidden; 
         }
-        {% if poppins %}
         .w3-poppins {
             font-family: 'Poppins', sans-serif;
         }
-        {% endif %}
     </style>
     {% if important %}
     <base target="_blank">

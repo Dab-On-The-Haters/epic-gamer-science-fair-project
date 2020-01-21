@@ -21,7 +21,8 @@ popup = Template('''
     <b>{{ label }}</b>
     <span class="popuptext" id="{{ id|escape }}-popuptext">{{ popupText|escape }}</span>
 </span>''')
-
+link = Template('''
+    <br><p>On a scale of 1 to 10, {{ label }}?{% if kink %} <a href= {{ kink|escape }}> Haven't done this yet? Here's the link</a>{% endif %} </p>''')
 
 
 
@@ -135,21 +136,22 @@ class sampleForm(FlaskForm):
     temperature = f5.DecimalRangeField('Temperature for text generation. Higher = more creative / risk taking', [v.NumberRange(0.01, 1, 'Temperature is on a scale of 0 to 1')], default=0.8, render_kw={'min':'0.01','max':'1','step':'0.01'})
     sampleLength = f5.IntegerField('Amount of characters to generate', [v.NumberRange(5, 100000, 'Between 5 and 100,000 characters should be generated.')], default=5000)
     
+def q(label, kink):
+    return f5.IntegerRangeField(link.render(label=label, kink=kink), [v.NumberRange(1, 10, 'Must be between 1 and 10')], render_kw={'min':'1', 'max':'10'}, default=5)
 
 class survey(FlaskForm):
     fe = lambda s : f.TextAreaField(s if len(s) else 'How should we improve this?', [v.Length(max=50000, message='Feedback cannot be longer than 50,000 characters.')], render_kw={'class':'w3-margin-bottom'})
-    q = lambda s : f5.IntegerRangeField('On a scale of 1 to 10, {}?'.format(s), [v.NumberRange(1, 10, 'Must be between 1 and 10')], render_kw={'min':'1', 'max':'10'}, default=5)
-
-    techComfort = q('how comfortable are you with computers and technology in general')
-    navigation = q('how hard/confusing did you find navigating the website')
+    
+    techComfort = q('how comfortable are you with computers and technology in general', False)
+    navigation = q('how hard/confusing did you find navigating the website', False)
     navigationF = fe('')
-    datasets = q('how hard/confusing was uploading a dataset')
+    datasets = q('how hard/confusing was uploading a dataset', '/upload-dataset')
     datasetsF = fe('')
-    models = q('how hard/confusing was creating a model')
+    models = q('how hard/confusing was creating a model', '/new-model')
     modelsF = fe('')
-    samples = q('how hard/confusing was generating text from the models')
+    samples = q('how hard/confusing was generating text from the models', '/generate/4')
     samplesF = fe('')
-    descriptions = q('how clear were the descriptions and explanations on the website')
+    descriptions = q('how clear were the descriptions and explanations on the website', False)
     descriptionsF = fe('')
 
     generalFeedback = fe('What are some overall suggestions?')

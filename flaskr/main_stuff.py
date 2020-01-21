@@ -94,8 +94,8 @@ class User:
 
 @loginManager.user_loader
 def load_user(ID):
-    #if type(ID)==str and ID.startswith('b'):
-    #    ID = ID.split("'")[1]
+    if type(ID)==str and ID.startswith('b'):
+        ID = ID.split("'")[1]
     return User('ID', int(ID))
 
 import subprocess as subp
@@ -173,7 +173,9 @@ class Votes:
 
 @app.route('/votes/<int:ID>', methods=['GET', 'POST'])
 def votePage(ID):
+    return 'work in progress'
     votes = Votes(ID, int(request.args.get('datasetID')), int(request.args.get('modelID')))
+    return 'work in progress'
     if request.method == 'POST':
         if request.form.get('upvote', -1) != -1: votes.upvote()
         elif request.form.get('downvote', -1) != -1: votes.downvote()
@@ -197,6 +199,10 @@ def friendlyTime(dateAndTime):
 @app.errorhandler(404)
 def pageNotFound(e):
     return render_template('404.html', missing='page'), 404
+
+@app.errorhandler(500)
+def internalError(e):
+    return render_template('500.html'), 500
 
 @app.route('/')
 def welcome():
@@ -478,7 +484,7 @@ def showModel(ID):
     d=db.cur.fetchone()
 
     # get log
-    db.cur.execute('SELECT time_saved, loss, iteration, epoch FROM logs WHERE modelID = %s ORDER BY time_saved ASC;', (ID,))
+    db.cur.execute('SELECT loss, iteration, epoch FROM logs WHERE modelID = %s ORDER BY time_saved ASC;', (ID,))
     logEntries = db.cur.fetchall()
     
     lossChartRows = []

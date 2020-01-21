@@ -6,7 +6,7 @@
     </head>
     <body class="w3-text-white">
         {{ base.navbar(user, c='') }}
-        <div class="w3-container w3-card w3-margin">
+        <div class="w3-container w3-margin">
             <form method="POST", target="_self">
                 {% for field in form %}
                     {% if field in [form.csrf_token] %}
