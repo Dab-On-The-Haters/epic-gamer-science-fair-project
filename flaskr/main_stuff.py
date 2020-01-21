@@ -30,6 +30,7 @@ with open('/home/thomas/.private-stuff.json') as f:
     passwords = json.load(f)
 
 import forms as f
+from time import sleep
 
 #import mail stuff (pip3 install flask-mail)
 from flask_mail import Mail, Message
@@ -175,6 +176,7 @@ class Votes:
 @app.route('/votes/<int:ID>', methods=['GET', 'POST'])
 def votePage(ID):
     #return 'work in progress'
+    sleep(randint(5, 30) / 100)
     votes = Votes(ID, int(request.args.get('datasetID', 0)), int(request.args.get('modelID', 0)))
     if votes.failed: return 'bruh moment', 500
     if request.method == 'POST':
