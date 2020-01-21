@@ -174,7 +174,7 @@ class Votes:
 
 @app.route('/votes/<int:ID>', methods=['GET', 'POST'])
 def votePage(ID):
-    return 'work in progress'
+    #return 'work in progress'
     #sleep(randint(20, 80) / 100)
     votes = Votes(ID, int(request.args.get('datasetID', 0)), int(request.args.get('modelID', 0)))
     if votes.failed: return 'bruh moment', 500

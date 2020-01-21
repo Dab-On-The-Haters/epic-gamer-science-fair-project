@@ -3,6 +3,26 @@
 <html lang="en">
     <head>
         {{ base.head('Models') }}
+        <script>
+            var iframeCount;
+            var iframes;
+            var currentIframeI = 0;
+            function voteFrame() {
+                if (currentIframeI == iframeCount -1) {
+                    clearInterval(voteFrame);
+                }
+                else {
+                    iframes[currentIframeI].src = "/votes/{{ user.ID }}?modelID="+iframes[currentIframeI].Id+"bg-colour=w3-indigo";
+                }
+                
+            }
+
+            window.onload = function() {
+                iframes = document.getElementsByTagName('IFRAME');
+                iframeCount = length(iframes);
+                setInterval(voteFrame, 250);
+            }
+        </script>
     </head>
     <body class="w3-text-white">
         {{ base.navbar(user, c='explore') }}
@@ -16,7 +36,7 @@
                     <br>
                     <b><a href="/generate/{{ m['ID'] }}" class="w3-button w3-2019-galaxy-blue w3-padding-large w3-margin" style="background-color : #191970">Generate text from this model</a></b>
                     <div class="w3-container w3-display-right">
-                        <iframe src="/votes/{{ user.ID }}?modelID={{ m['ID'] }}&bg-colour=w3-indigo"></iframe>
+                        <iframe id="{{ m['ID'] }}"></iframe>
                     </div>
                 </div>
             {% endfor %}
