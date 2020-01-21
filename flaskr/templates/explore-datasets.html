@@ -12,7 +12,7 @@
                     clearInterval(voteFrame);
                 }
                 else {
-                    iframes[currentIframeI].src = "/votes/{{ user.ID }}?datasetID="+iframes[currentIframeI].id+"bg-colour=w3-indigo";
+                    iframes[currentIframeI].src = "/votes/{{ user.ID }}?datasetID="+iframes[currentIframeI].id+"&bg-colour=w3-indigo";
                 }
                 currentIframeI++;
             }
