@@ -111,14 +111,15 @@ http = urllib3.PoolManager()
 class Votes:
     def __init__(self, userID, datasetID=None, modelID=None):
         db.conn.commit()
-        tableID = 'modelID' 
+        self.failed = False
         if datasetID:
-            self.tableIDF = "datasetID"
+            self.tableIDF = 'datasetID'
             self.tableID = datasetID
         elif modelID:
-            self.tableIDF = "modelID"
+            self.tableIDF = 'modelID'
             self.tableID = modelID
-        else: return
+        else:
+            self.failed = True
 
         self.userID = userID
         self.datasetID = datasetID
@@ -173,9 +174,9 @@ class Votes:
 
 @app.route('/votes/<int:ID>', methods=['GET', 'POST'])
 def votePage(ID):
-    return 'work in progress'
-    votes = Votes(ID, int(request.args.get('datasetID')), int(request.args.get('modelID')))
-    return 'work in progress'
+    #return 'work in progress'
+    votes = Votes(ID, int(request.args.get('datasetID', 0)), int(request.args.get('modelID', 0)))
+    if votes.failed: return 'bruh moment', 500
     if request.method == 'POST':
         if request.form.get('upvote', -1) != -1: votes.upvote()
         elif request.form.get('downvote', -1) != -1: votes.downvote()
