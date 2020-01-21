@@ -111,7 +111,6 @@ http = urllib3.PoolManager()
 
 class Votes:
     def __init__(self, userID, datasetID=None, modelID=None):
-        db.conn.commit()
         self.failed = False
         if datasetID:
             self.tableIDF = 'datasetID'
@@ -130,6 +129,7 @@ class Votes:
 
     
     def voterStatus(self):
+        db.conn.commit()
         db.cur.execute('SELECT positivity, negativity FROM votes WHERE {}=%s AND userID=%s;'.format(self.tableIDF), (self.tableID, self.userID))
         UV = db.cur.fetchone()
         
@@ -140,9 +140,9 @@ class Votes:
     
     def countVotes(self):
         db.cur.execute('SELECT COUNT(positivity), COUNT(negativity) FROM votes WHERE {}=%s;'.format(self.tableIDF), (self.tableID,))
-        votes = db.cur.fetchone()
-        self.upvotes = votes['COUNT(positivity)']
-        self.downvotes = votes['COUNT(negativity)']
+        voteCounts = db.cur.fetchone()
+        self.upvotes = voteCounts['COUNT(positivity)']
+        self.downvotes = voteCounts['COUNT(negativity)']
         try:
             self.positivity = (self.upvotes / (self.upvotes + self.downvotes)) * 100
         except ZeroDivisionError:
@@ -176,7 +176,7 @@ class Votes:
 @app.route('/votes/<int:ID>', methods=['GET', 'POST'])
 def votePage(ID):
     #return 'work in progress'
-    sleep(randint(5, 30) / 100)
+    sleep(randint(20, 80) / 100)
     votes = Votes(ID, int(request.args.get('datasetID', 0)), int(request.args.get('modelID', 0)))
     if votes.failed: return 'bruh moment', 500
     if request.method == 'POST':
