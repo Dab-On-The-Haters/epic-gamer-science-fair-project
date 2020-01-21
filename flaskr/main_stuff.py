@@ -110,15 +110,15 @@ http = urllib3.PoolManager()
 
 class Votes:
     def __init__(self, userID, datasetID=None, modelID=None):
-        db.conn.commit()
-        tableID = 'modelID' 
+        self.failed = False
         if datasetID:
-            self.tableIDF = "datasetID"
+            self.tableIDF = 'datasetID'
             self.tableID = datasetID
         elif modelID:
-            self.tableIDF = "modelID"
+            self.tableIDF = 'modelID'
             self.tableID = modelID
-        else: return
+        else:
+            self.failed = True
 
         self.userID = userID
         self.datasetID = datasetID
@@ -128,6 +128,7 @@ class Votes:
 
     
     def voterStatus(self):
+        db.conn.commit()
         db.cur.execute('SELECT positivity, negativity FROM votes WHERE {}=%s AND userID=%s;'.format(self.tableIDF), (self.tableID, self.userID))
         UV = db.cur.fetchone()
         
@@ -138,9 +139,9 @@ class Votes:
     
     def countVotes(self):
         db.cur.execute('SELECT COUNT(positivity), COUNT(negativity) FROM votes WHERE {}=%s;'.format(self.tableIDF), (self.tableID,))
-        votes = db.cur.fetchone()
-        self.upvotes = votes['COUNT(positivity)']
-        self.downvotes = votes['COUNT(negativity)']
+        voteCounts = db.cur.fetchone()
+        self.upvotes = voteCounts['COUNT(positivity)']
+        self.downvotes = voteCounts['COUNT(negativity)']
         try:
             self.positivity = (self.upvotes / (self.upvotes + self.downvotes)) * 100
         except ZeroDivisionError:
@@ -173,8 +174,10 @@ class Votes:
 
 @app.route('/votes/<int:ID>', methods=['GET', 'POST'])
 def votePage(ID):
-    return 'work in progress'
-    votes = Votes(ID, request.args.get('datasetID'), request.args.get('modelID'))
+    #return 'work in progress'
+    #sleep(randint(20, 80) / 100)
+    votes = Votes(ID, int(request.args.get('datasetID', 0)), int(request.args.get('modelID', 0)))
+    if votes.failed: return 'bruh moment', 500
     if request.method == 'POST':
         if request.form.get('upvote', -1) != -1: votes.upvote()
         elif request.form.get('downvote', -1) != -1: votes.downvote()
@@ -200,6 +203,9 @@ def pageNotFound(e):
     return render_template('404.html', missing='page'), 404
 
 @app.errorhandler(500)
+def internalError(e):
+    return render_template('500.html'), 500
+
 @app.route('/')
 def welcome():
     return render_template('homepage.html', user=current_user)
@@ -422,7 +428,7 @@ def generatedText(ID):
     generatedText = qResults.get('result')
 
     if generatedText:
-        return render_template('generated-text.html', ID=ID, generatedText=generatedText, user=current_user)
+        return render_template('generated-text.html', ID=qResults['modelID'], generatedText=generatedText, user=current_user)
     return render_template('generating.html', ID=qResults['modelID'],)
 
 
@@ -610,18 +616,22 @@ def survey():
 
 def surveyRequest(user):
     uID = user.ID
+    """
     db.cur.execute('SELECT ID FROM samples WHERE userID = %s;', (uID,))
     db.cur.fetchone()
     if db.cur.rowcount: return False
+    """
     db.cur.execute('SELECT ID FROM survey WHERE userID = %s;', (uID,))
     db.cur.fetchone()
     if db.cur.rowcount: return False
+    """
     db.cur.execute('SELECT ID FROM datasets WHERE posterID = %s;', (uID,))
     db.cur.fetchone()
     if not db.cur.rowcount: return False
     db.cur.execute('SELECT ID FROM models WHERE trainerID = %s;', (uID,))
     db.cur.fetchone()
     if not db.cur.rowcount: return False
+    """
     
     firstName = user.name.split()[0]
     reqBody = '''Hi {},
@@ -630,5 +640,5 @@ def surveyRequest(user):
     please fill out a quick survey for Joe <a href="http://99.199.44.233/survey">right here</a>. Your feedback is essential to keep on improving our service.'''
     
     surveyReq = Message(recipients=[user.email], body=reqBody.format(firstName), html=reqHTML.format(firstName), subject='Please give us some feedback on how to improve our site!', sender='joethernn@gmail.com')
-    mail.send(surveyReq)
+    with app.app_context(): mail.send(surveyReq)
     return True
