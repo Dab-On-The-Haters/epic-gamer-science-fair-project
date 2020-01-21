@@ -428,7 +428,7 @@ def generatedText(ID):
     generatedText = qResults.get('result')
 
     if generatedText:
-        return render_template('generated-text.html', ID=ID, generatedText=generatedText, user=current_user)
+        return render_template('generated-text.html', ID=modelID, generatedText=generatedText, user=current_user)
     return render_template('generating.html', ID=qResults['modelID'],)
 
 
