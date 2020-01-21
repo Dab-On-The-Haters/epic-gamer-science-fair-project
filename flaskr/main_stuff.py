@@ -621,6 +621,7 @@ def surveyRequest(user):
     if db.cur.rowcount: return False
     db.cur.execute('SELECT ID FROM survey WHERE userID = %s;', (uID,))
     db.cur.fetchone()
+    """
     if db.cur.rowcount: return False
     db.cur.execute('SELECT ID FROM datasets WHERE posterID = %s;', (uID,))
     db.cur.fetchone()
@@ -628,6 +629,7 @@ def surveyRequest(user):
     db.cur.execute('SELECT ID FROM models WHERE trainerID = %s;', (uID,))
     db.cur.fetchone()
     if not db.cur.rowcount: return False
+    """
     
     firstName = user.name.split()[0]
     reqBody = '''Hi {},
