@@ -428,7 +428,7 @@ def generatedText(ID):
     generatedText = qResults.get('result')
 
     if generatedText:
-        return render_template('generated-text.html', ID=modelID, generatedText=generatedText, user=current_user)
+        return render_template('generated-text.html', ID=qResults['modelID'], generatedText=generatedText, user=current_user)
     return render_template('generating.html', ID=qResults['modelID'],)
 
 
@@ -616,13 +616,15 @@ def survey():
 
 def surveyRequest(user):
     uID = user.ID
+    """
     db.cur.execute('SELECT ID FROM samples WHERE userID = %s;', (uID,))
     db.cur.fetchone()
     if db.cur.rowcount: return False
+    """
     db.cur.execute('SELECT ID FROM survey WHERE userID = %s;', (uID,))
     db.cur.fetchone()
-    """
     if db.cur.rowcount: return False
+    """
     db.cur.execute('SELECT ID FROM datasets WHERE posterID = %s;', (uID,))
     db.cur.fetchone()
     if not db.cur.rowcount: return False
@@ -638,5 +640,5 @@ def surveyRequest(user):
     please fill out a quick survey for Joe <a href="http://99.199.44.233/survey">right here</a>. Your feedback is essential to keep on improving our service.'''
     
     surveyReq = Message(recipients=[user.email], body=reqBody.format(firstName), html=reqHTML.format(firstName), subject='Please give us some feedback on how to improve our site!', sender='joethernn@gmail.com')
-    mail.send(surveyReq)
+    with app.app_context(): mail.send(surveyReq)
     return True
