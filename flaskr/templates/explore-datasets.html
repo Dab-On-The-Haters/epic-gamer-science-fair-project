@@ -10,7 +10,7 @@
             var frameInterval;
             function voteFrame() {
                 if (currentIframeI == iframeCount) {
-                    clearInterval(frameInterfal);
+                    clearInterval(frameInterval);
                 }
                 else {
                     iframes[currentIframeI].src = "/votes/{{ user.ID }}?datasetID="+iframes[currentIframeI].id+"&bg-colour=w3-indigo";
