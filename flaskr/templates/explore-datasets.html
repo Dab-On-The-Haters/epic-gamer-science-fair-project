@@ -7,9 +7,10 @@
             var iframeCount;
             var iframes;
             var currentIframeI = 0;
+            var frameInterval;
             function voteFrame() {
                 if (currentIframeI == iframeCount) {
-                    clearInterval(voteFrame);
+                    clearInterval(frameInterfal);
                 }
                 else {
                     iframes[currentIframeI].src = "/votes/{{ user.ID }}?datasetID="+iframes[currentIframeI].id+"&bg-colour=w3-indigo";
@@ -20,7 +21,7 @@
             window.onload = function() {
                 iframes = document.getElementsByTagName('IFRAME');
                 iframeCount = iframes.length;
-                setInterval(voteFrame, 250);
+                frameInterval = setInterval(voteFrame, 400);
             }
         </script>
     </head>
