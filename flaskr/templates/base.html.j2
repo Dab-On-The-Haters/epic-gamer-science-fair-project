@@ -10,7 +10,7 @@
                 <a href="/register" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small {% if c=='register' %} w3-indigo {% else %} w3-hover-indigo {% endif %}">Sign Up</a>
             {% else %}
                 <span class="w3-bar-item w3-right w3-padding-large"><b>{{ user.name|escape }}</b></span>
-                <a href="/logout" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">My Account</a>
+                <a href="/u/{{ user.username }}" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">My Account</a>
             {% endif %}
         </div>
     </div>

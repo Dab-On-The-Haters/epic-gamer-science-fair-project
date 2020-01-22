@@ -457,7 +457,7 @@ def exploreDatasets():
 @app.route('/u/<username>')
 @login_required
 def showUser(username):
-    db.cur.execute('SELECT self_description, time_joined FROM users WHERE verified=1 AND username = %s;', (username,))
+    db.cur.execute('SELECT username, self_description, time_joined FROM users WHERE verified=1 AND username = %s;', (username,))
     u=db.cur.fetchone()
     if not db.cur.rowcount: return render_template('404.html', missing='user'), 404
     return render_template('user.html', u=u, user=current_user)
