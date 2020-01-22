@@ -486,7 +486,7 @@ def showModel(ID):
     d=db.cur.fetchone()
 
     # get log
-    db.cur.execute('SELECT loss, iteration, epoch FROM logs WHERE modelID = %s ORDER BY time_saved ASC;', (ID,))
+    db.cur.execute('SELECT loss, iteration, epoch FROM logs WHERE modelID = %s ORDER BY epoch, iteration ASC;', (ID,))
     logEntries = db.cur.fetchall()
     
     lossChartRows = []
