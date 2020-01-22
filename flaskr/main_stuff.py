@@ -234,13 +234,20 @@ def newDataset():
             
             # get local uploaded files
             for FN, data in request.files.items():
-                files[data.filename] = data.read().decode(data.mimetype_params.get('charset', 'utf-8'))
+                try:
+                    files[data.filename] = data.read().decode(data.mimetype_params.get('charset', 'utf-8'))
+                except UnicodeDecodeError:
+                    return render_template('new-dataset.html', form=DF, user=current_user, utfError=True)
+                    
             
             # get file links from urllib3
             for URL in DF.URLs.data:
                 req = http.request('GET', URL)
                 if req.status == 200:
-                    files[URL] = req.data.decode(req.headers.get('charset', 'utf-8'))
+                    try:
+                        files[URL] = req.data.decode(req.headers.get('charset', 'utf-8'))
+                    except UnicodeDecodeError:
+                        return render_template('new-dataset.html', form=DF, user=current_user, utfError=True)
             
             columnLists = dict()
             for FN in files:
