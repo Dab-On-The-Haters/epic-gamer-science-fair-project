@@ -21,6 +21,8 @@ app = Flask(__name__)
 # login tracking stuff, I both hate and love Todd Birchard
 from flask_login import LoginManager, login_required, current_user, login_user, logout_user
 loginManager = LoginManager()
+import sys
+
 
 import datetime as dt
 
@@ -102,6 +104,7 @@ import subprocess as subp
 
 # for reading datasets as they're uploaded
 import csv
+csv.field_size_limit(sys.maxsize)
 
 # for downloading dataset files
 import urllib3
