@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import flaskr.db as db
 import csv
 
