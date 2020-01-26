@@ -230,8 +230,8 @@ def newDataset():
     
     if DF.newURL.data: DF.URLs.append_entry()
     elif DF.newFile.data: DF.files.append_entry()
-    elif DF.removeURL.data: DF.URLs.pop_entry()
-    elif DF.removeFile.data: DF.files.pop_entry()
+    elif DF.removeURL.data: if len(DF.URLs.entries): DF.URLs.pop_entry()
+    elif DF.removeFile.data: if len(DF.files.entries): DF.files.pop_entry()
     
     elif DF.uploadDataset.data and DF.validate_on_submit():
         db.cur.execute('INSERT INTO datasets (title,  user_description, posterID) VALUES (%s, %s, %s);',
@@ -242,6 +242,8 @@ def newDataset():
         # moved from post-validation to pre and back to post again lol
         files = dict()
         invalidFiles = []
+
+        # used for checking if content-type is text
         isTextFile = lambda c : bool(c.split('/')[0] == 'text')
         
         # get local uploaded files
