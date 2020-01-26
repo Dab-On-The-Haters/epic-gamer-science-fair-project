@@ -6,7 +6,7 @@
     </head>
     <body class="w3-text-white">
         {{ base.navbar(user, c='explore') }}
-        {{ base.heading('&quot;'~d['title']|escape~'&quot;', extras='by <a href="/u/'~d['username']~''">'~d['username']~'</a>') }}
+        {{ base.heading('&quot;'~d['title']|escape~'&quot;', extras='by <a href="/u/'~d['username']~'">'~d['username']~'</a>') }}
         <div class="w3-container w3-margin">
             <p class=" w3-container w3-large w3-card w3-padding w3-2019-galaxy-blue"><b><span class="w3-large">Description</span>: {{ d['user_description']|escape }}</b></p>
             <div><iframe src="/votes/{{ user.ID }}?datasetID={{ ID }}"></iframe></div>
