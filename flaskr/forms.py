@@ -85,7 +85,7 @@ class datasetForm(FlaskForm):
     files = f.FieldList(f.FileField('Custom dataset file from your computer'), max_entries=100)
     newFile = f.SubmitField('Add a new dataset file from your computer', render_kw=w3Button)
     removeFile = f.SubmitField('Remove the last dataset file entry', render_kw=w3Button)
-    URLs = f.FieldList(f5.URLField('URL of dataset of file', [v.InputRequired(v.URL('Please enter a valid URL')]), max_entries=100)
+    URLs = f.FieldList(f5.URLField('URL of dataset of file', [v.URL('Please enter a valid URL')]), max_entries=100)
     newURL = f.SubmitField('Add a new dataset URL', render_kw=w3Button)
     removeURL = f.SubmitField('Remove the last URL entry', render_kw=w3Button)
     uploadDataset = f.SubmitField('Upload the dataset', render_kw=w3Button)
