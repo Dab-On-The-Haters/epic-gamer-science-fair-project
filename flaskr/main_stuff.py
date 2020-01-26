@@ -238,11 +238,6 @@ def newDataset():
         if len(DF.files.entries): DF.files.pop_entry()
     
     elif DF.uploadDataset.data and DF.validate_on_submit():
-        db.cur.execute('INSERT INTO datasets (title,  user_description, posterID) VALUES (%s, %s, %s);',
-        (DF.title.data, DF.description.data, current_user.ID))
-        db.conn.commit()
-        datasetID = db.cur.lastrowid
-        session['datasetID'] = datasetID
         # moved from post-validation to pre and back to post again lol
         files = dict()
         invalidFiles = []
@@ -267,7 +262,13 @@ def newDataset():
         
         if invalidFiles:
             return render_template('new-dataset.html', form=DF, user=current_user, invalidFiles=invalidFiles)
-
+        
+        db.cur.execute('INSERT INTO datasets (title,  user_description, posterID) VALUES (%s, %s, %s);',
+        (DF.title.data, DF.description.data, current_user.ID))
+        db.conn.commit()
+        datasetID = db.cur.lastrowid
+        session['datasetID'] = datasetID
+        
         columnLists = dict()
         for FN in files:
             #if FN.endswith('.zip'): return 'Make sure you unzip your datasets first.'
