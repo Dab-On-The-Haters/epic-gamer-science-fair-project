@@ -285,7 +285,7 @@ def datasetEditor():
         return render_template('404.html', missing='dataset'), 404
     
     if TS['posterID'] != current_user.ID:
-        return 'you don\'t have permission to edit that dataset'
+        return 'you don\'t have permission to edit that dataset', 401
 
     EF = f.datasetEditorForm()
 
@@ -422,7 +422,6 @@ def generateText(ID):
 
 # id here is for sample, not for model
 @app.route('/generated/<int:ID>')
-@login_required
 def generatedText(ID):
     db.conn.commit()
     db.cur.execute('SELECT result, modelID FROM samples WHERE ID = %s;', (ID,))
@@ -545,6 +544,9 @@ def logout():
 @app.route('/verify/<int:ID>', methods=['GET', 'POST'])
 def verifyUser(ID):
     #ID = current_user.ID
+    db.cur.execute('SELECT verified FROM users WHERE ID = %s;', (ID,))
+    if db.cur.fetchone().get('verified', False):
+        return redirect('/login')
 
     VF = f.verifyForm()
     VF.verifyAccountID = ID
