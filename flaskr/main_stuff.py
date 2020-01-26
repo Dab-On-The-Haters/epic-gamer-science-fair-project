@@ -255,7 +255,7 @@ def newDataset():
             if isTextFile(data.mimetype):
                 files[data.filename] = data.read().decode(data.mimetype_params.get('charset', 'utf-8'), errors='ignore')
             else:
-                invalidFiles.append(FN)
+                invalidFiles.append(data.filename)
         
         # get file links from urllib3
         for URL in DF.URLs.data:
