@@ -225,51 +225,59 @@ def teachTeach():
 def newDataset():
     DF = f.datasetForm()
 
-    if DF.is_submitted():
-        if DF.uploadDataset.data and DF.validate():
-            db.cur.execute('INSERT INTO datasets (title,  user_description, posterID) VALUES (%s, %s, %s);',
-            (DF.title.data, DF.description.data, current_user.ID))
-            db.conn.commit()
-            datasetID = db.cur.lastrowid
-            session['datasetID'] = datasetID
-            # moved from post-validation to pre and back to post again lol
-            files = dict()
-            
-            # get local uploaded files
-            for FN, data in request.files.items():
+    if request.method == 'GET':
+        return render_template('new-dataset.html', form=DF, user=current_user)
+    
+    if DF.newURL.data: DF.URLs.append_entry()
+    elif DF.newFile.data: DF.files.append_entry()
+    elif DF.removeURL.data: DF.URLs.pop_entry()
+    elif DF.removeFile.data: DF.files.pop_entry()
+    
+    elif DF.uploadDataset.data and DF.validate_on_submit():
+        db.cur.execute('INSERT INTO datasets (title,  user_description, posterID) VALUES (%s, %s, %s);',
+        (DF.title.data, DF.description.data, current_user.ID))
+        db.conn.commit()
+        datasetID = db.cur.lastrowid
+        session['datasetID'] = datasetID
+        # moved from post-validation to pre and back to post again lol
+        files = dict()
+        invalidFiles = []
+        isTextFile = lambda c : bool(c.split('/')[0] == 'text')
+        
+        # get local uploaded files
+        for FN, data in request.files.items():
+            if isTextFile(data.mimetype):
                 files[data.filename] = data.read().decode(data.mimetype_params.get('charset', 'utf-8'), errors='ignore')
-                    
+            else:
+                invalidFiles.append(FN)
+        
+        # get file links from urllib3
+        for URL in DF.URLs.data:
+            req = http.request('GET', URL)
+            if req.status == 200 and isTextFile(req.headers['Content-Type']):
+                files[URL] = req.data.decode(req.headers.get('charset', 'utf-8'), errors='ignore')
+            else:
+                invalidFiles.append(URL.split('/')[-1])
+        
+        if invalidFiles:
+            return render_template('new-dataset.html', form=DF, user=current_user, invalidFiles=invalidFiles)
+
+        columnLists = dict()
+        for FN in files:
+            #if FN.endswith('.zip'): return 'Make sure you unzip your datasets first.'
+            db.cur.execute('INSERT INTO datafiles (file_name, file_data, datasetID) VALUES (%s, %s, %s);', (FN, files[FN], datasetID))
             
-            # get file links from urllib3
-            for URL in DF.URLs.data:
-                req = http.request('GET', URL)
-                if req.status == 200:
-                    files[URL] = req.data.decode(req.headers.get('charset', 'utf-8'), errors='ignore')
-            
-            columnLists = dict()
-            for FN in files:
-                if FN.endswith('.zip'): return 'Make sure you unzip your datasets first.'
-                db.cur.execute('INSERT INTO datafiles (file_name, file_data, datasetID) VALUES (%s, %s, %s);', (FN, files[FN], datasetID))
-                
-                # if it's a csv add it to column selections
-                splitFN = FN.split('.')
-                if len(splitFN) > 1:
-                    if splitFN[-1] == 'csv':
-                        columnLists[FN] = csv.DictReader(io.StringIO(files[FN], newline='')).fieldnames
-                    else: continue
+            # if it's a csv add it to column selections
+            splitFN = FN.split('.')
+            if len(splitFN) > 1:
+                if splitFN[-1] == 'csv':
+                    columnLists[FN] = csv.DictReader(io.StringIO(files[FN], newline='')).fieldnames
                 else: continue
-            db.conn.commit()
-
-            session['columnLists'] = json.dumps(columnLists)
-            return redirect('/edit-dataset')
-        try: # do other submitted operations
-            if DF.newURL.data: DF.URLs.append_entry()
-            elif DF.newFile.data: DF.files.append_entry()
-            elif DF.removeURL.data: DF.URLs.pop_entry()
-            elif DF.removeFile.data: DF.files.pop_entry()
-        except: pass
-
-    return render_template('new-dataset.html', form=DF, user=current_user)
+            else: continue
+        db.conn.commit()
+    
+        session['columnLists'] = json.dumps(columnLists)
+        return redirect('/edit-dataset')
 
  
 @app.route('/edit-dataset', methods=['GET', 'POST'])

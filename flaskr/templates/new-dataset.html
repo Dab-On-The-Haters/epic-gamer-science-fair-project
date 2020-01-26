@@ -14,8 +14,12 @@
         </div>
 
         <div class="w3-container w3-card w3-margin w3-2019-galaxy-blue">
-            {% if utfError %}
-                <div class="w3-text-red">Make sure your files are properly encoded, preferably in unicode.</div>
+            {% if invalidFiles %}
+                <ul class="w3-ul w3-text-red">
+                    {% for FN in invalidFiles %}
+                        <li>The file <b>{{ FN|escape }}</b> is invalid.</li>
+                    {% endfor %}
+                </ul>
             {% endif %}
             <form method="POST" target="_self" enctype="multipart/form-data">
                 {{ form.csrf_token }}
