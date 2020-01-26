@@ -2,13 +2,13 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        {{ base.head('Verify your email') }}
+        {{ base.head('Verify your email', important=True) }}
     </head>
     <body class="w3-text-white">
         <div class="w3-container w3-card w3-margin">
             <p class="w3-large">Verify your email.</p>
             <p class="w3-text-grey">Please check your inbox for an email containing a 4-digit verification code for Joe and enter it below.</p>
-            <form method="POST">
+            <form method="POST" target="_self">
                 {{ form.csrf_token }}
                 <div class="w3-margin-top">
                     <b>{{ form.verificationCode.label }}</b>
