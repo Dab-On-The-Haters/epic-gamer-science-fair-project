@@ -6,13 +6,11 @@
     </head>
     <body class="w3-text-white">
         {{ base.navbar(False, c='login') }}
-        <div class="w3-container w3-poppins">
-            <div class="w3-container w3-jumbo w3-center">
-                <b>Log in to your account</b>
-            </div>
+        <div class="w3-container w3-jumbo w3-center">
+            <b>Log in to your account</b>
         </div>
 
-        <div class="w3-container w3-card w3-margin w3-2019-galaxy-blue w3-poppins">
+        <div class="w3-container w3-card w3-margin w3-2019-galaxy-blue">
             <form method="POST">
                 {% for field in form %}
                     {% if field in [form.csrf_token] %}
