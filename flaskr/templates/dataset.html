@@ -12,8 +12,7 @@
         <div class="w3-container w3-margin">
             <p class=" w3-container w3-large w3-card w3-padding w3-2019-galaxy-blue"><b><span class="w3-large">Description</span>: {{ d['user_description']|escape }}</b></p>
             <div><iframe src="/votes/{{ user.ID }}?datasetID={{ ID }}"></iframe></div>
-            <br>
-            <b>{{ d['title']|escape }}</b> by <a href="/u/{{ d['username'] }}">{{ d['username'] }}</a>
+            <p><b>{{ d['title']|escape }}</b> by <a href="/u/{{ d['username'] }}">{{ d['username'] }}</a></p>
             <p>{{ d['user_description']|escape }}</p>
             <p>Size: {{ d['LENGTH(datasets.final_text)'] }} <b>ID: {{ ID }}</b><p>
             <p class="w3-small">Posted on {{ d['time_posted']|datetime }}</p>
