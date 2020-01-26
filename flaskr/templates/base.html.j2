@@ -25,9 +25,9 @@
 
 {% macro heading(title, extras=False) %}
     <div class="w3-container w3-xxxlarge w3-center">
-        <b>{{ title }}</b>
+        <b>{{ title|safe }}</b>
         {% if extras %}
-            <p class="w3-xxlarge">{{ extras }}</p>
+            <p class="w3-xxlarge">{{ extras|safe }}</p>
         {% endif %}
     </div>
 {% endmacro %}
