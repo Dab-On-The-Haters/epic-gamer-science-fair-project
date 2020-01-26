@@ -1,5 +1,5 @@
 {% macro selection(selected, selectGoal) %}
-    w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo w3-bottombar {% if selected == selectGoal %}w3-border-blue{% else %}w3-border none w3-hover-border-indigo{% endif %}
+    w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo w3-bottombar {% if selected == selectGoal %}w3-border-blue{% else %}w3-border-none w3-hover-border-indigo{% endif %}
 {% endmacro %}
 
 {% macro navbar(user, c='/', spacing=2) %}
