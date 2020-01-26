@@ -30,6 +30,12 @@
                         {% endfor %}
                     {% endif %}
                 </div>
+                <div class=" w3-margin w3-display-container">
+                    <div class="w3-margin w3-display-left">{{ form.datasetRefresh }}</div>
+                    <div class="w3-margin w3-display-right">
+                        <button type="submit" class="w3-button w3-2019-galaxy-blue w3-right w3-margin w3-hover-indigo">Update this dataset</button>
+                    </div>
+                </div>
                 <b>{{ form.finalText.label }}</b>
                 <div class="w3-margin-top">
                     {{ form.finalText }}
@@ -39,10 +45,6 @@
                         <li>{{ error|escape }}</li>
                     {% endfor %}
                 </ul>
-                <br>
-                {{ form.datasetRefresh }}
-                <br>
-                <button type="submit" class="w3-button w3-2019-galaxy-blue w3-right w3-margin w3-hover-indigo">Update this dataset</button>
             </form>
         </div>
     </body>
