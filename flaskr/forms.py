@@ -79,7 +79,6 @@ class loginForm(FlaskForm):
     username = f.StringField('Username', [v.InputRequired(r('username'))])
     password = f.PasswordField('Password', [v.InputRequired(r('password')), checkLoginValidity])
 
-urlm = 
 class datasetForm(FlaskForm):
     title = f.StringField('Name of this dataset', [v.InputRequired(r('dataset name')), v.length(5, 250, 'Dataset title must be between 5 and 250 characters long')])
     description = f.TextAreaField('Dataset description', [v.length(max=65500, message='Description can not be longer than 65,500 characters.')])
