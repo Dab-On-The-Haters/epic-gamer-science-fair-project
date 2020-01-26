@@ -6,6 +6,7 @@
     </head>
     <body class="w3-text-white">
         {{ base.navbar(user, c='') }}
+        {{ base.heading('Feedback for Joe') }}
         <div class="w3-container w3-margin">
             <form method="POST", target="_self">
                 {% for field in form %}

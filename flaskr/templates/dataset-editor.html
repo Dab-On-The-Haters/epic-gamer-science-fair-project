@@ -6,11 +6,7 @@
     </head>
     <body class="w3-text-white">
         {{ base.navbar(user, c='teach') }}
-        <div class="w3-container">
-            <div class="w3-container w3-xlarge w3-center">
-                <b>Data cleaning for {{ datasetName|escape }}</b>
-            </div>
-        </div>
+        {{ base.heading('Data cleaning for '~datasetName|escape) }}
 
         <div class="w3-container w3-card w3-margin w3-2019-galaxy-blue">
             <form target="_self" method="POST">

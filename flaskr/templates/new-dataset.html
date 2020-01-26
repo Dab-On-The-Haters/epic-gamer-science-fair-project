@@ -6,10 +6,8 @@
     </head>
     <body class="w3-text-white">
         {{ base.navbar(user, c='teach') }}
-        <div class="w3-container w3-jumbo w3-center">
-            <b>Create a new dataset</b>
-        </div>
-        
+        {{ base.heading('Create a new dataset') }}
+
         <div class="w3-container w3-card w3-margin w3-2019-galaxy-blue">
             <form method="POST" target="_self" enctype="multipart/form-data">
                 {{ form.csrf_token }}

@@ -2,7 +2,7 @@
     w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo w3-bottombar {% if selected == selectGoal %}w3-border-blue{% else %}w3-border-none w3-hover-border-indigo{% endif %}
 {% endmacro %}
 
-{% macro navbar(user, c='/', spacing=2) %}
+{% macro navbar(user, c='/', spacing=3) %}
     <div class="w3-top">
         <div class="w3-bar w3-2019-galaxy-blue w3-card">
             <a href="/" class="{{ selection(c, '/') }}">Joe</a>
@@ -23,6 +23,16 @@
     {% endif %}
 {% endmacro %}
 
+{% macro heading(title, extras=False) %}
+    <div class="w3-container w3-xxxlarge w3-center">
+        <b>{{ title }}</b>
+        {% if extras %}
+        <p class="w3-xxlarge>{{ extras }}</p>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{% endmacro %}
 
 {% macro head(title, popups=False, important=False) %}
     <meta charset="UTF-8">
