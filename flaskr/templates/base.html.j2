@@ -32,8 +32,6 @@
     </div>
 {% endmacro %}
 
-{% endmacro %}
-
 {% macro head(title, popups=False, important=False) %}
     <meta charset="UTF-8">
     <title>{% if 'Joe' in title %}{{ title }}{% else %}{{ title~' | Joe'}}{% endif %}</title>
