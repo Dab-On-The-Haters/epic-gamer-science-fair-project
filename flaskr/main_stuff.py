@@ -278,6 +278,7 @@ def newDataset():
     
         session['columnLists'] = json.dumps(columnLists)
         return redirect('/edit-dataset')
+    return render_template('new-dataset.html', form=DF, user=current_user)
 
  
 @app.route('/edit-dataset', methods=['GET', 'POST'])
