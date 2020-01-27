@@ -43,7 +43,7 @@
     <body class="w3-text-white">
         {{ base.navbar(user, c='teach') }}
         
-        {{ base.heading('Progress on model #'ID|string) }}
+        {{ base.heading('Progress on model #'~ID|string) }}
         <div class="w3-container">
             <div>
                 Amount completed
