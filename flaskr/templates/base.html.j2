@@ -1,16 +1,20 @@
-{% macro navbar(user, c='/', spacing=2) %}
+{% macro selection(selected, selectGoal) %}
+    w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo w3-bottombar {% if selected == selectGoal %}w3-border-blue{% else %}w3-border-none w3-hover-border-indigo{% endif %}
+{% endmacro %}
+
+{% macro navbar(user, c='/', spacing=3) %}
     <div class="w3-top">
         <div class="w3-bar w3-2019-galaxy-blue w3-card">
-            <a href="/" class="w3-bar-item w3-button w3-padding-large {% if c=='/' %} w3-indigo {% else %} w3-hover-indigo {% endif %}">Joe</a>
-            <a href="/about" class="w3-bar-item w3-button w3-padding-large w3-hide-small {% if c=='about' %} w3-indigo {% else %} w3-hover-indigo {% endif %}">Learn more about Joe</a>
-            <a href="/teach" class="w3-bar-item w3-button w3-padding-large w3-hide-small {% if c=='teach' %} w3-indigo {% else %} w3-hover-indigo {% endif %}">Teach with Joe</a>
-            <a href="/explore-models" class="w3-bar-item w3-button w3-padding-large w3-hide-small {% if c=='explore' %} w3-indigo {% else %} w3-hover-indigo {% endif %}">Talk to our neural networks with Joe</a>
+            <a href="/" class="{{ selection(c, '/') }}">Joe</a>
+            <a href="/about" class="{{ selection(c, 'about') }}">Learn more about Joe</a>
+            <a href="/teach" class="{{ selection(c, 'teach') }}">Teach with Joe</a>
+            <a href="/explore-models" class="{{ selection(c, 'explore') }}">Talk to our neural networks with Joe</a>
             {% if (not user) or user.is_anonymous %}
-                <a href="/login" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small {% if c=='login' %} w3-indigo {% else %} w3-hover-indigo {% endif %}">Log In</a>
-                <a href="/register" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small {% if c=='register' %} w3-indigo {% else %} w3-hover-indigo {% endif %}">Sign Up</a>
+                <a href="/login" class="{{ selection(c, 'login') }} w3-right">Log In</a>
+                <a href="/register" class="{{ selection(c, 'register') }} w3-right">Sign Up</a>
             {% else %}
                 <span class="w3-bar-item w3-right w3-padding-large"><b>{{ user.name|escape }}</b></span>
-                <a href="/logout" class="w3-bar-item w3-button w3-right w3-padding-large w3-hide-small w3-hover-indigo">My Account</a>
+                <a href="/u/{{ user.username }}" class="{{ selection(True, False) }} w3-right">My Account</a>
             {% endif %}
         </div>
     </div>
@@ -19,6 +23,14 @@
     {% endif %}
 {% endmacro %}
 
+{% macro heading(title, extras=False) %}
+    <div class="w3-container w3-xxxlarge w3-center">
+        <b>{{ title|safe }}</b>
+        {% if extras %}
+            <p class="w3-xxlarge">{{ extras|safe }}</p>
+        {% endif %}
+    </div>
+{% endmacro %}
 
 {% macro head(title, popups=False, important=False) %}
     <meta charset="UTF-8">
@@ -32,14 +44,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
-            background-color:#191970;
+            background-color: #191970;
             font-family: 'Poppins', sans-serif;
         }
         iframe {
             border-style: hidden; 
         }
-        .w3-poppins {
-            font-family: 'Poppins', sans-serif;
+        .w3-bruh-blue {
+            background-color: #191970;
         }
     </style>
     {% if important %}

@@ -22,7 +22,7 @@ popup = Template('''
     <span class="popuptext" id="{{ id|escape }}-popuptext">{{ popupText|escape }}</span>
 </span>''')
 link = Template('''
-    <br><p>On a scale of 1 to 10, {{ label }}?{% if kink %} <a href= {{ kink|escape }}> Haven't done this yet? Here's the link</a>{% endif %} </p>''')
+    <br><p>On a scale of 1 to 10, {{ label }}?{% if kink %} <a href= {{ kink|escape }}> Haven't done this yet? Here's the link</a>{% endif %}</p>''')
 
 
 
@@ -79,14 +79,13 @@ class loginForm(FlaskForm):
     username = f.StringField('Username', [v.InputRequired(r('username'))])
     password = f.PasswordField('Password', [v.InputRequired(r('password')), checkLoginValidity])
 
-urlm = 'Please enter a valid URL'
 class datasetForm(FlaskForm):
     title = f.StringField('Name of this dataset', [v.InputRequired(r('dataset name')), v.length(5, 250, 'Dataset title must be between 5 and 250 characters long')])
     description = f.TextAreaField('Dataset description', [v.length(max=65500, message='Description can not be longer than 65,500 characters.')])
     files = f.FieldList(f.FileField('Custom dataset file from your computer'), max_entries=100)
     newFile = f.SubmitField('Add a new dataset file from your computer', render_kw=w3Button)
     removeFile = f.SubmitField('Remove the last dataset file entry', render_kw=w3Button)
-    URLs = f.FieldList(f5.URLField('URL of dataset of file', [v.InputRequired(urlm), v.URL(urlm)]), max_entries=100)
+    URLs = f.FieldList(f5.URLField('URL of dataset of file', [v.URL('Please enter a valid URL')]), max_entries=100)
     newURL = f.SubmitField('Add a new dataset URL', render_kw=w3Button)
     removeURL = f.SubmitField('Remove the last URL entry', render_kw=w3Button)
     uploadDataset = f.SubmitField('Upload the dataset', render_kw=w3Button)

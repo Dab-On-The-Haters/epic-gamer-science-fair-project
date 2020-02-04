@@ -1,9 +1,5 @@
-# Special thanks to Kyle McDonald, this is based on his example
-# https://gist.github.com/kylemcdonald/2d06dc736789f0b329e11d504e8dee9f
-# Thanks to Laurent Dinh for examples of parameter saving/loading in PyTorch
-# Thanks to Sean Robertson for https://github.com/spro/practical-pytorch
+#!/usr/bin/python3
 
-#from tqdm import tqdm
 import db
 
 from torch.autograd import Variable
@@ -28,7 +24,6 @@ outputPath = '/home/thomas/pytorch-models'
 
 saveString = 'INSERT INTO checkpoints (modelID, loss, iteration, epoch, epoch_final, final) VALUES (%s, %s, %s, %s, %s, %s);'
 
-#use_cuda = torch.cuda.is_available()
 
 # randomise runs
 torch.manual_seed(np.random.randint(1,9999))
@@ -159,12 +154,10 @@ def train():
     except KeyboardInterrupt:
         return 0
 
-    # final save str('{:.03f}'.format(loss))
 
     db.cur.execute(saveString, (modelID, loss, seq_length, epoch_count, False, True))
     db.conn.commit()
     final_path = os.path.join(outputPath, str(db.cur.lastrowid))
-    #final_path = final_path +  + '.cp'
     torch.save({
         'model': model.state_dict(),
         'optimizer': optimizer.state_dict()

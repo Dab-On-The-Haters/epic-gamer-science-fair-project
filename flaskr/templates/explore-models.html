@@ -7,9 +7,10 @@
             var iframeCount;
             var iframes;
             var currentIframeI = 0;
+            var frameInterval;
             function voteFrame() {
                 if (currentIframeI == iframeCount) {
-                    clearInterval(voteFrame);
+                    clearInterval(frameInterval);
                 }
                 else {
                     iframes[currentIframeI].src = "/votes/{{ user.ID }}?modelID="+iframes[currentIframeI].id+"&bg-colour=w3-indigo";
@@ -20,22 +21,24 @@
             window.onload = function() {
                 iframes = document.getElementsByTagName('IFRAME');
                 iframeCount = iframes.length;
-                setInterval(voteFrame, 250);
+                frameInterval = setInterval(voteFrame, 600);
             }
         </script>
     </head>
     <body class="w3-text-white">
         {{ base.navbar(user, c='explore') }}
+        {{ base.heading('Models') }}
         <div class="w3-container">
             {% for m in models %}
-                <div class="w3-display-container w3-card w3-indigo w3-margin w3-padding">
-                    <b>Model #{{ m['ID'] }}</b> by <a href="/u/{{ m['username'] }}">{{ m['username'] }}</a>
-                    <p>{{ m['model_description']|escape }}</p>
-                    <p>Dataset: <a href="/d/{{ m['datasetID'] }}">{{ m['title']|escape }}</a></p>
-                    <a href="/m/{{ m['ID'] }}">More about this model</a>
-                    <br>
-                    <b><a href="/generate/{{ m['ID'] }}" class="w3-button w3-2019-galaxy-blue w3-padding-large w3-margin" style="background-color : #191970">Generate text from this model</a></b>
-                    <div class="w3-container w3-display-right">
+                <div class="w3-container w3-card w3-indigo w3-margin w3-padding">
+                    <div class="w3-container w3-left">
+                        <p><b>Model #{{ m['ID'] }}</b> by <a href="/u/{{ m['username'] }}">{{ m['username'] }}</a></p>
+                        <p>{{ m['model_description']|escape }}</p>
+                        <p>Dataset: <a href="/d/{{ m['datasetID'] }}">{{ m['title']|escape }}</a></p>
+                        <p><a href="/m/{{ m['ID'] }}">More about this model</a></p>
+                        <p><b><a href="/generate/{{ m['ID'] }}" class="w3-button w3-bruh-blue w3-padding-large w3-margin">Generate text from this model</a></b></p>
+                    </div>
+                    <div class="w3-container w3-right">
                         <iframe id="{{ m['ID'] }}"></iframe>
                     </div>
                 </div>

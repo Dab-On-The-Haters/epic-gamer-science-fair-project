@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from torch.autograd import Variable
 import torch.nn as nn
 import torch

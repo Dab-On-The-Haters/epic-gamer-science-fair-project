@@ -6,11 +6,7 @@
     </head>
     <body class="w3-text-white">
         {{ base.navbar(user, c='teach') }}
-        <div class="w3-container w3-poppins">
-            <div class="w3-container w3-xlarge w3-center">
-                <b>Generate text with Joe from model #{{ ID }}</b>
-            </div>
-        </div>
+        {{ base.heading('Generate text from model #'~ID|string) }}
 
         <div class="w3-container w3-card w3-margin w3-2019-galaxy-blue">
             <form method="POST" target="_self">

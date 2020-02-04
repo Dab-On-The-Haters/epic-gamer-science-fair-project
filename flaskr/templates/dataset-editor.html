@@ -6,13 +6,9 @@
     </head>
     <body class="w3-text-white">
         {{ base.navbar(user, c='teach') }}
-        <div class="w3-container w3-poppins">
-            <div class="w3-container w3-xlarge w3-center">
-                <b>Data cleaning for {{ datasetName|escape }}</b>
-            </div>
-        </div>
+        {{ base.heading('Data cleaning for '~datasetName|escape) }}
 
-        <div class="w3-container w3-card w3-margin w3-2019-galaxy-blue">
+        <div class="w3-container w3-margin">
             <form target="_self" method="POST">
                 {{ form.csrf_token }}
                     
@@ -30,6 +26,12 @@
                         {% endfor %}
                     {% endif %}
                 </div>
+                <div class="w3-margin w3-container">
+                    <div class="w3-margin w3-left">{{ form.datasetRefresh }}</div>
+                    <div class="w3-margin w3-right">
+                        <button type="submit" class="w3-bruh-blue w3-button w3-right w3-margin w3-hover-indigo">Update this dataset</button>
+                    </div>
+                </div>
                 <b>{{ form.finalText.label }}</b>
                 <div class="w3-margin-top">
                     {{ form.finalText }}
@@ -39,10 +41,6 @@
                         <li>{{ error|escape }}</li>
                     {% endfor %}
                 </ul>
-                <br>
-                {{ form.datasetRefresh }}
-                <br>
-                <button type="submit" class="w3-button w3-2019-galaxy-blue w3-right w3-margin w3-hover-indigo">Update this dataset</button>
             </form>
         </div>
     </body>

@@ -6,13 +6,7 @@
     </head>
     <body>
         {{ base.navbar(False, c='register') }}
-
-        <div class="w3-container">
-            <div class="w3-container w3-jumbo w3-center">
-                <b>Sign up for an account</b>
-            </div>
-        </div>
-
+        {{ base.heading('Sign up for an account') }}
         <div class="w3-container w3-card w3-margin w3-2019-galaxy-blue">
             <form method="POST", target="_self">
                 {% for field in form %}

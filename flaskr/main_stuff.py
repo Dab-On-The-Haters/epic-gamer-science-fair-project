@@ -21,6 +21,8 @@ app = Flask(__name__)
 # login tracking stuff, I both hate and love Todd Birchard
 from flask_login import LoginManager, login_required, current_user, login_user, logout_user
 loginManager = LoginManager()
+import sys
+
 
 import datetime as dt
 
@@ -102,6 +104,7 @@ import subprocess as subp
 
 # for reading datasets as they're uploaded
 import csv
+csv.field_size_limit(sys.maxsize)
 
 # for downloading dataset files
 import urllib3
@@ -222,50 +225,66 @@ def teachTeach():
 def newDataset():
     DF = f.datasetForm()
 
-    if DF.is_submitted():
-        if DF.uploadDataset.data and DF.validate():
-            db.cur.execute('INSERT INTO datasets (title,  user_description, posterID) VALUES (%s, %s, %s);',
-            (DF.title.data, DF.description.data, current_user.ID))
-            db.conn.commit()
-            datasetID = db.cur.lastrowid
-            session['datasetID'] = datasetID
-            # moved from post-validation to pre and back to post again lol
-            files = dict()
+    if request.method == 'GET':
+        return render_template('new-dataset.html', form=DF, user=current_user)
+    
+    if DF.newURL.data:
+        DF.URLs.append_entry()
+    elif DF.newFile.data:
+        DF.files.append_entry()
+    elif DF.removeURL.data:
+        if len(DF.URLs.entries): DF.URLs.pop_entry()
+    elif DF.removeFile.data:
+        if len(DF.files.entries): DF.files.pop_entry()
+    
+    elif DF.uploadDataset.data and DF.validate_on_submit():
+        # moved from post-validation to pre and back to post again lol
+        files = dict()
+        invalidFiles = []
+
+        # used for checking if content-type is text
+        isTextFile = lambda c : bool(c.split('/')[0] == 'text')
+        
+        # get local uploaded files
+        for FN, data in request.files.items():
+            if isTextFile(data.mimetype):
+                files[data.filename] = data.read().decode(data.mimetype_params.get('charset', 'utf-8'), errors='ignore')
+            else:
+                invalidFiles.append(data.filename)
+        
+        # get file links from urllib3
+        for URL in DF.URLs.data:
+            req = http.request('GET', URL)
+            if req.status == 200 and isTextFile(req.headers['Content-Type']):
+                files[URL] = req.data.decode(req.headers.get('charset', 'utf-8'), errors='ignore')
+            else:
+                invalidFiles.append(URL.split('/')[-1])
+        
+        if invalidFiles:
+            return render_template('new-dataset.html', form=DF, user=current_user, invalidFiles=invalidFiles)
+        
+        db.cur.execute('INSERT INTO datasets (title,  user_description, posterID) VALUES (%s, %s, %s);',
+        (DF.title.data, DF.description.data, current_user.ID))
+        db.conn.commit()
+        datasetID = db.cur.lastrowid
+        session['datasetID'] = datasetID
+        
+        columnLists = dict()
+        for FN in files:
+            #if FN.endswith('.zip'): return 'Make sure you unzip your datasets first.'
+            db.cur.execute('INSERT INTO datafiles (file_name, file_data, datasetID) VALUES (%s, %s, %s);', (FN, files[FN], datasetID))
             
-            # get local uploaded files
-            for FN, data in request.files.items():
-                files[data.filename] = data.read().decode(data.mimetype_params.get('charset', 'utf-8'))
-            
-            # get file links from urllib3
-            for URL in DF.URLs.data:
-                req = http.request('GET', URL)
-                if req.status == 200:
-                    files[URL] = req.data.decode(req.headers.get('charset', 'utf-8'))
-            
-            columnLists = dict()
-            for FN in files:
-                if FN.endswith('.zip'): return 'Make sure you unzip your datasets first.'
-                db.cur.execute('INSERT INTO datafiles (file_name, file_data, datasetID) VALUES (%s, %s, %s);', (FN, files[FN], datasetID))
-                db.conn.commit()
-                
-                # if it's a csv add it to column selections
-                splitFN = FN.split('.')
-                if len(splitFN) > 1:
-                    if splitFN[-1] == 'csv':
-                        columnLists[FN] = csv.DictReader(io.StringIO(files[FN], newline='')).fieldnames
-                    else: continue
+            # if it's a csv add it to column selections
+            splitFN = FN.split('.')
+            if len(splitFN) > 1:
+                if splitFN[-1] == 'csv':
+                    columnLists[FN] = csv.DictReader(io.StringIO(files[FN], newline='')).fieldnames
                 else: continue
-                
-
-            session['columnLists'] = json.dumps(columnLists)
-            return redirect('/edit-dataset')
-        try: # do other submitted operations
-            if DF.newURL.data: DF.URLs.append_entry()
-            elif DF.newFile.data: DF.files.append_entry()
-            elif DF.removeURL.data: DF.URLs.pop_entry()
-            elif DF.removeFile.data: DF.files.pop_entry()
-        except: pass
-
+            else: continue
+        db.conn.commit()
+    
+        session['columnLists'] = json.dumps(columnLists)
+        return redirect('/edit-dataset')
     return render_template('new-dataset.html', form=DF, user=current_user)
 
  
@@ -282,7 +301,7 @@ def datasetEditor():
         return render_template('404.html', missing='dataset'), 404
     
     if TS['posterID'] != current_user.ID:
-        return 'you don\'t have permission to edit that dataset'
+        return 'you don\'t have permission to edit that dataset', 401
 
     EF = f.datasetEditorForm()
 
@@ -419,7 +438,6 @@ def generateText(ID):
 
 # id here is for sample, not for model
 @app.route('/generated/<int:ID>')
-@login_required
 def generatedText(ID):
     db.conn.commit()
     db.cur.execute('SELECT result, modelID FROM samples WHERE ID = %s;', (ID,))
@@ -457,7 +475,7 @@ def exploreDatasets():
 @app.route('/u/<username>')
 @login_required
 def showUser(username):
-    db.cur.execute('SELECT self_description, time_joined FROM users WHERE verified=1 AND username = %s;', (username,))
+    db.cur.execute('SELECT username, self_description, time_joined FROM users WHERE verified=1 AND username = %s;', (username,))
     u=db.cur.fetchone()
     if not db.cur.rowcount: return render_template('404.html', missing='user'), 404
     return render_template('user.html', u=u, user=current_user)
@@ -486,7 +504,7 @@ def showModel(ID):
     d=db.cur.fetchone()
 
     # get log
-    db.cur.execute('SELECT loss, iteration, epoch FROM logs WHERE modelID = %s ORDER BY time_saved ASC;', (ID,))
+    db.cur.execute('SELECT loss, iteration, epoch FROM logs WHERE modelID = %s ORDER BY epoch, iteration ASC;', (ID,))
     logEntries = db.cur.fetchall()
     
     lossChartRows = []
@@ -542,6 +560,9 @@ def logout():
 @app.route('/verify/<int:ID>', methods=['GET', 'POST'])
 def verifyUser(ID):
     #ID = current_user.ID
+    db.cur.execute('SELECT verified FROM users WHERE ID = %s;', (ID,))
+    if db.cur.fetchone().get('verified', False):
+        return redirect('/login')
 
     VF = f.verifyForm()
     VF.verifyAccountID = ID

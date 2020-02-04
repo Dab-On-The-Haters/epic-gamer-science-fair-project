@@ -35,11 +35,11 @@
     </head>
     <body class="w3-text-white">
         {{ base.navbar(user, c='explore') }}
-        <div class="w3-center">
-            <p class="w3-xlarge w3-center"><b>Model #{{ m['ID'] }} by <a href="/u/{{ d['username'] }}">{{ m['username'] }}</a></b></p>
-        </div>
+        {{ base.heading('Model #'~m['ID']|string, extras='by <a href="/u/'~m['username']~'">'~m['username']~'</a>') }}
         <div class="w3-container w3-margin">
-            <p class=" w3-container w3-large w3-card w3-padding w3-2019-galaxy-blue"><b>{{ m['model_description']|escape }}</b></p>
+            {% if m['model_description']|length %}
+                <p class="w3-container w3-large w3-card w3-padding w3-2019-galaxy-blue">Description: <b>{{ m['model_description']|escape }}</b></p>
+            {% endif %}
             <div><iframe src="/votes/{{ user.ID }}?modelID={{ m['ID'] }}"></iframe></div>
             <br>
             <p>
@@ -63,12 +63,11 @@
             <div class="w3-container w3-margin">
                 <p class="w3-large"><b>Dataset</b></p>
                 <div>
-                    <b>{{ d['title']|escape }}</b> by <a href="/u/{{ d['username'] }}">{{ d['username'] }}</a>
+                    <p><b>{{ d['title']|escape }}</b> by <a href="/u/{{ d['username'] }}">{{ d['username'] }}</a></p>
                     <p>{{ d['user_description']|escape }}</p>
                     <p class="w3-small">Size: {{ d['LENGTH(datasets.final_text)'] }} <b>ID: {{ m['datasetID'] }}</b></p>
-                    <a href="/d/{{ m['datasetID'] }}">More about this dataset</a>
-                    <br>
-                    <b><a href="/new-model?datasetID={{ m['datasetID'] }}" class="w3-button w3-2019-galaxy-blue w3-padding w3-hide-small w3-hover-indigo">Train from this dataset</a></b>
+                    <p><a href="/d/{{ m['datasetID'] }}">More about this dataset</a></p>
+                    <p><b><a href="/new-model?datasetID={{ m['datasetID'] }}" class="w3-button w3-2019-galaxy-blue w3-padding w3-hide-small w3-hover-indigo">Train from this dataset</a></b></p>
                 </div>
             </div>
             <div class="w3-container w3-margin">

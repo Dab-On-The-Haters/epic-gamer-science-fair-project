@@ -6,12 +6,7 @@
     </head>
     <body class="w3-text-white">
         {{ base.navbar(user, c='teach') }}
-        
-        <div class="w3-container w3-poppins">
-            <div class="w3-container w3-jumbo w3-center">
-                <b>Create a new dataset</b>
-            </div>
-        </div>
+        {{ base.heading('Create a new dataset') }}
 
         <div class="w3-container w3-card w3-margin w3-2019-galaxy-blue">
             <form method="POST" target="_self" enctype="multipart/form-data">
@@ -39,6 +34,14 @@
                     Some good places to get datasets from are <a href="https://www.kaggle.com/datasets">Kaggle</a>, a data science site,
                     and <a href="http://www.gutenberg.org/">Project Gutenberg</a>, a collection of books with expired copyright.
                 </p>
+                <br>
+                {% if invalidFiles %}
+                    <ul class="w3-ul w3-text-red">
+                        {% for FN in invalidFiles %}
+                            <li>The file <b>{{ FN|escape }}</b> is not a valid text file.</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
                 <div class="w3-margin-top">{{ form.files }}</div>
                 <div class="w3-margin-top">{{ form.newFile }} {{ form.removeFile }}</div>
                 <div class="w3-margin-top">{{ form.URLs }}</div>

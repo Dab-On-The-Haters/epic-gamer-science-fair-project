@@ -7,9 +7,10 @@
             var iframeCount;
             var iframes;
             var currentIframeI = 0;
+            var frameInterval;
             function voteFrame() {
                 if (currentIframeI == iframeCount) {
-                    clearInterval(voteFrame);
+                    clearInterval(frameInterval);
                 }
                 else {
                     iframes[currentIframeI].src = "/votes/{{ user.ID }}?datasetID="+iframes[currentIframeI].id+"&bg-colour=w3-indigo";
@@ -20,22 +21,24 @@
             window.onload = function() {
                 iframes = document.getElementsByTagName('IFRAME');
                 iframeCount = iframes.length;
-                setInterval(voteFrame, 250);
+                frameInterval = setInterval(voteFrame, 600);
             }
         </script>
     </head>
     <body class="w3-text-white">
         {{ base.navbar(user, c='explore') }}
+        {{ base.heading('Datasets') }}
         <div class="w3-container">
             {% for d in datasets %}
-                <div class="w3-display-container w3-card w3-indigo w3-margin w3-padding">
-                    <b>{{ d['title']|escape }}</b> by <a href="/u/{{ d['username'] }}">{{ d['username'] }}</a>
-                    <p>{{ d['user_description']|escape }}</p>
-                    <p class="w3-small">Size: {{ d['LENGTH(datasets.final_text)'] }} <b>ID: {{ d['ID'] }}</b></p>
-                    <a href="/d/{{ d['ID'] }}">More about this dataset</a>
-                    <br>
-                    <b><a href="/new-model?datasetID={{ d['ID'] }}" class="w3-button w3-2019-galaxy-blue w3-padding-large w3-margin" style="background-color : #191970">Train from this dataset</a></b>
-                    <div class="w3-container w3-display-right">
+                <div class="w3-container w3-card w3-indigo w3-margin w3-padding">
+                    <div class="w3-container w3-left">
+                        <p><b>{{ d['title']|escape }}</b> by <a href="/u/{{ d['username'] }}">{{ d['username'] }}</a></p>
+                        <p>{{ d['user_description']|escape }}</p>
+                        <p class="w3-small">Size: {{ d['LENGTH(datasets.final_text)'] }} <b>ID: {{ d['ID'] }}</b></p>
+                        <p><a href="/d/{{ d['ID'] }}">More about this dataset</a></p>
+                        <p><b><a href="/new-model?datasetID={{ d['ID'] }}" class="w3-button w3-bruh-blue w3-padding-large w3-margin">Train from this dataset</a></b></p>
+                    </div>
+                    <div class="w3-container w3-right">
                         <iframe id="{{ d['ID'] }}"></iframe>
                     </div>
                 </div>
