@@ -4,8 +4,12 @@
     <head>
         {{ base.head('Joe\'s Model Maker', important=True, popups=True) }}
         <script>
-            var status = false;
-            var button = document.getElementById("toggle")
+            var status;
+            var startup;
+            function startup(){
+                status = false;
+                button = document.getElementById("toggle");
+            }
             function toggle() {
                 status = true;
             }
@@ -16,7 +20,7 @@
             }
         </script>
     </head>
-    <body class="w3-text-white">
+    <body class="w3-text-white" onload = "startup()">
         {{ base.navbar(user, c='teach') }}
         {{ base.heading('Make a model') }}
         <button id = "toggle" onclick = "toggle()"></button>
