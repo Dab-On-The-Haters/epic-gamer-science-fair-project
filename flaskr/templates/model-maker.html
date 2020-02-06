@@ -5,18 +5,14 @@
         {{ base.head('Joe\'s Model Maker', important=True, popups=True) }}
         <script>
             var status;
-            var button;
-            function startup(){
-                status = false;
-                button = document.getElementById("toggle");
-            }
+
             function toggle() {
                 status = true;
             }
             if (status == true) {
-                button.innerText = "switch to easy mode";
+                document.getElementById("toggle").innerText = "switch to easy mode";
             } else{
-                button.innerText = "switch to advanced mode";
+                document.getElementById("toggle").innerText = "switch to advanced mode";
             }
             window.onload=startup();
         </script>
