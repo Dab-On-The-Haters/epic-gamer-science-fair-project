@@ -3,10 +3,23 @@
 <html lang="en">
     <head>
         {{ base.head('Joe\'s Model Maker', important=True, popups=True) }}
+        <script>
+            let status
+            var button = document.getElementById("toggle")
+            function toggle() {
+                status = True;
+            }
+            if (status == True) {
+                button = "switch to easy mode";
+            } else{
+                button = "switch to advanced mode"
+            }
+        </script>
     </head>
     <body class="w3-text-white">
         {{ base.navbar(user, c='teach') }}
         {{ base.heading('Make a model') }}
+        <button id = "toggle" onclick = "toggle()"></button>
         <div class="w3-container w3-margin">
             <form method="POST" target="_self">
                 <p><b>Hover over any field's label for a more detailed explanation</b></p>
