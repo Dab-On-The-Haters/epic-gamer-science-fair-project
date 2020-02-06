@@ -4,12 +4,12 @@
     <head>
         {{ base.head('Joe\'s Model Maker', important=True, popups=True) }}
         <script>
-            var status = False;
+            var status = false;
             var button = document.getElementById("toggle")
             function toggle() {
-                status = True;
+                status = true;
             }
-            if (status == True) {
+            if (status == true) {
                 button.innerText = "switch to easy mode";
             } else{
                 button.innerText = "switch to advanced mode";
