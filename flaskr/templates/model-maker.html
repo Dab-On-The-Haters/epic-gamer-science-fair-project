@@ -18,9 +18,10 @@
             } else{
                 button.innerText = "switch to advanced mode";
             }
+            window.onload=startup();
         </script>
     </head>
-    <body class="w3-text-white" onload = "startup()">
+    <body class="w3-text-white">
         {{ base.navbar(user, c='teach') }}
         {{ base.heading('Make a model') }}
         <button id = "toggle" onclick = "toggle()"></button>
