@@ -4,16 +4,19 @@
     <head>
         {{ base.head('Joe\'s Model Maker', important=True, popups=True) }}
         <script>
-            var status;
+            var status = true;
 
             function toggle() {
-                status = true;
+                if (status == true) {
+                    document.getElementById("toggle").innerHTML = "Switch to easy mode";
+                    status = false;
+                }
+                else {
+                    document.getElementById("toggle").innerHTML = "Switch to advanced mode";
+                    status = true;
+                }
             }
-            if (status == true) {
-                document.getElementById("toggle").innerText = "Switch to easy mode";
-            } else{
-                document.getElementById("toggle").innerText = "Switch to advanced mode";
-            }
+            
         </script>
     </head>
     <body class="w3-text-white">
