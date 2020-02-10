@@ -4,16 +4,16 @@
     <head>
         {{ base.head('Joe\'s Model Maker', important=True, popups=True) }}
         <script>
-            var status = true;
+            var userMode = false;
 
             function toggle() {
-                if (status) {
+                if (userMode) {
                     document.getElementById("toggle").innerHTML = "Switch to easy mode";
-                    status = false;
+                    userMode = false;
                 }
                 else {
                     document.getElementById("toggle").innerHTML = "Switch to advanced mode";
-                    status = true;
+                    userMode = true;
                 }
             }
             
@@ -22,7 +22,7 @@
     <body class="w3-text-white">
         {{ base.navbar(user, c='teach') }}
         {{ base.heading('Make a model') }}
-        <button id = "toggle" onclick = "toggle()"></button>
+        <button id = "toggle" onclick = "toggle()">Switch to easy mode</button>
         <div class="w3-container w3-margin">
             <form method="POST" target="_self">
                 <p><b>Hover over any field's label for a more detailed explanation</b></p>
