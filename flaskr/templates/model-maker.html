@@ -16,13 +16,12 @@
                     userMode = true;
                 }
             }
-            
         </script>
     </head>
     <body class="w3-text-white">
         {{ base.navbar(user, c='teach') }}
         {{ base.heading('Make a model') }}
-        <button id = "toggle" onclick = "toggle()">Switch to easy mode</button>
+        <button class="w3-button w3-2019-galaxy-blue w3-hover-indigo w3-padding" id="toggle" onclick="toggle()">Switch to easy mode</button>
         <div class="w3-container w3-margin">
             <form method="POST" target="_self">
                 <p><b>Hover over any field's label for a more detailed explanation</b></p>
