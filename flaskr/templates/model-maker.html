@@ -9,7 +9,7 @@
             var advancedFields = [];
             document.onload = function()
             {
-                var advancedIds = JSON.parse("{{ advancedIDs }}|tojson");
+                var advancedIds = JSON.parse("{{ advancedIDs|tojson }}");
                 for (var i=0; i<advancedIds.length; i++) {
                     advancedFields.push(document.getElementId('div-' + advancedIds[i]));
                 }
