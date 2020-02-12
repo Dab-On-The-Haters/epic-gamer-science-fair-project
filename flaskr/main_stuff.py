@@ -386,7 +386,7 @@ def modelMaker():
     if not MF.datasetID.data:
         MF.datasetID.data = int(request.args.get('datasetID', session.get('datasetID', 1)))
     
-    return render_template('model-maker.html', form=MF, user=current_user)
+    return render_template('model-maker.html', advancedIDs=[MF.layerAmount.id, MF.dropout.id, MF.seqLength.id, MF.seed.id], form=MF, user=current_user)
 
 @app.route('/epoch-progress/<int:ID>')
 def epochProgress(ID):

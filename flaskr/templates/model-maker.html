@@ -6,14 +6,29 @@
         <script>
             var userMode = false;
 
+            var advancedFields = [];
+            document.onload = function()
+            {
+                var advancedIds = JSON.parse("{{ advancedIDs }}|tojson");
+                for (var i=0; i<advancedIds.length; i++) {
+                    advancedFields.push(document.getElementId('div-' + advancedIds[i]));
+                }
+            }
+
             function toggle() {
                 if (userMode) {
                     document.getElementById("toggle").innerHTML = "Switch to easy mode";
                     userMode = false;
+                    for (var i=0; i<advancedFields.length; i++) {
+                        advancedFields[i].style.display = "block";
+                    }
                 }
                 else {
                     document.getElementById("toggle").innerHTML = "Switch to advanced mode";
                     userMode = true;
+                    for (var i=0; i<advancedFields.length; i++) {
+                        advancedFields[i].style.display = "none";
+                    }
                 }
             }
         </script>
@@ -21,7 +36,9 @@
     <body class="w3-text-white">
         {{ base.navbar(user, c='teach') }}
         {{ base.heading('Make a model') }}
-        <button class="w3-button w3-2019-galaxy-blue w3-hover-indigo w3-padding" id="toggle" onclick="toggle()">Switch to easy mode</button>
+        <button class="w3-button w3-2019-galaxy-blue w3-hover-indigo w3-padding w3-margin" id="toggle" onclick="toggle()">
+            Switch to advanced mode
+        </button>
         <div class="w3-container w3-margin">
             <form method="POST" target="_self">
                 <p><b>Hover over any field's label for a more detailed explanation</b></p>
@@ -30,7 +47,7 @@
                     {% if field in [form.csrf_token] %}
                         {{ field }}
                     {% else %}
-                        <div class="w3-margin-top">
+                        <div id="div-{{ field.id }}" class="w3-margin-top">
                             <div>
                                 {{ field.label|safe }}
                             </div>
