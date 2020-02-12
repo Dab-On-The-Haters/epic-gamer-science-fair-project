@@ -4,7 +4,7 @@
     <head>
         {{ base.head('Joe\'s Model Maker', important=True, popups=True) }}
         <script>
-            var userMode = false;
+            var userMode = true;
             var toggleButton;
             var advancedFields = [];
             window.onload = function() {
@@ -13,7 +13,6 @@
                     advancedFields.push(document.getElementById('div-' + advancedIds[i]));
                 }
                 toggleButton = document.getElementById("toggle");
-                toggleButton.style.display = "block";
             }
 
             function toggle() {
@@ -37,7 +36,7 @@
     <body class="w3-text-white">
         {{ base.navbar(user, c='teach') }}
         {{ base.heading('Make a model') }}
-        <button class="w3-button w3-2019-galaxy-blue w3-hover-indigo w3-padding w3-margin" id="toggle" onclick="toggle()" style="display: none;">
+        <button class="w3-button w3-2019-galaxy-blue w3-hover-indigo w3-padding w3-margin" id="toggle" onclick="toggle()">
             Switch to advanced mode
         </button>
         <div class="w3-container w3-margin">
