@@ -5,25 +5,27 @@
         {{ base.head('Joe\'s Model Maker', important=True, popups=True) }}
         <script>
             var userMode = false;
-
+            var toggleButton;
             var advancedFields = [];
             window.onload = function() {
                 var advancedIds = JSON.parse('{{ advancedIDs|tojson }}');
                 for (var i=0; i<advancedIds.length; i++) {
                     advancedFields.push(document.getElementById('div-' + advancedIds[i]));
                 }
+                toggleButton = document.getElementById("toggle");
+                toggleButton.style.display = "block";
             }
 
             function toggle() {
                 if (userMode) {
-                    document.getElementById("toggle").innerHTML = "Switch to easy mode";
+                    toggleButton.innerHTML = "Switch to easy mode";
                     userMode = false;
                     for (var i=0; i<advancedFields.length; i++) {
                         advancedFields[i].style.display = "block";
                     }
                 }
                 else {
-                    document.getElementById("toggle").innerHTML = "Switch to advanced mode";
+                    toggleButton.innerHTML = "Switch to advanced mode";
                     userMode = true;
                     for (var i=0; i<advancedFields.length; i++) {
                         advancedFields[i].style.display = "none";
@@ -35,7 +37,7 @@
     <body class="w3-text-white">
         {{ base.navbar(user, c='teach') }}
         {{ base.heading('Make a model') }}
-        <button class="w3-button w3-2019-galaxy-blue w3-hover-indigo w3-padding w3-margin" id="toggle" onclick="toggle()">
+        <button class="w3-button w3-2019-galaxy-blue w3-hover-indigo w3-padding w3-margin" id="toggle" onclick="toggle()" style="display: none;">
             Switch to advanced mode
         </button>
         <div class="w3-container w3-margin">
