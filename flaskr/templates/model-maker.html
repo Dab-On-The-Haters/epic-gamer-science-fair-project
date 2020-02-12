@@ -46,7 +46,7 @@
                     {% if field in [form.csrf_token] %}
                         {{ field }}
                     {% else %}
-                        <div id="div-{{ field.id }}" class="w3-margin-top">
+                        <div id="div-{{ field.id }}" class="w3-margin-top" {% if field.id in advancedIDs %} style="display: none;" {% endif %}>
                             <div>
                                 {{ field.label|safe }}
                             </div>
