@@ -11,7 +11,7 @@
             {
                 var advancedIds = JSON.parse('{{ advancedIDs|tojson }}');
                 for (var i=0; i<advancedIds.length; i++) {
-                    advancedFields.push(document.getElementId('div-' + advancedIds[i]));
+                    advancedFields.push(document.getElementById('div-' + advancedIds[i]));
                 }
             }
 
