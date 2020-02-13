@@ -44,9 +44,8 @@
                     {% if field.id == 'csrf_token' %}
                         {{ field }}
                     {% elif field.id == 'userMode' %}
-                        <label class=" w3-margin-top w3-large switch">
-                            Show advanced options
-                            {{ field }}
+                        <label class="w3-margin-top w3-large switch">
+                            <b>Show advanced options</b> {{ field }}
                             <span class="slider round"></span>
                         </label>
                     {% else %}
