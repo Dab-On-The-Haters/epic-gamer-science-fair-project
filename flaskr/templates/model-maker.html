@@ -4,7 +4,6 @@
     <head>
         {{ base.head('Joe\'s Model Maker', css=['toggles', 'popups'], important=True) }}
         <script>
-            var userMode = true;
             var toggleButton;
             var advancedFields = [];
             window.onload = function() {
@@ -16,16 +15,14 @@
             }
 
             function toggle() {
-                if (userMode) {
+                if (toggleButton.checked) {
                     toggleButton.innerHTML = "Switch to easy mode";
-                    userMode = false;
                     for (var i=0; i<advancedFields.length; i++) {
                         advancedFields[i].style.display = "block";
                     }
                 }
                 else {
                     toggleButton.innerHTML = "Switch to advanced mode";
-                    userMode = true;
                     for (var i=0; i<advancedFields.length; i++) {
                         advancedFields[i].style.display = "none";
                     }
