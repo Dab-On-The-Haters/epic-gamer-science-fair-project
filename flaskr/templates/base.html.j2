@@ -25,24 +25,7 @@
     {% if spacing %}
         <div>{% for br in range(spacing) %}<br>{% endfor %}</div>
     {% endif %}
-    <style>
-    .dropdown-content1 {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    padding: 12px 16px;
-    z-index: 1;
-}
-.dropdown1 {
 
-}
-
-.dropdown1:hover .dropdown-content1 {
-  display: block;
-}
-    </style>
 {% endmacro %}
 
 {% macro heading(title, extras=False) %}
@@ -76,6 +59,19 @@
         }
         .w3-bruh-blue {
             background-color: #191970;
+        }
+        .dropdown-content1 {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            padding: 12px 16px;
+            z-index: 1;
+        }
+
+        .dropdown1:hover .dropdown-content1 {
+            display: block;
         }
     </style>
     {% if important %}
