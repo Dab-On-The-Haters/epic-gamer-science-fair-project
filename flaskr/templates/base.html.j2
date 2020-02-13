@@ -77,3 +77,19 @@
     <base target="_blank">
     {% endif %}
 {% endmacro %}
+
+{% macro formErrors(field, escape=True) %}
+    {% if field.errors|length %}
+    <ul class="w3-ul w3-text-red">
+        {% for error in field.errors %}
+            <li>
+            {% if escape %}
+                error|escape
+            {% else %}
+                error
+            {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endmacro %}
