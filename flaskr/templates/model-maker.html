@@ -50,7 +50,7 @@
                             <span class="slider round"></span>
                         </label>
                     {% else %}
-                        <div id="div-{{ field.id }}" class="w3-margin-top" {% if (not form.userMode.data) or field.id in advancedIDs %} style="display: none;" {% endif %}>
+                        <div id="div-{{ field.id }}" class="w3-margin-top" {% if (not form.userMode.data) and field.id in advancedIDs %} style="display: none;" {% endif %}>
                             <div>
                                 {{ field.label|safe }}
                             </div>
