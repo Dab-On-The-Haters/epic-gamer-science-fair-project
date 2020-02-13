@@ -12,7 +12,7 @@
                 for (var i=0; i<advancedIds.length; i++) {
                     advancedFields.push(document.getElementById('div-' + advancedIds[i]));
                 }
-                toggleButton = document.getElementById("toggle");
+                toggleButton = document.getElementById("userMode");
             }
 
             function toggle() {
@@ -36,18 +36,20 @@
     <body class="w3-text-white">
         {{ base.navbar(user, c='teach') }}
         {{ base.heading('Make a model') }}
-        <button class="w3-button w3-2019-galaxy-blue w3-hover-indigo w3-padding w3-margin" id="toggle" onclick="toggle()">
-            Switch to advanced mode
-        </button>
         <div class="w3-container w3-margin">
             <form method="POST" target="_self">
                 <p><b>Hover over any field's label for a more detailed explanation</b></p>
                 <p><a href="/explore-datasets">Browse datasets</a></p>
                 {% for field in form %}
-                    {% if field in [form.csrf_token] %}
+                    {% if field.id == 'csrf_token' %}
                         {{ field }}
+                    {% elif field.id == 'userMode' %}
+                        <label class="w3-margin-top w3-large switch">
+                            <b>Show advanced options</b> {{ field }}
+                            <span class="slider round"></span>
+                        </label>
                     {% else %}
-                        <div id="div-{{ field.id }}" class="w3-margin-top" {% if field.id in advancedIDs %} style="display: none;" {% endif %}>
+                        <div id="div-{{ field.id }}" class="w3-margin-top" {% if (not form.userMode.data) and field.id in advancedIDs %} style="display: none;" {% endif %}>
                             <div>
                                 {{ field.label|safe }}
                             </div>
