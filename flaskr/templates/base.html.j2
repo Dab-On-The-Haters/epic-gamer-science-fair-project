@@ -22,8 +22,8 @@
             <div class="{{ selection(c, 'explore', True) }}">
                 <button class="w3-button w3-padding-large w3-hover-indigo">Talk to our neural networks with Joe</button>
                 <div class="w3-dropdown-content w3-bar-block w3-card-4">
-                    <a href="/upload-dataset" class="w3-bar-item w3-hover-indigo w3-button">Explore datasets</a>
-                    <a href="/new-model" class="w3-bar-item w3-hover-indigo w3-button">Explore models</a>
+                    <a href="/explore-datasets" class="w3-bar-item w3-hover-indigo w3-button">Explore datasets</a>
+                    <a href="/explore-models" class="w3-bar-item w3-hover-indigo w3-button">Explore models</a>
                 </div>
             </div>
             {% if (not user) or user.is_anonymous %}
