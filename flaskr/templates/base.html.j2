@@ -6,11 +6,7 @@
     <div class="w3-top">
         <div class="w3-bar w3-2019-galaxy-blue w3-card">
             <a href="/" class="{{ selection(c, '/') }}">Joe</a>
-            <a href="/about" class="{{ selection(c, 'about') dropdown1 }}">Learn more about Joe</a>
-            <div class = "dropdowncontent1">
-            <a>Link 1</a>
-            <a>Link 2</a>
-            </div>
+            <a href="/about" class="{{ selection(c, 'about') }}">Learn more about Joe</a>
             <a href="/teach" class="{{ selection(c, 'teach') }}">Teach with Joe</a>
             <a href="/explore-models" class="{{ selection(c, 'explore') }}">Talk to our neural networks with Joe</a>
             {% if (not user) or user.is_anonymous %}
@@ -59,19 +55,6 @@
         }
         .w3-bruh-blue {
             background-color: #191970;
-        }
-        .dropdown-content1 {
-            display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            padding: 12px 16px;
-            z-index: 1;
-        }
-
-        .dropdown1:hover .dropdown-content1 {
-            display: block;
         }
     </style>
     {% if important %}
