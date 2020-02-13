@@ -1,5 +1,9 @@
-{% macro selection(selected, selectGoal) %}
-    w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo w3-bottombar {% if selected == selectGoal %}w3-border-blue{% else %}w3-border-none w3-hover-border-indigo{% endif %}
+{% macro selection(selected, selectGoal, dropdown=False) %}
+    {% if not dropdown %}
+        w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo w3-bottombar {% if selected == selectGoal %}w3-border-blue{% else %}w3-border-none w3-hover-border-indigo{% endif %}
+    {% else %}
+        w3-dropdown-hover w3-hide-small w3-hover-indigo w3-bottombar {% if selected == selectGoal %}w3-border-blue{% else %}w3-border-none w3-hover-border-indigo{% endif %}
+    {% endif %}
 {% endmacro %}
 
 {% macro navbar(user, c='/', spacing=3) %}
@@ -7,8 +11,20 @@
         <div class="w3-bar w3-2019-galaxy-blue w3-card">
             <a href="/" class="{{ selection(c, '/') }}">Joe</a>
             <a href="/about" class="{{ selection(c, 'about') }}">Learn more about Joe</a>
-            <a href="/teach" class="{{ selection(c, 'teach') }}">Teach with Joe</a>
-            <a href="/explore-models" class="{{ selection(c, 'explore') }}">Talk to our neural networks with Joe</a>
+            <div class="{{ selection(c, 'teach', True) }}">Teach with Joe</a>
+                <button class="w3-button">Dropdown</button>
+                <div class="w3-dropdown-content w3-bar-block w3-hover-indigo w3-card-4">
+                    <a href="/upload-dataset" class="w3-bar-item w3-hover-indigo w3-button">Upload a dataset</a>
+                    <a href="/new-model" class="w3-bar-item w3-hover-indigo w3-button">Train a model</a>
+                    <a href="/teach" class="w3-bar-item w3-hover-indigo w3-button">More Info</a>
+                </div>
+            </div>
+            <div class="{{ selection(c, 'explore', True) }}">Talk to our neural networks with Joe</a>
+                <button class="w3-button">Dropdown</button>
+                <div class="w3-dropdown-content w3-bar-block w3-hover-indigo w3-card-4">
+                    <a href="/upload-dataset" class="w3-bar-item w3-hover-indigo w3-button">Explore datasets</a>
+                    <a href="/new-model" class="w3-bar-item w3-hover-indigo w3-button">Explore models</a>
+                </div>
             {% if (not user) or user.is_anonymous %}
                 <a href="/login" class="{{ selection(c, 'login') }} w3-right">Log In</a>
                 <a href="/register" class="{{ selection(c, 'register') }} w3-right">Sign Up</a>
@@ -21,7 +37,6 @@
     {% if spacing %}
         <div>{% for br in range(spacing) %}<br>{% endfor %}</div>
     {% endif %}
-
 {% endmacro %}
 
 {% macro heading(title, extras=False) %}
