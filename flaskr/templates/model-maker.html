@@ -41,7 +41,7 @@
                 <p><b>Hover over any field's label for a more detailed explanation</b></p>
                 <p><a href="/explore-datasets">Browse datasets</a></p>
                 {% for field in form %}
-                    {% if field.id == 'csrf_token'] %}
+                    {% if field.id == 'csrf_token' %}
                         {{ field }}
                     {% elif field.id == 'userMode' %}
                         <label class=" w3-margin-top w3-large switch">

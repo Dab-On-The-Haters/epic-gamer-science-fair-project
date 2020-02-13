@@ -106,7 +106,7 @@ class modelMakerForm(FlaskForm):
         if not db.cur.fetchall():
             raise ValidationError('We couldn\'t find any datasets with that ID')
     
-    userMode = f.BooleanField('Show advanced options', render_kw={"onclick: toggle;"})
+    userMode = f.BooleanField('Show advanced options', render_kw={"onclick": "toggle()"})
 
     datasetID = f5.IntegerField('ID of dataset being used', [datasetCheck])
     description = f.TextAreaField('Description of this model')
