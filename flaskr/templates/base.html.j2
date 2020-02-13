@@ -11,8 +11,8 @@
             <a>Link 1</a>
             <a>Link 2</a>
             </div>
-            <a class = "dropdown" href="/teach" class="{{ selection(c, 'teach') }}">Teach with Joe</a>
-            <a class = "dropdown" href="/explore-models" class="{{ selection(c, 'explore') }}">Talk to our neural networks with Joe</a>
+            <a href="/teach" class="{{ selection(c, 'teach') }}">Teach with Joe</a>
+            <a href="/explore-models" class="{{ selection(c, 'explore') }}">Talk to our neural networks with Joe</a>
             {% if (not user) or user.is_anonymous %}
                 <a href="/login" class="{{ selection(c, 'login') }} w3-right">Log In</a>
                 <a href="/register" class="{{ selection(c, 'register') }} w3-right">Sign Up</a>
@@ -34,6 +34,9 @@
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     padding: 12px 16px;
     z-index: 1;
+}
+.dropdown1 {
+
 }
 
 .dropdown1:hover .dropdown-content1 {
