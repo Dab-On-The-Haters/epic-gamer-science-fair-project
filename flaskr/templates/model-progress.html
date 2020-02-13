@@ -2,8 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <link rel="stylesheet" type="text/css" href="/static/books.css">
-        {{ base.head('Progress on model #'~ID|string, important=True) }}
+        {{ base.head('Progress on model #'~ID|string, css=['books'] important=True) }}
         <script>
         var progressBar;
         var curID;
@@ -38,7 +37,6 @@
             progressBar = document.getElementById("epochProgress");
             newRequest();
         }
-        
         </script>
     </head>
     <body class="w3-text-white">

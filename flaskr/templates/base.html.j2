@@ -32,15 +32,17 @@
     </div>
 {% endmacro %}
 
-{% macro head(title, popups=False, important=False) %}
+{% macro head(title, css=[] important=False) %}
     <meta charset="UTF-8">
-    <title>{% if 'Joe' in title %}{{ title }}{% else %}{{ title~' | Joe'}}{% endif %}</title>
+    <title>{{ title }} {% if 'Joe' not in title %} | Joe{% endif %}</title>
     <link rel="stylesheet" href="/static/w3.css">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    {% if popups %}<link rel="stylesheet" href="/static/popups.css">{% endif %}
     <link rel="stylesheet" href="/static/w3-colors-2019.css">
     <link href="https://fonts.googleapis.com/css?family=Poppins|Poppins:i|Poppins:b&display=swap" rel="stylesheet">
+    {% for cssFile in css %} 
+        <link rel="stylesheet" href="/static/{{ cssFile }}.css">
+    {% endfor %}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
