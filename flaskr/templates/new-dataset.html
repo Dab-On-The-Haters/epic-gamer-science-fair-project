@@ -36,9 +36,9 @@
                     </ul>
                 {% endif %}
                 <div class="w3-margin-top">{{ form.files }}</div>
-                <div class="w3-margin-top">{{ form.newFile }} {{ form.removeFile }}</div>
+                <div class="w3-margin-top">{{ form.newFile }} {% if hasFiles %}{{ form.removeFile }}{% endif %}</div>
                 <div class="w3-margin-top">{{ form.URLs }}</div>
-                <div class="w3-margin-top">{{ form.newURL }} {{ form.removeURL }}</div>
+                <div class="w3-margin-top">{{ form.newURL }} {% if hasURLs %}{{ form.removeURL }}{% endif %}</div>
                 <br>
                 <div class="w3-margin w3-right">{{ form.uploadDataset }}</div>
             </form>
