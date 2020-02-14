@@ -463,6 +463,8 @@ perPage = 20
 @app.route('/explore-models', methods=['GET', 'POST'])
 def exploreModels():
     pageNum = getPage(request.args)
+    db.cur.execute('SELECT COUNT(finished_naturally) FROM models;')
+    pageCount = db.cur.fetchone()
     db.cur.execute('''SELECT models.ID, models.model_description, users.username, models.datasetID,
         datasets.title, datasets.user_description, LENGTH(datasets.final_text), datasets.time_posted AS dataset_time_posted
         FROM models LEFT JOIN (users, datasets)
@@ -476,6 +478,8 @@ def exploreModels():
 @app.route('/explore-datasets', methods=['GET', 'POST'])
 def exploreDatasets():
     pageNum = getPage(request.args)
+    db.cur.execute('SELECT COUNT(ID) FROM datasets;')
+    pageCount = db.cur.fetchone()
     db.cur.execute('''SELECT datasets.ID, datasets.title, datasets.user_description, LENGTH(datasets.final_text), users.username
         FROM datasets LEFT JOIN users
         ON users.ID = datasets.posterID
