@@ -457,26 +457,32 @@ def generatedText(ID):
         return render_template('generated-text.html', ID=qResults['modelID'], generatedText=generatedText, user=current_user)
     return render_template('generating.html', ID=qResults['modelID'],)
 
+getPage = lambda a : int(a.get('page', 0))
+perPage = 20
 
 @app.route('/explore-models', methods=['GET', 'POST'])
 def exploreModels():
+    pageNum = getPage(request.args)
     db.cur.execute('''SELECT models.ID, models.model_description, users.username, models.datasetID,
-    datasets.title, datasets.user_description, LENGTH(datasets.final_text), datasets.time_posted AS dataset_time_posted
-    FROM models LEFT JOIN (users, datasets)
-    ON (users.ID = models.trainerID AND datasets.ID = models.datasetID)
-    LEFT JOIN votes ON votes.modelID = models.ID
-    GROUP BY models.ID
-    ORDER BY COUNT(votes.positivity) - COUNT(votes.negativity) DESC;''')
+        datasets.title, datasets.user_description, LENGTH(datasets.final_text), datasets.time_posted AS dataset_time_posted
+        FROM models LEFT JOIN (users, datasets)
+        ON (users.ID = models.trainerID AND datasets.ID = models.datasetID)
+        LEFT JOIN votes ON votes.modelID = models.ID
+        GROUP BY models.ID
+        ORDER BY COUNT(votes.positivity) - COUNT(votes.negativity) DESC
+        LIMIT %s OFFSET %s;''', perPage, pageNum * perPage)
     return render_template('explore-models.html', models=db.cur.fetchall(), user=current_user)
 
 @app.route('/explore-datasets', methods=['GET', 'POST'])
 def exploreDatasets():
+    pageNum = getPage(request.args)
     db.cur.execute('''SELECT datasets.ID, datasets.title, datasets.user_description, LENGTH(datasets.final_text), users.username
         FROM datasets LEFT JOIN users
         ON users.ID = datasets.posterID
         LEFT JOIN votes ON votes.datasetID = datasets.ID
         GROUP BY datasets.ID
-        ORDER BY COUNT(votes.positivity) - COUNT(votes.negativity) DESC;''')
+        ORDER BY COUNT(votes.positivity) - COUNT(votes.negativity) DESC
+        LIMIT %s OFFSET %s;''', perPage, pageNum * perPage)
     return render_template('explore-datasets.html', datasets=db.cur.fetchall(), user=current_user)
 
 
