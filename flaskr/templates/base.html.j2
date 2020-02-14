@@ -80,6 +80,7 @@
 
 {% macro formErrors(field, escape=True) %}
     {% if field.errors|length == 1 %}
+        {% set error = field.errors[0] %}
         <p class="w3-text-red">
             {% if escape %}
             {{ error|escape }}
