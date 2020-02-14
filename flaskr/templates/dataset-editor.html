@@ -17,11 +17,7 @@
                     <p class="w3-large"><b>Select columns</b></p>
                         {% for selection in form.columnSelections %}
                             {{ selection.select.label }}: {{ selection.select}}
-                            <ul class="w3-ul w3-text-red">
-                                {% for error in selection.errors %}
-                                    <li>{{ error|escape }}</li>
-                                {% endfor %}
-                            </ul>
+                            {{ base.formErrors(selection) }}
                             <br>
                         {% endfor %}
                     {% endif %}
@@ -36,11 +32,7 @@
                 <div class="w3-margin-top">
                     {{ form.finalText }}
                 </div>
-                <ul class="w3-ul w3-text-red">
-                    {% for error in form.finalText.errors %}
-                        <li>{{ error|escape }}</li>
-                    {% endfor %}
-                </ul>
+                {{ base.formErrors(form.finalText) }}
             </form>
         </div>
     </body>

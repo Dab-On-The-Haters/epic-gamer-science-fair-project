@@ -54,11 +54,7 @@
                             {{ field }}
                         </div>
                     {% endif %}
-                    <ul class="w3-ul w3-text-red">
-                        {% for error in field.errors %}
-                            <li>{{ error|escape }}</li>
-                        {% endfor %}
-                     </ul>
+                    {{ base.formErrors(field) }}
                 {% endfor %}
                 <br>
                 <button type="submit" class="w3-button w3-xlarge w3-2019-galaxy-blue w3-right w3-margin w3-hover-indigo">Start training this model!</button>
