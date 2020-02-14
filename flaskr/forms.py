@@ -13,7 +13,7 @@ urlValidChars = string.ascii_letters + string.digits + '._-+'
 # message for InputRequired
 r = lambda fieldValue : 'Please enter your ' + fieldValue
 
-w3Button = {'class': 'w3-2019-galaxy-blue w3-button w3-padding-large w3-large'}
+w3Button = {'class': 'w3-2019-galaxy-blue w3-button w3-padding-large w3-large w3-hover-indigo'}
 
 from jinja2 import Template
 popup = Template('''
