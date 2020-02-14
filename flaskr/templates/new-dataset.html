@@ -11,24 +11,17 @@
         <div class="w3-container w3-card w3-margin w3-2019-galaxy-blue">
             <form method="POST" target="_self" enctype="multipart/form-data">
                 {{ form.csrf_token }}
+                {{ base.formErrors(form.csrf_token) }}
                 <div class="w3-margin-top">
                     <b>{{ form.title.label }}</b>
                     {{ form.title }}
-                    <ul class="w3-ul w3-text-red">
-                        {% for error in form.title.errors %}
-                            <li>{{ error|escape }}</li>
-                        {% endfor %}
-                    </ul>
+                    {{ base.formErrors(form.title) }}
                 </div>
 
                 <div class="w3-margin-top">
                     <b>{{ form.description.label }}</b>
                     {{ form.description }}
-                    <ul class="w3-ul w3-text-red">
-                        {% for error in form.description.errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
+                    {{ base.formErrors(form.description) }}
                 </div>
                 <p>
                     Some good places to get datasets from are <a href="https://www.kaggle.com/datasets">Kaggle</a>, a data science site,

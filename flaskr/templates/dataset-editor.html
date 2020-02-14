@@ -11,6 +11,7 @@
         <div class="w3-container w3-margin">
             <form target="_self" method="POST">
                 {{ form.csrf_token }}
+                {{ base.formErrors(form.csrf_token) }}
                     
                 <div class="w3-margin-top">
                     {% if form.columnSelections %}

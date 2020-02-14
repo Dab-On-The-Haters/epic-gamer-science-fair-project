@@ -11,7 +11,7 @@
         <div class="w3-container w3-card w3-margin w3-2019-galaxy-blue">
             <form method="POST">
                 {% for field in form %}
-                    {% if field in [form.csrf_token] %}
+                    {% if field.id == 'csrf_token' %}
                         {{ field }}
                     {% else %}
                         <div class="w3-margin-top">
@@ -19,11 +19,7 @@
                             {{ field }}
                         </div>
                     {% endif %}
-                    <ul class="w3-ul w3-text-red">
-                        {% for error in field.errors %}
-                            <li>{{ error|escape }}</li>
-                        {% endfor %}
-                    </ul>
+                    {{ base.formErrors(field) }}
                 {% endfor %}
                 <br>
                 <button type="submit" class="w3-button w3-2019-galaxy-blue w3-right w3-margin">Log in</button>
