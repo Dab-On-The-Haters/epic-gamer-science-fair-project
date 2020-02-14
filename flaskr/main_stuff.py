@@ -470,7 +470,7 @@ def exploreModels():
         LEFT JOIN votes ON votes.modelID = models.ID
         GROUP BY models.ID
         ORDER BY COUNT(votes.positivity) - COUNT(votes.negativity) DESC
-        LIMIT %s OFFSET %s;''', perPage, pageNum * perPage)
+        LIMIT %s OFFSET %s;''', (perPage, pageNum * perPage))
     return render_template('explore-models.html', models=db.cur.fetchall(), user=current_user)
 
 @app.route('/explore-datasets', methods=['GET', 'POST'])
@@ -482,7 +482,7 @@ def exploreDatasets():
         LEFT JOIN votes ON votes.datasetID = datasets.ID
         GROUP BY datasets.ID
         ORDER BY COUNT(votes.positivity) - COUNT(votes.negativity) DESC
-        LIMIT %s OFFSET %s;''', perPage, pageNum * perPage)
+        LIMIT %s OFFSET %s;''', (perPage, pageNum * perPage))
     return render_template('explore-datasets.html', datasets=db.cur.fetchall(), user=current_user)
 
 
