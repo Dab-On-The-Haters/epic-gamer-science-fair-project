@@ -8,7 +8,7 @@
         {{ base.navbar(user, c='teach') }}
         {{ base.heading('Create a new dataset') }}
 
-        <div class="w3-container w3-card w3-margin w3-2019-galaxy-blue">
+        <div class="w3-container w3-margin">
             <form method="POST" target="_self" enctype="multipart/form-data">
                 {{ form.csrf_token }}
                 {{ base.formErrors(form.csrf_token) }}
