@@ -102,3 +102,18 @@
         </ul>
     {% endif %}
 {% endmacro %}
+
+{% macro pagify(count, currentPage, perPage=20) %}
+    <div class="w3-bar">
+        {% if currentPage %}
+            <a href="/explore-models?page={{ currentPage-1 }}" class="w3-button">&laquo;</a>
+        {% endif %}
+        {% for i in range(count / 20) %}
+             <a href="/explore-models?page={{ i }} class="w3-button {% if i==count %}w3-indigo{% else %}w3-2019-galaxy-blue w3-hover-indigo{% endif %}">{{ i+1 }}</a>
+        {% endfor %}
+        {% if currentPage < count %}
+            <a href="/explore-models?page={{ currentPage+1 }}" class="w3-button">&raquo;</a>
+        {% endif %}
+    </div>
+{% endmacro %}
+
