@@ -464,7 +464,7 @@ perPage = 20
 def exploreModels():
     pageNum = getPage(request.args)
     db.cur.execute('SELECT COUNT(finished_naturally) FROM models;')
-    pageCount = db.cur.fetchone()['COUNT(ID)']
+    pageCount = db.cur.fetchone()['COUNT(finished_naturally)']
     
     db.cur.execute('''SELECT models.ID, models.model_description, users.username, models.datasetID,
         datasets.title, datasets.user_description, LENGTH(datasets.final_text), datasets.time_posted AS dataset_time_posted
