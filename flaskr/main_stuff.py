@@ -102,6 +102,8 @@ def load_user(ID):
 
 import subprocess as subp
 
+from math import ceil
+
 # for reading datasets as they're uploaded
 import csv
 csv.field_size_limit(sys.maxsize)
@@ -464,7 +466,7 @@ perPage = 20
 def exploreModels():
     pageNum = getPage(request.args)
     db.cur.execute('SELECT COUNT(finished_naturally) FROM models;')
-    pageCount = db.cur.fetchone()['COUNT(finished_naturally)']
+    pageCount = ceil(db.cur.fetchone()['COUNT(finished_naturally)'] / perPage)
     
     db.cur.execute('''SELECT models.ID, models.model_description, users.username, models.datasetID,
         datasets.title, datasets.user_description, LENGTH(datasets.final_text), datasets.time_posted AS dataset_time_posted
@@ -480,7 +482,7 @@ def exploreModels():
 def exploreDatasets():
     pageNum = getPage(request.args)
     db.cur.execute('SELECT COUNT(ID) FROM datasets;')
-    pageCount = db.cur.fetchone()['COUNT(ID)']
+    pageCount = ceil(db.cur.fetchone()['COUNT(ID)'] / perPage)
     
     db.cur.execute('''SELECT datasets.ID, datasets.title, datasets.user_description, LENGTH(datasets.final_text), users.username
         FROM datasets LEFT JOIN users
