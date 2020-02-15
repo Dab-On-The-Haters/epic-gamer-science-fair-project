@@ -106,13 +106,13 @@
 {% macro pagify(pageCount, pageNum, pageURL, perPage=20) %}
     <div class="w3-bar w3-section w3-center">
         {% if pageNum %}
-            <a href="/{{ pageURL }}?page={{ pageNum-1 }}" class="w3-button">&laquo;</a>
+            <a href="/{{ pageURL }}?page={{ pageNum-1 }}" class="w3-button w3-margin w3-2019-galaxy-blue w3-hover-indigo">&laquo;</a>
         {% endif %}
         {% for i in range((pageCount / 20)|round(0, 'ceil')|int) %}
-             <a href="/{{ pageURL }}?page={{ i }} class="w3-button {% if i==pageNum %}w3-indigo{% else %}w3-2019-galaxy-blue w3-hover-indigo{% endif %}">{{ i+1 }}</a>
+             <a href="/{{ pageURL }}?page={{ i }}" class="w3-button w3-margin {% if i==pageNum %}w3-indigo{% else %}w3-2019-galaxy-blue w3-hover-indigo{% endif %}">{{ i+1 }}</a>
         {% endfor %}
         {% if pageNum < pageCount %}
-            <a href="/{{ pageURL }}?page={{ pageNum+1 }}" class="w3-button">&raquo;</a>
+            <a href="/{{ pageURL }}?page={{ pageNum+1 }}" class="w3-button w3-margin w3-2019-galaxy-blue w3-hover-indigo">&raquo;</a>
         {% endif %}
     </div>
 {% endmacro %}
