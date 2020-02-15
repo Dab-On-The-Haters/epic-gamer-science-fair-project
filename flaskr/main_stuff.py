@@ -465,6 +465,7 @@ def exploreModels():
     pageNum = getPage(request.args)
     db.cur.execute('SELECT COUNT(finished_naturally) FROM models;')
     pageCount = db.cur.fetchone()
+    
     db.cur.execute('''SELECT models.ID, models.model_description, users.username, models.datasetID,
         datasets.title, datasets.user_description, LENGTH(datasets.final_text), datasets.time_posted AS dataset_time_posted
         FROM models LEFT JOIN (users, datasets)
@@ -473,13 +474,14 @@ def exploreModels():
         GROUP BY models.ID
         ORDER BY COUNT(votes.positivity) - COUNT(votes.negativity) DESC
         LIMIT %s OFFSET %s;''', (perPage, pageNum * perPage))
-    return render_template('explore-models.html', models=db.cur.fetchall(), user=current_user)
+    return render_template('explore-models.html', pageNum=pageNum, pageCount=pageCount, models=db.cur.fetchall(), user=current_user)
 
 @app.route('/explore-datasets', methods=['GET', 'POST'])
 def exploreDatasets():
     pageNum = getPage(request.args)
     db.cur.execute('SELECT COUNT(ID) FROM datasets;')
     pageCount = db.cur.fetchone()
+    
     db.cur.execute('''SELECT datasets.ID, datasets.title, datasets.user_description, LENGTH(datasets.final_text), users.username
         FROM datasets LEFT JOIN users
         ON users.ID = datasets.posterID
@@ -487,7 +489,7 @@ def exploreDatasets():
         GROUP BY datasets.ID
         ORDER BY COUNT(votes.positivity) - COUNT(votes.negativity) DESC
         LIMIT %s OFFSET %s;''', (perPage, pageNum * perPage))
-    return render_template('explore-datasets.html', datasets=db.cur.fetchall(), user=current_user)
+    return render_template('explore-datasets.html', pageNum=pageNum, pageCount=pageCount, datasets=db.cur.fetchall(), user=current_user)
 
 
 @app.route('/u/<username>')

@@ -28,6 +28,7 @@
     <body class="w3-text-white">
         {{ base.navbar(user, c='explore') }}
         {{ base.heading('Datasets') }}
+        {{ base.pagify(pageCount, pageNum, 'explore-datasets') }}
         <div class="w3-container">
             {% for d in datasets %}
                 <div class="w3-container w3-card w3-indigo w3-margin w3-padding">
@@ -44,5 +45,6 @@
                 </div>
             {% endfor %}
         </div>
+        {{ base.pagify(pageCount, pageNum, 'explore-datasets') }}
     </body>
 </html>
