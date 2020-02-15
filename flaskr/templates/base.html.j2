@@ -104,7 +104,7 @@
 {% endmacro %}
 
 {% macro pagify(pageCount, pageNum, pageURL, perPage=20) %}
-    <div class="w3-bar w3-section w3-center">
+    <div class="w3-bar w3-center">
         {% if pageNum %}
             <a href="/{{ pageURL }}?page={{ pageNum-1 }}" class="w3-button w3-margin w3-2019-galaxy-blue w3-hover-indigo">&laquo;</a>
         {% endif %}
