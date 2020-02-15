@@ -108,7 +108,7 @@
         {% if pageNum %}
             <a href="/{{ pageURL }}?page={{ pageNum-1 }}" class="w3-button">&laquo;</a>
         {% endif %}
-        {% for i in range(pageCount / 20) %}
+        {% for i in range((pageCount / 20)|round(0, 'ceil')|int) %}
              <a href="/{{ pageURL }}?page={{ i }} class="w3-button {% if i==pageNum %}w3-indigo{% else %}w3-2019-galaxy-blue w3-hover-indigo{% endif %}">{{ i+1 }}</a>
         {% endfor %}
         {% if pageNum < pageCount %}
