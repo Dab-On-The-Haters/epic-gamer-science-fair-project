@@ -4,7 +4,7 @@
     <head>
         {{ base.head(('Dataset "'~d['title']~'"')|escape) }}
     </head>
-    <body class="w3-text-white">
+    <body>
         {{ base.navbar(user, c='explore') }}
         {{ base.heading(('<q>'|safe)~(d['title']|escape)~('</q>'|safe), extras='by <a href="/u/'~d['username']~'">'~d['username']~'</a>') }}
         <div class="w3-container w3-margin">
