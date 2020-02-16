@@ -228,7 +228,7 @@ def newDataset():
     DF = f.datasetForm()
 
     if request.method == 'GET':
-        return render_template('new-dataset.html', form=DF, user=current_user, hasURLs=False, hasFiles=False)
+        return render_template('new-dataset.html', form=DF, user=current_user)
     
     if DF.newURL.data:
         DF.URLs.append_entry()
@@ -241,10 +241,6 @@ def newDataset():
     
 
     elif DF.uploadDataset.data and DF.validate_on_submit():
-        
-        hasURLs = False
-        hasFiles = False
-
         # moved from post-validation to pre and back to post again lol
         files = dict()
         invalidFiles = []
@@ -257,7 +253,6 @@ def newDataset():
             if isTextFile(data.mimetype):
                 files[data.filename] = data.read().decode(data.mimetype_params.get('charset', 'utf-8'), errors='ignore')
             else:
-                hasFiles = True
                 invalidFiles.append(data.filename)
         
         # get file links from urllib3
@@ -266,11 +261,10 @@ def newDataset():
             if req.status == 200 and isTextFile(req.headers['Content-Type']):
                 files[URL] = req.data.decode(req.headers.get('charset', 'utf-8'), errors='ignore')
             else:
-                hasURLs = True
                 invalidFiles.append(URL.split('/')[-1])
         
         if invalidFiles:
-            return render_template('new-dataset.html', form=DF, hasFiles=hasFiles, hasURLs=hasURLs, invalidFiles=invalidFiles, user=current_user)
+            return render_template('new-dataset.html', form=DF, invalidFiles=invalidFiles, user=current_user)
         
         db.cur.execute('INSERT INTO datasets (title,  user_description, posterID) VALUES (%s, %s, %s);',
         (DF.title.data, DF.description.data, current_user.ID))
@@ -295,7 +289,7 @@ def newDataset():
         session['columnLists'] = json.dumps(columnLists)
         return redirect('/edit-dataset')
     
-    return render_template('new-dataset.html', form=DF, hasFiles=bool(len(DF.files.entries)), hasURLs=bool(len(DF.URLs.entries)), user=current_user)
+    return render_template('new-dataset.html', form=DF, user=current_user)
 
  
 @app.route('/edit-dataset', methods=['GET', 'POST'])
