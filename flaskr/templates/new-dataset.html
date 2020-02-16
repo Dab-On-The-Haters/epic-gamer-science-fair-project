@@ -38,12 +38,12 @@
                 <div class="w3-margin-top">{{ form.files }}</div>
                 <div class="w3-margin-top">
                     {{ form.newFile }}
-                    {% if form.files|length %}{{ form.removeFile }}{% endif %}
+                    {% if form.files.entries|length %}{{ form.removeFile }}{% endif %}
                 </div>
                 <div class="w3-margin-top">{{ form.URLs }}</div>
                 <div class="w3-margin-top">
                     {{ form.newURL }}
-                    {% if if form.URLs|length %}{{ form.removeURL }}{% endif %}
+                    {% if form.URLs.entries|length %}{{ form.removeURL }}{% endif %}
                 </div>
                 <br>
                 <div class="w3-margin w3-right">{{ form.uploadDataset }}</div>
