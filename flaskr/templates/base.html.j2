@@ -26,7 +26,8 @@
                     <a href="/explore-models" class="w3-bar-item w3-hover-indigo w3-button">Explore models</a>
                 </div>
             </div>
-            {% if (not user) or user.is_anonymous %}
+            {% if not user %}
+            {% if user.is_anonymous %}
                 <a href="/login" class="{{ selection(c, 'login') }} w3-right">Log In</a>
                 <a href="/register" class="{{ selection(c, 'register') }} w3-right">Sign Up</a>
             {% else %}
