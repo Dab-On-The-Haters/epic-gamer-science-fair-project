@@ -3,12 +3,17 @@
 <html lang="en">
     <head>
         {{ base.head('About our science fair') }}
+        <script>
+            function setHeight() {
+                document.getElementById("docsFrame").height = (document.body.clientHeight - 200).toString()
+            }
+        </script>
     </head>
-    <body>
+    <body onload="setHeight()">
         {{ base.navbar(user, c='about') }}
         {{ base.heading('About Joe') }}
         <div class="w3-container w3-center">
-            <iframe width="90%" height="1000px" src="https://docs.google.com/document/d/e/2PACX-1vRYsdqs0-ESKaEVJ9tuP5QYFyWtVDJ2idBeg3P-5C2qJeZ5HhKAEAqF2XbppExJPMMtvi55aIT3ryjo/pub?embedded=true"></iframe>
+            <iframe id="docsFrame" width="95%" src="https://docs.google.com/document/d/e/2PACX-1vRYsdqs0-ESKaEVJ9tuP5QYFyWtVDJ2idBeg3P-5C2qJeZ5HhKAEAqF2XbppExJPMMtvi55aIT3ryjo/pub?embedded=true"></iframe>
         </div>
     </body>
 </html>
