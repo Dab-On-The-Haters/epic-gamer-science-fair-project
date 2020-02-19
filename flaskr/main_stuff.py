@@ -454,7 +454,7 @@ def generatedText(ID):
     return render_template('generating.html', ID=qResults['modelID'],)
 
 getPage = lambda a : int(a.get('page', 0))
-perPage = 20
+perPage = 10
 
 @app.route('/explore-models', methods=['GET', 'POST'])
 def exploreModels():
