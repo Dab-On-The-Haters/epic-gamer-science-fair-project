@@ -1,8 +1,14 @@
 {% macro selection(selected, selectGoal, dropdown=False) %}
+    w3-hover-indigo w3-bottombar
     {% if not dropdown %}
-        w3-bar-item w3-button w3-padding-large w3-hide-small w3-hover-indigo w3-bottombar {% if selected == selectGoal %}w3-border-blue{% else %}w3-border-none w3-hover-border-indigo{% endif %}
+        w3-bar-item w3-button w3-padding-large w3-hide-small
     {% else %}
-        w3-dropdown-hover w3-hide-small w3-hover-indigo w3-bottombar {% if selected == selectGoal %}w3-border-blue{% else %}w3-border-none w3-hover-border-indigo{% endif %}
+        w3-dropdown-hover w3-hide-small 
+    {% endif %}
+    {% if selected == selectGoal %}
+        w3-border-blue
+    {% else %}
+        w3-border-none w3-hover-border-indigo
     {% endif %}
 {% endmacro %}
 
