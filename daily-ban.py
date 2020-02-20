@@ -1,5 +1,5 @@
 import subprocess as subp
-badSigns = ['php', 'chmod', 'wget', '/shell', 'admin', 'mysql']
+badSigns = {'php', 'chmod', 'wget', '/shell', 'admin', 'mysql'}
 bannedIPs = set()
 
 with open('/var/log/apache2/access.log') as f:
