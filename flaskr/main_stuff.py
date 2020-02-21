@@ -31,6 +31,16 @@ import json
 with open('/home/thomas/.private-stuff.json') as f:
     passwords = json.load(f)
 
+with open('glossary.json') as f:
+    glossary = sorted(json.load(f), key = lambda val : val['name'])
+    
+
+
+import string
+toID = lambda name : ''.join(filter(lambda ch: ch in string.ascii_lowercase, name.lower()))
+
+
+
 import forms as f
 
 #import mail stuff (pip3 install flask-mail)
@@ -189,7 +199,7 @@ def votePage(ID):
     
     votes.countVotes()
     bgColour = request.args.get('bg-colour', 'w3-bruh-blue')
-    if bgColour not in ['w3-bruh-blue', 'w3-indigo', 'w3-2019-galaxy-blue']: bgColour = 'w3-bruh-blue'
+    if bgColour not in {'w3-bruh-blue', 'w3-indigo', 'w3-2019-galaxy-blue'}: bgColour = 'w3-bruh-blue'
 
     selectedBCs =     {'w3-indigo': 'w3-blue',         'w3-2019-galaxy-blue': 'w3-indigo',          'w3-bruh-blue': 'w3-indigo'}
     unselectedBCs =   {'w3-indigo': 'w3-bruh-blue',    'w3-2019-galaxy-blue': 'w3-bruh-blue',       'w3-bruh-blue': 'w3-2019-galaxy-blue'}
@@ -390,7 +400,7 @@ def modelMaker():
     if not MF.datasetID.data:
         MF.datasetID.data = int(request.args.get('datasetID', session.get('datasetID', 1)))
     
-    return render_template('new-model.html', advancedIDs=[MF.layerAmount.id, MF.dropout.id, MF.seqLength.id, MF.seed.id, MF.learningRate.id], form=MF, user=current_user)
+    return render_template('new-model.html', advancedIDs=(MF.layerAmount.id, MF.dropout.id, MF.seqLength.id, MF.seed.id, MF.learningRate.id), form=MF, user=current_user)
 
 @app.route('/epoch-progress/<int:ID>')
 def epochProgress(ID):

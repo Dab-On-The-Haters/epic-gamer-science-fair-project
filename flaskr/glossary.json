@@ -1,0 +1,97 @@
+[
+    {
+        "name": "Dataset",
+        "description": "A collection of text, used for training the AI on how language works. Since the models start out with no idea that words, grammar, or even letters exists, it's important that this contains a lot of data to learn from. Some examples of datasets are collections of lyrics, tweets, book series, and food reviews. These are what really shows the AI how to put together text.",
+        "seeAlso": ["model"]
+    },
+    {
+        "name": "Model",
+        "description": "An actual occurence of AI. Joe trains individual models, which save their knowledge in collections of information about patterns in the dataset it is given.",
+        "seeAlso": ["rnn"]
+    },
+    {
+        "name": "Hidden layer",
+        "description": "Basically, models",
+        "seeAlso": ["model"]
+    },
+    {
+        "name": "Epoch",
+        "description": "",
+        "seeAlso": ["model"]
+    },
+    {
+        "name": "Iteration",
+        "description": "",
+        "seeAlso": ["model", "batch"]
+    },
+    {
+        "name": "Dropout",
+        "description": "",
+        "seeAlso": ["model"]
+    },
+    {
+        "name": "Learning rate",
+        "description": "",
+        "seeAlso": ["model"]
+    },
+    {
+        "name": "Batch",
+        "description": "",
+        "seeAlso": ["model", "iteration"]
+    },
+    {
+        "name": "Timestep",
+        "description": "",
+        "seeAlso": ["model"]
+    },
+    {
+        "name": "Sequence",
+        "description": "",
+        "seeAlso": ["model"]
+    },
+    {
+        "name": "Loss",
+        "description": "",
+        "seeAlso": ["model"]
+    },
+    {
+        "name": "RNN",
+        "description": "",
+        "seeAlso": ["model"]
+    },
+    {
+        "name": "GRU",
+        "description": "",
+        "seeAlso": ["rnn", "model"]
+    },
+    {
+        "name": "Data cleaning",
+        "description": "",
+        "seeAlso": ["dataset"]
+    },
+    {
+        "name": "Seed",
+        "description": "",
+        "seeAlso": ["model"]
+    },
+    {
+        "name": "Priming string",
+        "description": "",
+        "seeAlso": ["model"]
+    },
+    {
+        "name": "Sample",
+        "description": "",
+        "seeAlso": ["model"]
+    },
+    {
+        "name": "Temperature",
+        "description": "",
+        "seeAlso": ["sample"]
+    },
+    {
+        "name": "Gradient descent",
+        "description": "",
+        "seeAlso": ["model"]
+    }
+]
