@@ -31,7 +31,7 @@ import json
 with open('/home/thomas/.private-stuff.json') as f:
     passwords = json.load(f)
 
-with open('glossary.json') as f:
+with open('/var/www/epic-gamer-science-fair-project/flaskr/glossary.json') as f:
     glossary = sorted(json.load(f), key = lambda val : val['name'])
     
 
