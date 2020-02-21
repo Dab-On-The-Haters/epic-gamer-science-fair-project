@@ -10,9 +10,14 @@
         "seeAlso": ["rnn"]
     },
     {
+        "name": "Neuron",
+        "description": "Neural networks are made out of neurons. These hold a value between 0 and 1, and are supposed to ",
+        "seeAlso": ["model", "hiddenlayer"]
+    },
+    {
         "name": "Hidden layer",
-        "description": "Basically, models",
-        "seeAlso": ["model"]
+        "description": "Basically, neural networks are divided into three main sections: an input layer, hidden layers, and an output layer. Each of these are composed of a series of neurons. Basically, the neural network's goal is to use data inferred from hidden layers (based off of the input layer) to set the neurons in the output layer to the correct values.",
+        "seeAlso": ["model", "neuron"]
     },
     {
         "name": "Epoch",
