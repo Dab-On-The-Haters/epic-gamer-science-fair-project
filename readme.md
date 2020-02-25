@@ -1,5 +1,4 @@
-Hello fellow gamers,
-
+# Meet Joe
 This is Leo & Thomas's amazing science fair project.
 
 We're making a project that aims to create a more organized, more accessible, system for machine learning training & tracking.
