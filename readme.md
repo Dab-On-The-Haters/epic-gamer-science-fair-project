@@ -17,6 +17,9 @@ This project will be powered largely with open-sourced free software such as:
 
 It is currently being run on ON A BRAND NEW X570 CUSTOM MADE COMPUTER LETSS GOoo, available in development at http://99.199.44.233, although no guarantees that it's gonna be online.
 
+
+
+
 **How can we create a website that makes interacting with neural networks accessible and easy?**
 
 ## **Background Research**
@@ -64,7 +67,7 @@ Note: During the testing of our website, we experienced a problem regarding the 
 
 **MariaDB **is based off the MySQL **relational database system**, and it allows us to track everything that happens on our site. It consists of several tables, which track important assets and their properties such as users, datasets, models, checkpoints, votes, and our survey. This is basically the deeply hidden glue that holds everything together. User inputted variables such as the number of hidden layers, are also sent and stored in the database. These then connect to the neural networks.
 
-We used **PyTorch **for all of our work with neural networks. PyTorch is a powerful framework which provides most necessary machine learning features. A large portion of our code managing the RNNs is based off of **[github.com/thundercomb/pytorch-char-rnn/](https://github.com/thundercomb/pytorch-char-rnn/)**, a PyTorch implementation of Andrej Karpathy’s original **Char RNN **project. This system uses **gated recurrent units**, a new type of RNN based off of older, less efficient LSTMs. Although GRUs struggle more with long term memory (which LSTMs were originally designed for), the time it takes to train is certainly worth it. These models are trained on a NVidia GTX 1660 Ti graphics card using **CUDA**, a computation system for NVidia GPUs. This is effective because graphics processing units have a significant advantage over traditional CPUs for the repetitive floating-point operations that occur in machine learning.
+We used **PyTorch** for all of our work with neural networks. PyTorch is a powerful framework which provides most necessary machine learning features. A large portion of our code managing the RNNs is based off of **[github.com/thundercomb/pytorch-char-rnn/](https://github.com/thundercomb/pytorch-char-rnn/)**, a PyTorch implementation of Andrej Karpathy’s original **Char RNN** project. This system uses **gated recurrent units**, a new type of RNN based off of older, less efficient LSTMs. Although GRUs struggle more with long term memory (which LSTMs were originally designed for), the time it takes to train is certainly worth it. These models are trained on a NVidia GTX 1660 Ti graphics card using **CUDA**, a computation system for NVidia GPUs. This is effective because graphics processing units have a significant advantage over traditional CPUs for the repetitive floating-point operations that occur in machine learning.
 
 To properly present these things to the user, we need a website template. Utilizing a framework called w3 css, we significantly simplified the process of editing and improving the aesthetics of our website. To make our website more friendly to those inexperienced with machine learning and computer science we gave our website and our whole project a nickname: Joe. This friendly, familiar name is seen throughout the website, and we hope it reduces some of the daunting nature of training neural networks.  We also made a navigation bar on the top of the website so that users can access all parts of the website quickly and easily. We also added some explanations and descriptions for the technical portions of our project.
 
