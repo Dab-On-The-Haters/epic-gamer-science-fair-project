@@ -8,16 +8,7 @@ I (Thomas) have had a bit of experience with RNNs before, but I'm certainly no M
 
 This will also tie into my (Thomas's) IDS project, as we will be using relational databases to track information about the users, datasets, models, loss, learning rates, iterations, etc.
 
-This project will be powered largely with open-sourced free software such as: 
-*Apache2 (our web server),
-*Flask (our web framework),
-*MariaDB (our DBMS),
-*PyTorch (the deep learning system behind the AI),
-*and many other smaller things like flask-mail, flask-login, flask-mysql, mysql-connector/python, w3.css, and so on.
-
 It is currently being run on ON A BRAND NEW X570 CUSTOM MADE COMPUTER LETSS GOoo, available in development at http://99.199.44.233, although no guarantees that it's gonna be online.
-
-
 
 
 **How can we create a website that makes interacting with neural networks accessible and easy?**
