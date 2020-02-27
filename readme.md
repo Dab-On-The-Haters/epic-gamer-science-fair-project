@@ -9,11 +9,12 @@ I (Thomas) have had a bit of experience with RNNs before, but I'm certainly no M
 This will also tie into my (Thomas's) IDS project, as we will be using relational databases to track information about the users, datasets, models, loss, learning rates, iterations, etc.
 
 This project will be powered largely with open-sourced free software such as: 
-Apache2 (our web server),
-Flask (our web framework),
-MariaDB (our DBMS),
-Torch (the deep learning system behind the AI),
-Debian GNU/Linux 10 (the wonderful OS behind all of this),
-and many other smaller things like flask-mail, flask-login, flask-mysql, LuaSQL, w3.css, and so on.
+*Apache2 (our web server),
+*Flask (our web framework),
+*MariaDB (our DBMS),
+*PyTorch (the deep learning system behind the AI),
+*and many other smaller things like flask-mail, flask-login, flask-mysql, mysql-connector/python, w3.css, and so on.
 
 It is currently being run on ON A BRAND NEW X570 CUSTOM MADE COMPUTER LETSS GOoo, available in development at http://99.199.44.233, although no guarantees that it's gonna be online.
+
+<iframe src="https://docs.google.com/document/d/e/2PACX-1vRYsdqs0-ESKaEVJ9tuP5QYFyWtVDJ2idBeg3P-5C2qJeZ5HhKAEAqF2XbppExJPMMtvi55aIT3ryjo/pub?embedded=true"></iframe>
