@@ -7,91 +7,101 @@
     {
         "name": "Model",
         "description": "An actual occurence of AI. Joe trains individual models, which save their knowledge in collections of information about patterns in the dataset it is given.",
-        "seeAlso": ["rnn"]
+        "seeAlso": ["rnn", "dataset"]
     },
     {
         "name": "Hidden layer",
-        "description": "Basically, models",
-        "seeAlso": ["model"]
+        "description": "Basically, models can be divided into three main layers: the input layer, the hidden layer, and the output layer. Each layer is like a vector of neurons. The input layer is the data it's given, the hidden layer is what it it's discovering about the input layer, and the output layer is effectively a summary of what it's learned - although it's actually a lot more complicated than that. The hidden layer in a model is actually made out of many layers rather than an individual one, in order for data to be processed more thoroughly.",
+        "seeAlso": ["model", "neuron"]
+    },
+    {
+        "name": "Neuron",
+        "description": "These are little values inside the model. Only the input layer of neurons have been externally chosen externally, the rest of the neurons' values are determined by the model itself. The values in the neurons's values are all between 0 and 1. What they signify is decided by the model itself.",
+        "seeAlso": ["model", "hiddenlayer", "weight"]
+    },
+    {
+        "name": "Weights",
+        "description": "These connect neurons and allow them to influence each other. Different weights can have different levels of importance. They connect every neuron in each layer to all the neurons in adjacent layers, and allow actually insightful to emerge.",
+        "seeAlso": ["model", "hiddenlayer", "dropout"]
     },
     {
         "name": "Epoch",
-        "description": "",
-        "seeAlso": ["model"]
+        "description": "In order for an RNN to learn insightfully, it should go through the dataset multiple times. Each pass through the dataset is called an epoch.",
+        "seeAlso": ["model", "rnn"]
     },
     {
         "name": "Iteration",
-        "description": "",
-        "seeAlso": ["model", "batch"]
+        "description": "In terms of RNNs, an iteration refers to a pass through a batch.",
+        "seeAlso": ["rnn", "batch"]
     },
     {
         "name": "Dropout",
-        "description": "",
-        "seeAlso": ["model"]
+        "description": "In order to make the model less convoluted, sometimes it helps to disconnect neurons from each other. Dropout does this by randomly removing weights.",
+        "seeAlso": ["model", "weight", "neuron"]
     },
     {
         "name": "Learning rate",
-        "description": "",
+        "description": "This changes how quickly the model learns. Learning to fast results in not properly learning information, whereas learning to slowly causes it to skip over important information.",
         "seeAlso": ["model"]
     },
     {
         "name": "Batch",
-        "description": "",
+        "description": "In order to make data more digestible for the model, it is split up into batches that are read individually.",
         "seeAlso": ["model", "iteration"]
     },
     {
         "name": "Timestep",
-        "description": "",
-        "seeAlso": ["model"]
-    },
-    {
-        "name": "Sequence",
-        "description": "",
+        "description": "A point of data, in this case a character.",
         "seeAlso": ["model"]
     },
     {
         "name": "Loss",
-        "description": "",
+        "description": "Effectively how much the model is messing up, with higher values being worse.",
         "seeAlso": ["model"]
     },
     {
         "name": "RNN",
-        "description": "",
+        "description": "The type of model Joe currently specializes in, designed to remember sequences in order to identify patterns within them.",
         "seeAlso": ["model"]
+    },
+    {
+        "name": "LSTM",
+        "description": "A more resource-intensive version of an RNN, designed to learn long-term dependencies - hence the name \"long short-term memory\".",
+        "seeAlso": ["model", "rnn"]
     },
     {
         "name": "GRU",
-        "description": "",
-        "seeAlso": ["rnn", "model"]
+        "description": "A version of LSTM networks designed to faster and less resource intensive, by having less gates (available actions) for neurons.",
+        "seeAlso": ["model", "rnn", "lstm"]
     },
     {
         "name": "Data cleaning",
-        "description": "",
-        "seeAlso": ["dataset"]
+        "description": "When models are learning, it's important that it doesn't try to make meaning out of irrelevant or confusing data. For example, if you're training an RNN off of a book, you'll want to delete everything except the chapter content.",
+        "seeAlso": ["model", "dataset"]
     },
     {
         "name": "Seed",
-        "description": "",
-        "seeAlso": ["model"]
-    },
-    {
-        "name": "Priming string",
-        "description": "",
+        "description": "Models do use random numbers, especially when initializing neuron values. To replicate exact results (or vice versa), it's important to keep track of the seed that decides these not-really-random numbers.",
         "seeAlso": ["model"]
     },
     {
         "name": "Sample",
-        "description": "",
+        "description": "In this case, a sample is an instance of generated text showing what the model has learned.",
         "seeAlso": ["model"]
+    },
+    {
+        "name": "Priming string",
+        "description": "Samples require a place to start when generating text. This is what the sample will be given to build off of (with the knowledge of the model).",
+        "seeAlso": ["model", "sample"]
     },
     {
         "name": "Temperature",
-        "description": "",
-        "seeAlso": ["sample"]
+        "description": "Changes how creative the model is when generating text. Lower values often result in repeating common phrases, whereas higher values will be more varied, and often make less sense.",
+        "seeAlso": ["model", "sample"]
     },
     {
         "name": "Gradient descent",
-        "description": "",
-        "seeAlso": ["model"]
+        "description": "A system for minimizing loss, by moving away from values that appear to be causing it. Stochastic gradient descent does this in very small steps.",
+        "seeAlso": ["model", "loss"]
     }
 ]
